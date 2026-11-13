@@ -1,4 +1,5 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile, access } from "node:fs/promises";
+import { constants } from "node:fs";
 import { join, resolve } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
@@ -70,8 +71,16 @@ export async function runInterview(options: { root: string; answersPath?: string
   result.files = files;
   if (!options.dryRun) {
     await mkdir(join(root, ".ases"), { recursive: true });
-    await writeFile(files[0]!, `${JSON.stringify({ schemaVersion: "1", status: "PROPOSED", ...result }, null, 2)}\n`);
-    await writeFile(files[1]!, renderSpec(result));
+    for (const path of files) {
+      try {
+        await access(path, constants.F_OK);
+        throw new Error(`Arquivo existente; preservado: ${path}`);
+      } catch (error) {
+        if (error instanceof Error && error.message.startsWith("Arquivo existente;")) throw error;
+      }
+    }
+    await writeFile(files[0]!, `${JSON.stringify({ schemaVersion: "1", status: "PROPOSED", ...result }, null, 2)}\n`, { flag: "wx" });
+    await writeFile(files[1]!, renderSpec(result), { flag: "wx" });
   }
   return result;
 }
