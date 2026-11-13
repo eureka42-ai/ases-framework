@@ -205,6 +205,10 @@ test("catalog status requires evidence for VERIFIED and rationale for N_A", asyn
   assert.equal((await run(["catalog", "import-ases300", md, root, "--json"])).exitCode, 0);
   assert.equal((await run(["requirements", "set-status", root, "REQ-001", "VERIFIED", "--json"])).exitCode, 5);
   assert.equal((await run(["requirements", "set-status", root, "REQ-001", "N_A", "--json"])).exitCode, 5);
+  const waived = await run(["requirements", "set-status", root, "REQ-003", "N_A", "--na-reason", "fora do escopo demonstrado", "--json"]);
+  assert.equal(waived.exitCode, 0);
+  assert.equal(JSON.parse(waived.output).waiver.justification, "fora do escopo demonstrado");
+  assert.equal(JSON.parse(waived.output).history[0].to, "N_A");
   await writeFile(join(root, "evidence.txt"), "test evidence");
   const accepted = await run(["requirements", "set-status", root, "REQ-001", "VERIFIED", "--evidence", "evidence.txt", "--json"]);
   assert.equal(accepted.exitCode, 0);
@@ -242,5 +246,23 @@ test("imports classification and priority when both share a source line", async 
   const payload = JSON.parse(await readFile(join(root, ".ases", "catalogs", "ases-300.json"), "utf8"));
   assert.equal(payload.requirements[0].classification, "CORE");
   assert.equal(payload.requirements[0].priority, "HIGH");
+});
+
+test("catalog import rejects missing, duplicate and project-specific IDs", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-catalog-completeness-"));
+  const makeSections = () => Array.from({ length: 300 }, (_, i) => `### REQ-${String(i + 1).padStart(3, "0")} — Item ${i + 1}\n\nDescrição.`);
+  const missingPath = join(root, "missing.md");
+  await writeFile(missingPath, makeSections().slice(1).join("\n\n"));
+  assert.equal((await run(["catalog", "import-ases300", missingPath, join(root, "missing-workspace"), "--json"])).exitCode, 5);
+
+  const duplicateSections = makeSections();
+  duplicateSections[299] = duplicateSections[299]!.replace("REQ-300", "REQ-299");
+  const duplicatePath = join(root, "duplicate.md");
+  await writeFile(duplicatePath, duplicateSections.join("\n\n"));
+  assert.equal((await run(["catalog", "import-ases300", duplicatePath, join(root, "duplicate-workspace"), "--json"])).exitCode, 5);
+
+  const extendedPath = join(root, "extended.md");
+  await writeFile(extendedPath, [...makeSections(), "### REQ-301 — Requisito de domínio\n\nEspecífico do produto."].join("\n\n"));
+  assert.equal((await run(["catalog", "import-ases300", extendedPath, join(root, "extended-workspace"), "--json"])).exitCode, 5);
 });
 

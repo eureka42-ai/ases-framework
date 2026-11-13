@@ -255,7 +255,14 @@ export async function run(argv: string[]): Promise<CommandResult> {
       if (!allowed.includes(status)) return { exitCode: 2, output: `Status inválido; use: ${allowed.join(", ")}` };
       const evidenceIndex = argv.indexOf("--evidence");
       const naIndex = argv.indexOf("--na-reason");
-      const requirement = await updateRequirement(args[2]!, args[3]!, status, { ...(evidenceIndex >= 0 ? { evidence: argv[evidenceIndex + 1] } : {}), ...(naIndex >= 0 ? { naReason: argv.slice(naIndex + 1).join(" ") } : {}) });
+      const naParts: string[] = [];
+      if (naIndex >= 0) {
+        for (const value of argv.slice(naIndex + 1)) {
+          if (value.startsWith("--")) break;
+          naParts.push(value);
+        }
+      }
+      const requirement = await updateRequirement(args[2]!, args[3]!, status, { ...(evidenceIndex >= 0 ? { evidence: argv[evidenceIndex + 1] } : {}), ...(naIndex >= 0 ? { naReason: naParts.join(" ") } : {}) });
       return { exitCode: 0, output: json ? JSON.stringify(requirement, null, 2) : `${requirement.id}: ${requirement.status}` };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

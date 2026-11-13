@@ -80,62 +80,62 @@ requirements:
     priority: P0
     milestone: "M2"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Importar ASES-300 da fonte com proveniência e hash."
     acceptanceCriteria:
       - id: AC-AFR-007-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Importar ASES-300 da fonte com proveniência e hash."
+        description: "O importador grava os 300 títulos e textos, o nome da fonte e SHA-256 do arquivo em .ases/catalogs/ases-300.json, sem declarar homologação normativa."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/catalog.ts"]
+    tests: ["packages/cli/src/index.test.ts :: imports classification and priority when both share a source line"]
   - id: AFR-008
     priority: P0
     milestone: "M2"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Conferir unicidade e completude de REQ-001..300."
     acceptanceCriteria:
       - id: AC-AFR-008-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Conferir unicidade e completude de REQ-001..300."
+        description: "A importação aceita exatamente uma seção por ID REQ-001..REQ-300 e falha para lacunas, duplicatas ou IDs adicionais como REQ-301."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/catalog.ts"]
+    tests: ["packages/cli/src/index.test.ts :: catalog import rejects missing, duplicate and project-specific IDs"]
   - id: AFR-009
     priority: P0
     milestone: "M2"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "PARTIAL"
     summary: "Separar catálogo geral e requisitos específicos por projeto."
     acceptanceCriteria:
       - id: AC-AFR-009-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Separar catálogo geral e requisitos específicos por projeto."
+        description: "O importador geral rejeita IDs 301+ e a documentação mantém os requisitos Eureka42 separados; um fluxo próprio para importar e gerir catálogos específicos de produto continua pendente."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/catalog.ts", "README.md"]
+    tests: ["packages/cli/src/index.test.ts :: catalog import rejects missing, duplicate and project-specific IDs"]
   - id: AFR-010
     priority: P0
     milestone: "M2"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Impedir requisito `VERIFIED` sem evidência válida."
     acceptanceCriteria:
       - id: AC-AFR-010-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Impedir requisito `VERIFIED` sem evidência válida."
+        description: "VERIFIED exige arquivo regular, existente e canônico dentro do workspace; o CLI rejeita caminhos externos e symlinks externos e calcula SHA-256."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/catalog.ts"]
+    tests: ["packages/cli/src/index.test.ts :: catalog status requires evidence for VERIFIED and rationale for N_A"]
   - id: AFR-011
     priority: P0
     milestone: "M2"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Conservar IDs, versões e histórico de requisitos."
     acceptanceCriteria:
       - id: AC-AFR-011-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Conservar IDs, versões e histórico de requisitos."
+        description: "A importação preserva IDs REQ, schemaVersion e hash de fonte; cada transição de estado guarda estado anterior, destino e data no histórico."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/catalog.ts"]
+    tests: ["packages/cli/src/index.test.ts :: catalog status requires evidence for VERIFIED and rationale for N_A", "packages/cli/src/index.test.ts :: catalog import rejects missing, duplicate and project-specific IDs"]
   - id: AFR-012
     priority: P0
     milestone: "M2"
@@ -152,14 +152,14 @@ requirements:
     priority: P0
     milestone: "M2"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Registrar N/A com justificativa e rastreabilidade."
     acceptanceCriteria:
       - id: AC-AFR-013-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Registrar N/A com justificativa e rastreabilidade."
+        description: "N_A só é aceito com justificativa não vazia e registra waiver com data, além da transição no histórico do requisito."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/catalog.ts"]
+    tests: ["packages/cli/src/index.test.ts :: catalog status requires evidence for VERIFIED and rationale for N_A"]
   - id: AFR-014
     priority: P0
     milestone: "M2"
