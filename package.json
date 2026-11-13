@@ -13,8 +13,9 @@
   ],
   "scripts": {
     "build": "tsc -b",
-    "check": "tsc -b --pretty false && node --test packages/cli/dist/**/*.test.js",
-    "test": "npm run build && node --test packages/cli/dist/**/*.test.js",
+    "check": "tsc -b --pretty false && node --test packages/cli/dist/**/*.test.js && npm run integrations:validate",
+    "test": "npm run build && node --test packages/cli/dist/**/*.test.js && npm run integrations:validate",
+    "integrations:validate": "node scripts/validate-integrations.mjs",
     "clean": "tsc -b --clean"
   },
   "devDependencies": {

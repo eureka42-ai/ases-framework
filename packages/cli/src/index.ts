@@ -4,6 +4,8 @@ import { basename, join, resolve } from "node:path";
 import { platform, release } from "node:os";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+import { renderLogo } from "./brand.js";
+import { runInterview } from "./interview.js";
 
 export const VERSION = "0.0.0-dev";
 
@@ -23,12 +25,15 @@ interface ProjectConfig {
   };
 }
 
-const help = `EUREKA42 ASES Framework ${VERSION}
+const help = `${renderLogo()}\n\nEUREKA42 ASES Framework ${VERSION}
 
 Uso: ases <comando> [opções]
 
 Comandos disponíveis:
   init [diretório]        Inicializa um workspace local de forma idempotente
+  interview [diretório]   Entrevista o projeto e propõe stack inicial
+  welcome                 Exibe a identidade Eureka42 no terminal
+  host list               Detecta CLIs compatíveis sem alterar configurações
   doctor [diretório]      Diagnostica o ambiente sem chamadas remotas
   config validate [path]  Valida a configuração JSON do projeto
   config explain [path]   Explica valores e origens da configuração
@@ -37,6 +42,7 @@ Comandos disponíveis:
 Opções:
   --json                  Saída estruturada em JSON
   --dry-run               Mostra o plano sem escrever arquivos
+  --answers <arquivo>     Respostas JSON para entrevista não interativa
   --version               Exibe a versão
 `;
 
@@ -189,8 +195,34 @@ export async function run(argv: string[]): Promise<CommandResult> {
   if (argv.includes("--version")) return { exitCode: 0, output: VERSION };
   const command = args[0] ?? "help";
   if (command === "help" || command === "--help") return { exitCode: 0, output: help };
+  if (command === "welcome") return { exitCode: 0, output: renderLogo() };
   if (command === "init") return initProject(args[1], dryRun, json);
+  if (command === "interview") {
+    try {
+      const answersIndex = argv.indexOf("--answers");
+      const answersPath = answersIndex >= 0 ? argv[answersIndex + 1] : undefined;
+      const result = await runInterview({ root: args[1] ?? process.cwd(), ...(answersPath ? { answersPath } : {}), dryRun });
+      const summary = [renderLogo(), "", `Projeto: ${result.answers.name}`, `Tipo: ${result.answers.applicationType}`, "", ...result.recommendations.map((item) => `${item.status} ${item.field}: ${item.value}\n  ${item.rationale}`), "", dryRun ? "Dry-run: nenhum arquivo escrito." : `Arquivos: ${result.files?.join(", ")}`].join("\n");
+      return { exitCode: 0, output: json ? JSON.stringify(result, null, 2) : summary };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 4, output: json ? JSON.stringify({ code: "ASES_INTERVIEW_INVALID", error: message }, null, 2) : `FAIL entrevista inválida: ${message}` };
+    }
+  }
   if (command === "doctor") return doctor(args[1], json);
+  if (command === "host" && args[1] === "list") {
+    const definitions = [
+      { id: "codex", command: "codex", integration: "integrations/codex" },
+      { id: "claude-code", command: "claude", integration: "integrations/claude-code" },
+      { id: "kimi-code", command: "kimi", integration: "integrations/kimi-code" },
+      { id: "gemini-cli", command: "gemini", integration: "integrations/gemini-cli" }
+    ];
+    const hosts = await Promise.all(definitions.map(async (host) => {
+      const detected = await detectCommand(host.command, ["--version"]);
+      return { ...host, detected: detected.available, version: detected.available ? detected.detail : undefined, support: "NOT_TESTED" };
+    }));
+    return { exitCode: 0, output: json ? JSON.stringify({ hosts }, null, 2) : hosts.map((host) => `${host.detected ? "DETECTED" : "NOT_FOUND"} ${host.id}${host.version ? `: ${host.version}` : ""} [${host.support}]`).join("\n") };
+  }
   if (command === "config" && args[1] === "validate") return validateConfigCommand(args[2], json);
   if (command === "config" && args[1] === "explain") return explainConfigCommand(args[2], json);
   return { exitCode: 1, output: json ? JSON.stringify({ code: "ASES_COMMAND_UNKNOWN", command }) : `Comando desconhecido: ${command}\n\n${help}` };

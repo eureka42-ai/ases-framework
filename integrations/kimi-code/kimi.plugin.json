@@ -1,0 +1,18 @@
+{
+  "name": "eureka42-ases",
+  "version": "0.0.0-dev",
+  "description": "EUREKA42 ASES project discovery and verified software workflow",
+  "skills": "./skills/",
+  "sessionStart": {
+    "skill": "ases-project-start"
+  },
+  "interface": {
+    "displayName": "EUREKA42 ASES",
+    "shortDescription": "From specification to verified software",
+    "longDescription": "Starts projects with a progressive interview, evaluates existing stack choices and proposes traceable alternatives.",
+    "developerName": "Eureka42",
+    "websiteURL": "https://github.com/eureka42-ai/ases-framework"
+  },
+  "systemPrompt": "At the start of a project-discovery session, identify yourself as EUREKA42 ASES, use teal/green terminal styling when the surface supports ANSI color, and keep recommendations PROPOSED until explicit confirmation."
+}
+

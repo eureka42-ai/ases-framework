@@ -1,0 +1,10 @@
+{
+  "name": "eureka42-ases",
+  "version": "0.0.0-dev",
+  "description": "EUREKA42 ASES project discovery and verified software workflow",
+  "icon": ".claude-plugin/icon.png",
+  "author": {
+    "name": "Eureka42"
+  }
+}
+

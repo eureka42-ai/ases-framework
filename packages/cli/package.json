@@ -10,7 +10,13 @@
     "dist/bin.js",
     "dist/bin.d.ts",
     "dist/index.js",
-    "dist/index.d.ts"
+    "dist/index.d.ts",
+    "dist/brand.js",
+    "dist/brand.d.ts",
+    "dist/interview.js",
+    "dist/interview.d.ts",
+    "dist/recommendations.js",
+    "dist/recommendations.d.ts"
   ],
   "scripts": {
     "build": "tsc -b",

@@ -1,0 +1,26 @@
+{
+  "name": "eureka42-ases",
+  "version": "0.0.0-dev",
+  "description": "EUREKA42 ASES project discovery and verified software workflow",
+  "contextFileName": "GEMINI.md",
+  "themes": [
+    {
+      "name": "eureka42-teal",
+      "type": "custom",
+      "background": { "primary": "#0A0D13" },
+      "text": {
+        "primary": "#E9EDF2",
+        "secondary": "#98A2B3",
+        "link": "#34D6BC"
+      },
+      "status": {
+        "success": "#34D6BC",
+        "warning": "#F2B33D",
+        "error": "#FF7A6B"
+      },
+      "border": { "default": "#2A3242" },
+      "ui": { "comment": "#98A2B3" }
+    }
+  ]
+}
+

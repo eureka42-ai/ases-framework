@@ -176,11 +176,62 @@ ases config explain ./meu-projeto/.ases/config.json --json
 | `ases --version` | Exibe a versão do CLI | Nenhum |
 | `ases init [diretório]` | Inicializa `.ases/` e próximos passos | Cria arquivos locais |
 | `ases init --dry-run` | Mostra o plano de inicialização | Nenhum |
+| `ases welcome` | Exibe a identidade Eureka42 em teal/verde | Nenhum |
+| `ases interview [diretório]` | Pergunta tipo, stack, hospedagem, banco, escala e dados | Cria proposta em `.ases/` |
+| `ases interview --answers <json>` | Executa a entrevista de modo reproduzível | Cria proposta em `.ases/` |
 | `ases doctor [diretório]` | Diagnostica ferramentas e workspace | Nenhum |
 | `ases config validate [path]` | Valida o contrato inicial da config | Nenhum |
 | `ases config explain [path]` | Mostra valores e suas origens | Nenhum |
+| `ases host list` | Detecta Codex, Claude, Kimi e Gemini instalados | Nenhum |
 
 Os demais comandos do documento-mestre são contratos planejados, não funcionalidades existentes. Eles somente serão documentados como disponíveis depois de implementados e testados.
+
+## Entrevista inteligente de projeto
+
+O fluxo interativo começa pela natureza da aplicação e só recomenda tecnologia onde existe uma lacuna:
+
+```bash
+ases welcome
+ases interview ./meu-projeto
+```
+
+Perguntas iniciais:
+
+1. nome e tipo do aplicativo;
+2. linguagem já escolhida ou sugestão necessária;
+3. hospedagem já escolhida ou sugestão necessária;
+4. banco de dados já escolhido ou sugestão necessária;
+5. escala esperada;
+6. presença de dados pessoais ou sensíveis.
+
+Quando a pessoa já possui uma escolha, o ASES a registra como `REVIEW_REQUIRED` e compara com uma referência apropriada. Quando não possui, gera uma recomendação `PROPOSED` com justificativa. Nada vira `CONFIRMED` automaticamente.
+
+Para automação ou CI, use um arquivo de respostas:
+
+```bash
+ases interview ./meu-projeto \
+  --answers ./examples/interview.answers.json \
+  --dry-run \
+  --json
+```
+
+Sem `--dry-run`, são gerados:
+
+- `.ases/interview.json`: respostas, recomendações e estados estruturados;
+- `.ases/SPEC.md`: primeira especificação legível e decisões pendentes.
+
+## Plugins e Skills para CLIs de agentes
+
+Os adapters experimentais ficam em [`integrations/`](integrations/):
+
+| Host | Integração criada | Destaque |
+|---|---|---|
+| OpenAI Codex | `AGENTS.md` + Skill em `.agents/skills` | fluxo portátil de descoberta |
+| Claude Code | plugin, Skill e `/ases-start` | pacote local separado |
+| Kimi Code CLI | `kimi.plugin.json` + `sessionStart.skill` | ativa o fluxo ao iniciar sessão |
+| Gemini CLI | extension, Skill, command e tema | tema `eureka42-teal` |
+
+Todos permanecem `NOT_TESTED` no host real. A validação atual confirma apenas a estrutura local dos manifests e Skills. Consulte [`integrations/README.md`](integrations/README.md) antes de instalar.
 
 ## Arquitetura pretendida
 

@@ -1,0 +1,7 @@
+{
+  "name": "Meu Produto",
+  "applicationType": "web",
+  "expectedScale": "small",
+  "sensitiveData": false
+}
+
