@@ -13,6 +13,8 @@ export interface GeneralRequirement {
   source: { path: string; sha256: string };
   status: "PENDING" | "READY" | "IN_PROGRESS" | "IMPLEMENTED" | "VERIFIED" | "FAILED" | "BLOCKED" | "N_A";
   evidence?: Array<{ id: string; kind: string; description: string; sha256?: string; createdAt: string; integrity?: "CURRENT" | "STALE" | "MISSING" | "OUTSIDE_WORKSPACE" | "UNVERIFIABLE" }>;
+  traceability?: { decisionRefs: string[]; testRefs: string[] };
+  blocker?: { dependency: string; reason: string; createdAt: string };
   waiver?: { justification: string; createdAt: string };
   history?: Array<{ from: string; to: string; at: string }>;
 }
@@ -83,13 +85,14 @@ export async function readCatalog(workspace: string): Promise<{ source: { path: 
   return catalog;
 }
 
-export async function updateRequirement(workspace: string, id: string, status: GeneralRequirement["status"], options: { evidence?: string; naReason?: string }): Promise<GeneralRequirement> {
+export async function updateRequirement(workspace: string, id: string, status: GeneralRequirement["status"], options: { evidence?: string; naReason?: string; decisionRefs?: string[]; testRefs?: string[]; blockedBy?: string; blockedReason?: string }): Promise<GeneralRequirement> {
   const path = join(resolve(workspace), ".ases", "catalogs", "ases-300.json");
   const catalog = JSON.parse(await readFile(path, "utf8")) as { source: { path: string; sha256: string }; requirements: GeneralRequirement[] };
   const requirement = catalog.requirements.find((item) => item.id === id);
   if (!requirement) throw new Error(`Requisito inexistente: ${id}`);
   if (status === "VERIFIED" && !options.evidence?.trim()) throw new Error("VERIFIED exige --evidence com caminho de arquivo existente dentro do workspace");
   if (status === "N_A" && !options.naReason?.trim()) throw new Error("N_A exige --na-reason");
+  if (status === "BLOCKED" && (!options.blockedBy?.trim() || !options.blockedReason?.trim())) throw new Error("BLOCKED exige --blocked-by e --reason");
   if (status === "VERIFIED") {
     const workspaceRoot = await realpath(resolve(workspace));
     const evidencePath = resolve(workspaceRoot, options.evidence!.trim());
@@ -104,6 +107,14 @@ export async function updateRequirement(workspace: string, id: string, status: G
     requirement.evidence = [...(requirement.evidence ?? []), { id: `EVD-${Date.now()}`, kind: "workspace-file", description: options.evidence!.trim(), sha256: createHash("sha256").update(evidenceBytes).digest("hex"), createdAt: new Date().toISOString() }];
   }
   if (status === "N_A") requirement.waiver = { justification: options.naReason!.trim(), createdAt: new Date().toISOString() };
+  if (status === "BLOCKED") requirement.blocker = { dependency: options.blockedBy!.trim(), reason: options.blockedReason!.trim(), createdAt: new Date().toISOString() };
+  else delete requirement.blocker;
+  if (options.decisionRefs?.length || options.testRefs?.length) {
+    requirement.traceability = {
+      decisionRefs: [...new Set([...(requirement.traceability?.decisionRefs ?? []), ...(options.decisionRefs ?? []).map((ref) => ref.trim()).filter(Boolean)])],
+      testRefs: [...new Set([...(requirement.traceability?.testRefs ?? []), ...(options.testRefs ?? []).map((ref) => ref.trim()).filter(Boolean)])]
+    };
+  }
   requirement.history = [...(requirement.history ?? []), { from: requirement.status, to: status, at: new Date().toISOString() }];
   requirement.status = status;
   await writeFile(path, `${JSON.stringify({ schemaVersion: "1", catalog: "ases-300", source: catalog.source, status: "IMPORTED_NOT_HOMOLOGATED", requirements: catalog.requirements }, null, 2)}\n`);

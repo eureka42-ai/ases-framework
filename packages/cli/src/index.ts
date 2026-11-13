@@ -40,8 +40,8 @@ Comandos disponíveis:
   config validate [path]  Valida a configuração JSON do projeto
   config explain [path]   Resolve defaults, ambiente e --set sem revelar secrets
   catalog import-ases300 <md> Importa e valida a fonte ASES-300 local
-  requirements list|show  Consulta o catálogo ASES-300 importado
-  requirements set-status <workspace> <REQ-ID> <status> [--evidence ref|--na-reason texto]
+  requirements list|show|trace  Consulta catálogo e trilha de evidências
+  requirements set-status <workspace> <REQ-ID> <status> [--evidence arquivo|--decision DEC|--test ref|--na-reason texto|--blocked-by ref --reason texto]
   help                    Exibe esta ajuda
 
 Opções:
@@ -60,6 +60,19 @@ function slugify(value: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "") || "ases-project";
+}
+
+function optionValues(argv: string[], name: string): string[] {
+  const values: string[] = [];
+  for (let index = 0; index < argv.length; index += 1) {
+    if (argv[index] === name) {
+      const value = argv[index + 1];
+      if (value && !value.startsWith("--")) values.push(value);
+    } else if (argv[index]?.startsWith(`${name}=`)) {
+      values.push(argv[index]!.slice(name.length + 1));
+    }
+  }
+  return values;
 }
 
 async function exists(path: string): Promise<boolean> {
@@ -236,13 +249,28 @@ export async function run(argv: string[]): Promise<CommandResult> {
       return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_CATALOG_IMPORT", error: message }, null, 2) : `Falha ao importar catálogo: ${message}` };
     }
   }
-  if (command === "requirements" && (args[1] === "list" || args[1] === "show")) {
+  if (command === "requirements" && ["list", "show", "trace"].includes(args[1] ?? "")) {
     try {
       const catalog = await readCatalog(args[2] ?? process.cwd());
-      const selected = args[1] === "show" ? catalog.requirements.filter((item) => item.id === args[3]) : catalog.requirements;
-      if (args[1] === "show" && selected.length === 0) return { exitCode: 2, output: json ? JSON.stringify({ code: "ASES_REQUIREMENT_NOT_FOUND", id: args[3] }) : `Requisito não encontrado: ${args[3]}` };
-      const result = { catalog: "ases-300", status: "IMPORTED_NOT_HOMOLOGATED", source: catalog.source, requirements: selected.map((item) => args[1] === "list" ? { id: item.id, title: item.title, status: item.status, evidenceIntegrity: item.evidence?.map((evidence) => evidence.integrity) ?? [] } : item) };
-      return { exitCode: 0, output: json ? JSON.stringify(result, null, 2) : selected.map((item) => `${item.id} — ${item.title} [${item.status}]${item.evidence?.length ? ` [evidência: ${item.evidence.map((evidence) => evidence.integrity ?? "UNVERIFIABLE").join(", ")}]` : ""}${args[1] === "show" ? `\n${item.acceptanceCriteria ?? item.sourceText}` : ""}`).join("\n") };
+      const action = args[1]!;
+      const selected = action === "show" || (action === "trace" && args[3]) ? catalog.requirements.filter((item) => item.id === args[3]) : catalog.requirements;
+      if ((action === "show" || (action === "trace" && args[3])) && selected.length === 0) return { exitCode: 2, output: json ? JSON.stringify({ code: "ASES_REQUIREMENT_NOT_FOUND", id: args[3] }) : `Requisito não encontrado: ${args[3]}` };
+      const requirements = selected.map((item) => {
+        if (action === "list") return { id: item.id, title: item.title, status: item.status, evidenceIntegrity: item.evidence?.map((evidence) => evidence.integrity) ?? [] };
+        if (action === "trace") return {
+          id: item.id,
+          status: item.status,
+          decisions: item.traceability?.decisionRefs ?? [],
+          tests: item.traceability?.testRefs ?? [],
+          blocker: item.blocker ?? null,
+          evidence: item.evidence?.map((evidence) => ({ ref: evidence.description, integrity: evidence.integrity ?? "UNVERIFIABLE", sha256: evidence.sha256 })) ?? []
+        };
+        return item;
+      });
+      const result = { catalog: "ases-300", status: "IMPORTED_NOT_HOMOLOGATED", source: catalog.source, requirements };
+      return { exitCode: 0, output: json ? JSON.stringify(result, null, 2) : selected.map((item) => action === "trace"
+        ? `${item.id} [${item.status}]\n  Decisões: ${(item.traceability?.decisionRefs ?? []).join(", ") || "pendente"}\n  Testes: ${(item.traceability?.testRefs ?? []).join(", ") || "pendente"}\n  Bloqueio: ${item.blocker ? `${item.blocker.dependency} — ${item.blocker.reason}` : "nenhum"}\n  Evidências: ${(item.evidence ?? []).map((evidence) => `${evidence.description} (${evidence.integrity ?? "UNVERIFIABLE"})`).join(", ") || "pendente"}`
+        : `${item.id} — ${item.title} [${item.status}]${item.evidence?.length ? ` [evidência: ${item.evidence.map((evidence) => evidence.integrity ?? "UNVERIFIABLE").join(", ")}]` : ""}${action === "show" ? `\n${item.acceptanceCriteria ?? item.sourceText}` : ""}`).join("\n") };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_CATALOG_UNAVAILABLE", error: message }, null, 2) : `Catálogo não disponível: ${message}\nImporte a fonte ASES-300 localmente primeiro.` };
@@ -255,14 +283,17 @@ export async function run(argv: string[]): Promise<CommandResult> {
       if (!allowed.includes(status)) return { exitCode: 2, output: `Status inválido; use: ${allowed.join(", ")}` };
       const evidenceIndex = argv.indexOf("--evidence");
       const naIndex = argv.indexOf("--na-reason");
-      const naParts: string[] = [];
-      if (naIndex >= 0) {
-        for (const value of argv.slice(naIndex + 1)) {
-          if (value.startsWith("--")) break;
-          naParts.push(value);
-        }
-      }
-      const requirement = await updateRequirement(args[2]!, args[3]!, status, { ...(evidenceIndex >= 0 ? { evidence: argv[evidenceIndex + 1] } : {}), ...(naIndex >= 0 ? { naReason: naParts.join(" ") } : {}) });
+      const naReason = naIndex >= 0 ? optionValues(argv, "--na-reason").join(" ") : undefined;
+      const blockedBy = optionValues(argv, "--blocked-by")[0];
+      const blockedReason = optionValues(argv, "--reason").join(" ");
+      const requirement = await updateRequirement(args[2]!, args[3]!, status, {
+        ...(evidenceIndex >= 0 ? { evidence: argv[evidenceIndex + 1] } : {}),
+        ...(naReason ? { naReason } : {}),
+        ...(blockedBy ? { blockedBy } : {}),
+        ...(blockedReason ? { blockedReason } : {}),
+        ...(optionValues(argv, "--decision").length ? { decisionRefs: optionValues(argv, "--decision") } : {}),
+        ...(optionValues(argv, "--test").length ? { testRefs: optionValues(argv, "--test") } : {})
+      });
       return { exitCode: 0, output: json ? JSON.stringify(requirement, null, 2) : `${requirement.id}: ${requirement.status}` };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

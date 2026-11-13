@@ -34,7 +34,7 @@ Atualizado em: 2026-11-13
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
 - `npm pack` + instalação do tarball + execução de `ases --version` e `init --dry-run --json`: PASS.
-- Backlog AFR-001..140: IDs preservados; AFR-001..008, AFR-010, AFR-011 e AFR-013 refinados e ligados a código/testes; AFR-009 parcial; demais critérios permanecem DRAFT.
+- Backlog AFR-001..140: IDs preservados; AFR-001..008, AFR-010..014 refinados e ligados a código/testes; AFR-009 parcial; demais critérios permanecem DRAFT.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador ASES-300 implementado; grava catálogo por workspace com hash e textos dos requisitos.
@@ -43,7 +43,7 @@ Atualizado em: 2026-11-13
 - Ciclo de estados ASES-300 implementado; `VERIFIED` exige arquivo local dentro do workspace, calcula SHA-256, e `N_A` exige justificativa; histórico de transições mantido.
 - Validação de evidências resolve caminhos reais e rejeita links simbólicos para fora do workspace; apenas arquivos regulares podem comprovar `VERIFIED`.
 - `requirements show/list` recalculam integridade de evidências (`CURRENT`, `STALE`, `MISSING`, `OUTSIDE_WORKSPACE`, `UNVERIFIABLE`); README documenta limites da checagem semântica.
-- Testes: 20/20 PASS; incluem completude/duplicidade/separação de IDs, registro N_A, piso Node.js, ordem da identidade na entrevista, resolução de configuração, não exposição de valores secretos, diagnóstico corretivo, SHA-256, histórico e integridade de evidências.
+- Testes: 20/20 PASS; incluem rastreabilidade de decisão/teste/evidência, bloqueios justificados, completude/duplicidade/separação de IDs, registro N_A, piso Node.js, ordem da identidade na entrevista, resolução segura de configuração e integridade de evidências.
 - Parser ASES-300: classificação e prioridade agora são extraídas separadamente quando aparecem na mesma linha; regressão automatizada PASS.
 - Validadores de integração: PASS (3 manifests, 5 Skills).
 - Validação host nesta rodada: Claude `--strict` schema válido com requisito de licença apontado; Gemini extension PASS; manifests e Skills locais PASS; sessões interativas ainda pendentes.
@@ -54,8 +54,8 @@ Atualizado em: 2026-11-13
 
 ## Próximas tarefas READY
 
-1. Implementar catálogo específico de produto e a trilha decisão → requisito → teste → evidência (AFR-009/012).
-2. Implementar dependências bloqueantes e separar estado de decisão/implementação (AFR-014/015).
+1. Implementar catálogo específico de produto (AFR-009).
+2. Separar estado de decisão e estado de implementação (AFR-015).
 3. Testar instalação, descoberta e execução das integrações em sessões reais dos quatro hosts.
 4. Prosseguir a entrevista com personas, autenticação, integrações, observabilidade e critérios de aceite.
 

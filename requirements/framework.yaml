@@ -140,14 +140,14 @@ requirements:
     priority: P0
     milestone: "M2"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Gerar trilha decisão → requisito → teste → evidência."
     acceptanceCriteria:
       - id: AC-AFR-012-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Gerar trilha decisão → requisito → teste → evidência."
+        description: "set-status preserva referências --decision/--test e requirements trace apresenta decisão, requisito, testes, referências de evidência e sua integridade, marcando partes ausentes como pendentes."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/catalog.ts", "packages/cli/src/index.ts"]
+    tests: ["packages/cli/src/index.test.ts :: catalog status requires evidence for VERIFIED and rationale for N_A"]
   - id: AFR-013
     priority: P0
     milestone: "M2"
@@ -164,14 +164,14 @@ requirements:
     priority: P0
     milestone: "M2"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Identificar requisito bloqueado e dependência ausente."
     acceptanceCriteria:
       - id: AC-AFR-014-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Identificar requisito bloqueado e dependência ausente."
+        description: "BLOCKED exige referência --blocked-by e justificativa --reason, registra-os com data e requirements trace os exibe; bloqueio sem informação é rejeitado."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/catalog.ts", "packages/cli/src/index.ts"]
+    tests: ["packages/cli/src/index.test.ts :: catalog status requires evidence for VERIFIED and rationale for N_A"]
   - id: AFR-015
     priority: P0
     milestone: "M2"

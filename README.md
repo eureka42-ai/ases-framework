@@ -186,7 +186,8 @@ ASES_PROJECT_MODE=offline ases config explain ./meu-projeto/.ases/config.json --
 | `ases catalog import-ases300 <md> [workspace]` | Valida 300 IDs e importa o catálogo geral | Grava `.ases/catalogs/ases-300.json` |
 | `ases requirements list [workspace]` | Lista requisitos gerais importados | Nenhum |
 | `ases requirements show [workspace] <REQ-ID>` | Exibe origem, texto e critério de aceite | Nenhum |
-| `ases requirements set-status <workspace> <REQ-ID> <status>` | Atualiza estado do requisito | Grava catálogo local |
+| `ases requirements trace [workspace] [REQ-ID]` | Mostra decisão → requisito → testes → evidências e integridade | Nenhum |
+| `ases requirements set-status <workspace> <REQ-ID> <status>` | Atualiza estado e referências de rastreabilidade | Grava catálogo local |
 
 Os demais comandos do documento-mestre são contratos planejados, não funcionalidades existentes. Eles somente serão documentados como disponíveis depois de implementados e testados.
 
@@ -219,8 +220,11 @@ Estados podem ser atualizados com `PENDING`, `READY`, `IN_PROGRESS`, `IMPLEMENTE
 
 ```bash
 ases requirements set-status ./meu-projeto REQ-001 IMPLEMENTED
-ases requirements set-status ./meu-projeto REQ-001 VERIFIED --evidence "evidence/resultado-teste.txt"
+ases requirements set-status ./meu-projeto REQ-001 IMPLEMENTED --decision ADR-001 --test "packages/api/test/records.test.ts"
+ases requirements set-status ./meu-projeto REQ-001 VERIFIED --evidence "evidence/resultado-teste.txt" --decision ADR-001 --test "packages/api/test/records.test.ts"
 ases requirements set-status ./meu-projeto REQ-002 N_A --na-reason "Capacidade fora do escopo aprovado nesta versão"
+ases requirements set-status ./meu-projeto REQ-003 BLOCKED --blocked-by "credencial OIDC" --reason "A equipe ainda não recebeu o client secret de homologação."
+ases requirements trace ./meu-projeto REQ-001 --json
 ```
 
 Para `VERIFIED`, `--evidence` deve apontar para um arquivo regular existente dentro do workspace. O CLI calcula SHA-256 e rejeita caminhos externos e links simbólicos que escapem do workspace. `requirements show` recalcula a integridade e marca a evidência como `CURRENT`, `STALE`, `MISSING`, `OUTSIDE_WORKSPACE` ou `UNVERIFIABLE`; isso identifica mudanças no arquivo, mas não avalia se o conteúdo comprova semanticamente o critério de aceite.
