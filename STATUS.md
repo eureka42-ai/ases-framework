@@ -6,7 +6,7 @@ Atualizado em: 2026-11-13
 
 - M0: IMPLEMENTED / PARTIALLY_VERIFIED
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
-- Repositório Git: branch `main`; detecção de integridade de evidências nesta rodada, pendente de commit/push
+- Repositório Git: branch `main`; fluxo de entrevista com identidade antes das perguntas, pendente de commit/push
 - Fonte diretora: presente e lida
 - ASES-300: DOCX original de trabalho e conversão Markdown presentes; importador local verificou 300 IDs; fidelidade da conversão ainda requer revisão.
 - ASES-500 separado: consolidação presente como reconstrução para validação; original independente ausente e homologação pendente.
@@ -21,13 +21,14 @@ Atualizado em: 2026-11-13
 - README completo e assets oficiais da marca organizados em `docs/assets/brand/`.
 - Identidade ANSI teal/verde disponível em `ases welcome` e na ajuda.
 - Entrevista inicial implementada com tipo de aplicativo, linguagem, hospedagem, banco, escala e dados sensíveis.
+- O fluxo interativo apresenta a marca antes das perguntas; a saída `--json` exige arquivo `--answers` para preservar JSON válido.
 - Recomendações ausentes ficam `PROPOSED`; escolhas existentes ficam `REVIEW_REQUIRED`.
 - Integrações experimentais criadas para Codex, Claude Code, Kimi Code CLI e Gemini CLI.
 - Hosts locais detectados: Codex 0.167.2, Claude Code 2.1.323, Kimi 2.5.3 e Gemini 0.42.0.
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Dependências de desenvolvimento instaladas; `package-lock.json` gerado pelo npm como bootstrap enquanto o pnpm não está ativado.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (12/12) em 2026-11-13; `npm test` também compilou TypeScript e validou as integrações.
+- Testes unitários: PASS (13/13) em 2026-11-13; `npm test` também compilou TypeScript e validou as integrações.
 - Manifests/Skills locais: PASS (3 manifests, 5 Skills).
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
@@ -41,7 +42,7 @@ Atualizado em: 2026-11-13
 - Ciclo de estados ASES-300 implementado; `VERIFIED` exige arquivo local dentro do workspace, calcula SHA-256, e `N_A` exige justificativa; histórico de transições mantido.
 - Validação de evidências resolve caminhos reais e rejeita links simbólicos para fora do workspace; apenas arquivos regulares podem comprovar `VERIFIED`.
 - `requirements show/list` recalculam integridade de evidências (`CURRENT`, `STALE`, `MISSING`, `OUTSIDE_WORKSPACE`, `UNVERIFIABLE`); README documenta limites da checagem semântica.
-- Testes de catálogo: 12/12 PASS; incluem SHA-256, histórico, `N_A`, rejeição de caminhos externos/symlinks e mudanças/remoções de evidência.
+- Testes: 13/13 PASS; incluem SHA-256, histórico, `N_A`, rejeição de caminhos externos/symlinks e mudanças/remoções de evidência.
 - Parser ASES-300: classificação e prioridade agora são extraídas separadamente quando aparecem na mesma linha; regressão automatizada PASS.
 - Validadores de integração: PASS (3 manifests, 5 Skills).
 - Validação host nesta rodada: Claude `--strict` schema válido com requisito de licença apontado; Gemini extension PASS; manifests e Skills locais PASS; sessões interativas ainda pendentes.

@@ -63,6 +63,12 @@ test("renders Eureka42 identity without color when NO_COLOR is set", async () =>
   assert.doesNotMatch(result.output, /\u001b\[/);
 });
 
+test("JSON interview requires an answers file", async () => {
+  const result = await run(["interview", "--json"]);
+  assert.equal(result.exitCode, 2);
+  assert.equal(JSON.parse(result.output).code, "ASES_INTERVIEW_JSON_REQUIRES_ANSWERS");
+});
+
 test("interview recommends missing stack and persists proposal", async () => {
   const root = await mkdtemp(join(tmpdir(), "ases-interview-"));
   const answersPath = join(root, "answers.json");

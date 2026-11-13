@@ -205,8 +205,9 @@ export async function run(argv: string[]): Promise<CommandResult> {
     try {
       const answersIndex = argv.indexOf("--answers");
       const answersPath = answersIndex >= 0 ? argv[answersIndex + 1] : undefined;
+      if (json && !answersPath) return { exitCode: 2, output: JSON.stringify({ code: "ASES_INTERVIEW_JSON_REQUIRES_ANSWERS", error: "Use --answers <arquivo.json> com --json para evitar misturar prompts e JSON na saída." }, null, 2) };
       const result = await runInterview({ root: args[1] ?? process.cwd(), ...(answersPath ? { answersPath } : {}), dryRun });
-      const summary = [renderLogo(), "", `Projeto: ${result.answers.name}`, `Tipo: ${result.answers.applicationType}`, "", ...result.recommendations.map((item) => `${item.status} ${item.field}: ${item.value}\n  ${item.rationale}`), "", dryRun ? "Dry-run: nenhum arquivo escrito." : `Arquivos: ${result.files?.join(", ")}`].join("\n");
+      const summary = [...(answersPath ? [renderLogo(), ""] : []), `Projeto: ${result.answers.name}`, `Tipo: ${result.answers.applicationType}`, "", ...result.recommendations.map((item) => `${item.status} ${item.field}: ${item.value}\n  ${item.rationale}`), "", dryRun ? "Dry-run: nenhum arquivo escrito." : `Arquivos: ${result.files?.join(", ")}`].join("\n");
       return { exitCode: 0, output: json ? JSON.stringify(result, null, 2) : summary };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

@@ -3,6 +3,7 @@ import { constants } from "node:fs";
 import { join, resolve } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
+import { renderLogo } from "./brand.js";
 import { APPLICATION_TYPES, buildRecommendations, parseApplicationType, type InterviewAnswers } from "./recommendations.js";
 
 export interface InterviewResult {
@@ -41,8 +42,11 @@ export async function loadAnswers(path: string): Promise<InterviewAnswers> {
   };
 }
 
-export async function promptAnswers(): Promise<InterviewAnswers> {
-  const rl = createInterface({ input, output });
+export async function promptAnswers(streams: { input?: NodeJS.ReadableStream; output?: NodeJS.WritableStream } = {}): Promise<InterviewAnswers> {
+  const inputStream = streams.input ?? input;
+  const outputStream = streams.output ?? output;
+  const rl = createInterface({ input: inputStream, output: outputStream });
+  outputStream.write(`${renderLogo()}\n\n`);
   try {
     const name = (await rl.question("Nome do aplicativo: ")).trim();
     let applicationType = parseApplicationType(await rl.question(`Tipo (${APPLICATION_TYPES.join("/ ")}): `));

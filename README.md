@@ -223,6 +223,8 @@ ases welcome
 ases interview ./meu-projeto
 ```
 
+`ases interview` exibe a marca EUREKA42 em teal/verde antes da primeira pergunta. Em modo JSON, informe `--answers <arquivo.json>` para manter `stdout` válido e não misturar perguntas interativas com a saída estruturada.
+
 Perguntas iniciais:
 
 1. nome e tipo do aplicativo;
