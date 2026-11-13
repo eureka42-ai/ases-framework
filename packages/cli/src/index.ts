@@ -264,10 +264,16 @@ export async function run(argv: string[]): Promise<CommandResult> {
   if (command === "requirements" && ["list", "show", "trace"].includes(args[1] ?? "")) {
     try {
       const productId = optionValues(argv, "--product")[0];
-      const catalog = await readCatalog(args[2] ?? process.cwd(), productId);
+      const positional = args.slice(2).filter((arg) => arg !== productId);
       const action = args[1]!;
-      const selected = action === "show" || (action === "trace" && args[3]) ? catalog.requirements.filter((item) => item.id === args[3]) : catalog.requirements;
-      if ((action === "show" || (action === "trace" && args[3])) && selected.length === 0) return { exitCode: 2, output: json ? JSON.stringify({ code: "ASES_REQUIREMENT_NOT_FOUND", id: args[3] }) : `Requisito não encontrado: ${args[3]}` };
+      const requirementAction = action === "show" || action === "trace";
+      const firstIsId = /^REQ-\d{3}$/.test(positional[0] ?? "");
+      const workspaceArg = requirementAction && firstIsId ? process.cwd() : positional[0] ?? process.cwd();
+      const requirementId = requirementAction ? positional.length > 1 ? positional[1] : firstIsId ? positional[0] : undefined : undefined;
+      const catalog = await readCatalog(workspaceArg, productId);
+      if (action === "show" && !requirementId) return { exitCode: 2, output: "Uso: ases requirements show [workspace] <REQ-ID> [--product id]" };
+      const selected = requirementId ? catalog.requirements.filter((item) => item.id === requirementId) : catalog.requirements;
+      if (requirementId && selected.length === 0) return { exitCode: 2, output: json ? JSON.stringify({ code: "ASES_REQUIREMENT_NOT_FOUND", id: requirementId }) : `Requisito não encontrado: ${requirementId}` };
       const requirements = selected.map((item) => {
         if (action === "list") return { id: item.id, title: item.title, status: item.status, evidenceIntegrity: item.evidence?.map((evidence) => evidence.integrity) ?? [] };
         if (action === "trace") return {

@@ -312,5 +312,15 @@ test("imports product requirements into a catalog isolated from ASES-300", async
   const productCatalog = JSON.parse(await readFile(join(root, ".ases", "catalogs", "products", "eureka42.json"), "utf8"));
   assert.equal(generalCatalog.requirements[0].status, "PENDING");
   assert.equal(productCatalog.requirements[0].status, "IMPLEMENTED");
+  const previousCwd = process.cwd();
+  process.chdir(root);
+  try {
+    const implicitWorkspace = await run(["requirements", "list", "--product", "eureka42", "--json"]);
+    assert.equal(JSON.parse(implicitWorkspace.output).requirements.length, 200);
+    const implicitShow = await run(["requirements", "show", "REQ-301", "--product", "eureka42", "--json"]);
+    assert.equal(JSON.parse(implicitShow.output).requirements[0].id, "REQ-301");
+  } finally {
+    process.chdir(previousCwd);
+  }
 });
 
