@@ -8,8 +8,8 @@ Atualizado em: 2026-11-13
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
 - Repositório Git: branch `main`, commits locais e remote Eureka42 sincronizado até `f278b15`
 - Fonte diretora: presente e lida
-- ASES-300: SOURCE_MISSING
-- ASES-500 separado: SOURCE_MISSING / VALIDATION_REQUIRED
+- ASES-300: DOCX original de trabalho e conversão Markdown presentes; 300 IDs documentados no manifesto; fidelidade de conversão ainda requer revisão.
+- ASES-500 separado: consolidação presente como reconstrução para validação; original independente ausente e homologação pendente.
 - Publicação: NOT_AUTHORIZED
 
 ## Implementação atual
@@ -33,6 +33,8 @@ Atualizado em: 2026-11-13
 - Gemini extension validator: PASS.
 - `npm pack` + instalação do tarball + execução de `ases --version` e `init --dry-run --json`: PASS.
 - Backlog AFR-001..140: gerado em YAML com IDs preservados; critérios permanecem DRAFT e precisam ser refinados por incremento.
+- Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
+- Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 
 ## Próximas tarefas READY
 
