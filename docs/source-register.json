@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-11-13",
+  "sources": [
+    {
+      "id": "SRC-001",
+      "path": "EUREKA42_ASES_FRAMEWORK_PROMPT_MESTRE_ULTRA_COMPLETO.md",
+      "sha256": "876252a53919acfd1e6056c954d9b358375b7b43b0f05d2008714fff6a7e0b43",
+      "status": "VALIDATION_REQUIRED",
+      "role": "proposed-master-execution-spec"
+    }
+  ]
+}

@@ -1,0 +1,1686 @@
+schemaVersion: "1"
+catalog: "ases-framework-requirements"
+status: "DRAFT"
+sourceSha256: "876252a53919acfd1e6056c954d9b358375b7b43b0f05d2008714fff6a7e0b43"
+source: "EUREKA42_ASES_FRAMEWORK_PROMPT_MESTRE_ULTRA_COMPLETO.md#16"
+requirements:
+  - id: AFR-001
+    priority: P0
+    milestone: "M1"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Iniciar projeto local em diretório vazio sem dependência remota."
+    acceptanceCriteria:
+      - id: AC-AFR-001-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Iniciar projeto local em diretório vazio sem dependência remota."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-002
+    priority: P0
+    milestone: "M1"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Validar configuração contra schema público versionado."
+    acceptanceCriteria:
+      - id: AC-AFR-002-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Validar configuração contra schema público versionado."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-003
+    priority: P0
+    milestone: "M1"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Instalação repetida não apagar arquivos existentes."
+    acceptanceCriteria:
+      - id: AC-AFR-003-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Instalação repetida não apagar arquivos existentes."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-004
+    priority: P0
+    milestone: "M1"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "`ases doctor` identificar ambiente, riscos e instruções corretivas."
+    acceptanceCriteria:
+      - id: AC-AFR-004-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: `ases doctor` identificar ambiente, riscos e instruções corretivas."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-005
+    priority: P0
+    milestone: "M1"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "CLI oferecer ajuda, versão, JSON, códigos de saída estáveis."
+    acceptanceCriteria:
+      - id: AC-AFR-005-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: CLI oferecer ajuda, versão, JSON, códigos de saída estáveis."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-006
+    priority: P0
+    milestone: "M1"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Manter `STATUS.md` e checkpoints entre sessões."
+    acceptanceCriteria:
+      - id: AC-AFR-006-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Manter `STATUS.md` e checkpoints entre sessões."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-007
+    priority: P0
+    milestone: "M2"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Importar ASES-300 da fonte com proveniência e hash."
+    acceptanceCriteria:
+      - id: AC-AFR-007-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Importar ASES-300 da fonte com proveniência e hash."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-008
+    priority: P0
+    milestone: "M2"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Conferir unicidade e completude de REQ-001..300."
+    acceptanceCriteria:
+      - id: AC-AFR-008-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Conferir unicidade e completude de REQ-001..300."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-009
+    priority: P0
+    milestone: "M2"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Separar catálogo geral e requisitos específicos por projeto."
+    acceptanceCriteria:
+      - id: AC-AFR-009-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Separar catálogo geral e requisitos específicos por projeto."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-010
+    priority: P0
+    milestone: "M2"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Impedir requisito `VERIFIED` sem evidência válida."
+    acceptanceCriteria:
+      - id: AC-AFR-010-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Impedir requisito `VERIFIED` sem evidência válida."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-011
+    priority: P0
+    milestone: "M2"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Conservar IDs, versões e histórico de requisitos."
+    acceptanceCriteria:
+      - id: AC-AFR-011-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Conservar IDs, versões e histórico de requisitos."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-012
+    priority: P0
+    milestone: "M2"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Gerar trilha decisão → requisito → teste → evidência."
+    acceptanceCriteria:
+      - id: AC-AFR-012-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Gerar trilha decisão → requisito → teste → evidência."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-013
+    priority: P0
+    milestone: "M2"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Registrar N/A com justificativa e rastreabilidade."
+    acceptanceCriteria:
+      - id: AC-AFR-013-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Registrar N/A com justificativa e rastreabilidade."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-014
+    priority: P0
+    milestone: "M2"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Identificar requisito bloqueado e dependência ausente."
+    acceptanceCriteria:
+      - id: AC-AFR-014-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Identificar requisito bloqueado e dependência ausente."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-015
+    priority: P0
+    milestone: "M2"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Distinguir estado da decisão e da implementação."
+    acceptanceCriteria:
+      - id: AC-AFR-015-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Distinguir estado da decisão e da implementação."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-016
+    priority: P0
+    milestone: "M3"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Entrevista consultar documentos antes de perguntar."
+    acceptanceCriteria:
+      - id: AC-AFR-016-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Entrevista consultar documentos antes de perguntar."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-017
+    priority: P0
+    milestone: "M3"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Entrevista registrar proposta sem confirmá-la automaticamente."
+    acceptanceCriteria:
+      - id: AC-AFR-017-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Entrevista registrar proposta sem confirmá-la automaticamente."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-018
+    priority: P0
+    milestone: "M3"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Entrevista detectar contradições e riscos bloqueantes."
+    acceptanceCriteria:
+      - id: AC-AFR-018-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Entrevista detectar contradições e riscos bloqueantes."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-019
+    priority: P0
+    milestone: "M3"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Gerar SPEC e demais artefatos em Markdown."
+    acceptanceCriteria:
+      - id: AC-AFR-019-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Gerar SPEC e demais artefatos em Markdown."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-020
+    priority: P0
+    milestone: "M3"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Retomar entrevista com decisões persistidas."
+    acceptanceCriteria:
+      - id: AC-AFR-020-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Retomar entrevista com decisões persistidas."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-021
+    priority: P0
+    milestone: "M4"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Produzir plano de instalação host com *diff* antes de aplicar."
+    acceptanceCriteria:
+      - id: AC-AFR-021-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Produzir plano de instalação host com *diff* antes de aplicar."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-022
+    priority: P0
+    milestone: "M4"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Detectar host e versão; não presumir capacidades."
+    acceptanceCriteria:
+      - id: AC-AFR-022-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Detectar host e versão; não presumir capacidades."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-023
+    priority: P0
+    milestone: "M4"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "MCP Server via stdio listar ferramentas reais."
+    acceptanceCriteria:
+      - id: AC-AFR-023-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: MCP Server via stdio listar ferramentas reais."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-024
+    priority: P0
+    milestone: "M4"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "MCP tool de consulta de requisitos respeitar projeto e política."
+    acceptanceCriteria:
+      - id: AC-AFR-024-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: MCP tool de consulta de requisitos respeitar projeto e política."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-025
+    priority: P0
+    milestone: "M4"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Logs MCP não poluir stdout JSON-RPC."
+    acceptanceCriteria:
+      - id: AC-AFR-025-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Logs MCP não poluir stdout JSON-RPC."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-026
+    priority: P0
+    milestone: "M4"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Secrets não aparecerem em arquivos de projeto/logs."
+    acceptanceCriteria:
+      - id: AC-AFR-026-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Secrets não aparecerem em arquivos de projeto/logs."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-027
+    priority: P0
+    milestone: "M4"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Ações destrutivas solicitarem aprovação humana."
+    acceptanceCriteria:
+      - id: AC-AFR-027-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Ações destrutivas solicitarem aprovação humana."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-028
+    priority: P0
+    milestone: "M1"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Testes offline de CLI e core passarem em CI limpa."
+    acceptanceCriteria:
+      - id: AC-AFR-028-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Testes offline de CLI e core passarem em CI limpa."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-029
+    priority: P0
+    milestone: "M1"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "`npm pack` gerar pacote instalável e verificado."
+    acceptanceCriteria:
+      - id: AC-AFR-029-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: `npm pack` gerar pacote instalável e verificado."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-030
+    priority: P0
+    milestone: "M1"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Desinstalação preservar dados e customizações do usuário."
+    acceptanceCriteria:
+      - id: AC-AFR-030-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Desinstalação preservar dados e customizações do usuário."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-031
+    priority: P1
+    milestone: "M5"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Host Claude Code receber plugin/Skill compatível e testado."
+    acceptanceCriteria:
+      - id: AC-AFR-031-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Host Claude Code receber plugin/Skill compatível e testado."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-032
+    priority: P1
+    milestone: "M5"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Kimi Code receber plugin/Skill compatível e testado."
+    acceptanceCriteria:
+      - id: AC-AFR-032-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Kimi Code receber plugin/Skill compatível e testado."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-033
+    priority: P1
+    milestone: "M5"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Codex receber Skills/instruções/MCP compatíveis e testados."
+    acceptanceCriteria:
+      - id: AC-AFR-033-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Codex receber Skills/instruções/MCP compatíveis e testados."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-034
+    priority: P1
+    milestone: "M5"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Gemini CLI receber extensão compatível e testada."
+    acceptanceCriteria:
+      - id: AC-AFR-034-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Gemini CLI receber extensão compatível e testada."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-035
+    priority: P1
+    milestone: "M5"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Cada host publicar matriz real de versões e capacidades."
+    acceptanceCriteria:
+      - id: AC-AFR-035-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Cada host publicar matriz real de versões e capacidades."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-036
+    priority: P1
+    milestone: "M5"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Host indisponível ser marcado NOT_TESTED e não SUPPORTED."
+    acceptanceCriteria:
+      - id: AC-AFR-036-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Host indisponível ser marcado NOT_TESTED e não SUPPORTED."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-037
+    priority: P1
+    milestone: "M5"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Adapter desinstalar apenas entradas que criou."
+    acceptanceCriteria:
+      - id: AC-AFR-037-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Adapter desinstalar apenas entradas que criou."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-038
+    priority: P1
+    milestone: "M5"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Configurações globais requererem aceite explícito."
+    acceptanceCriteria:
+      - id: AC-AFR-038-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Configurações globais requererem aceite explícito."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-039
+    priority: P1
+    milestone: "M5"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Suportar dry-run, rollback e reparo de instalação parcial."
+    acceptanceCriteria:
+      - id: AC-AFR-039-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Suportar dry-run, rollback e reparo de instalação parcial."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-040
+    priority: P1
+    milestone: "M5"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Suportar atualização/migração de config com backup."
+    acceptanceCriteria:
+      - id: AC-AFR-040-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Suportar atualização/migração de config com backup."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-041
+    priority: P1
+    milestone: "M6"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Provider SPI tipada com erro, timeout e cancelamento."
+    acceptanceCriteria:
+      - id: AC-AFR-041-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Provider SPI tipada com erro, timeout e cancelamento."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-042
+    priority: P1
+    milestone: "M6"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Provider mock determinístico permitir CI offline."
+    acceptanceCriteria:
+      - id: AC-AFR-042-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Provider mock determinístico permitir CI offline."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-043
+    priority: P1
+    milestone: "M6"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Provider real opcional ser testável sem expor segredo."
+    acceptanceCriteria:
+      - id: AC-AFR-043-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Provider real opcional ser testável sem expor segredo."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-044
+    priority: P1
+    milestone: "M6"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Catálogo registrar capacidades com origem e data."
+    acceptanceCriteria:
+      - id: AC-AFR-044-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Catálogo registrar capacidades com origem e data."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-045
+    priority: P1
+    milestone: "M6"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Roteador rejeitar modelo sem capacidade exigida."
+    acceptanceCriteria:
+      - id: AC-AFR-045-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Roteador rejeitar modelo sem capacidade exigida."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-046
+    priority: P1
+    milestone: "M6"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Fallback manter restrições de dados e orçamento."
+    acceptanceCriteria:
+      - id: AC-AFR-046-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Fallback manter restrições de dados e orçamento."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-047
+    priority: P1
+    milestone: "M6"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Custos distinguirem estimado, reportado e desconhecido."
+    acceptanceCriteria:
+      - id: AC-AFR-047-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Custos distinguirem estimado, reportado e desconhecido."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-048
+    priority: P1
+    milestone: "M6"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Budget bloquear chamadas ao exceder limites."
+    acceptanceCriteria:
+      - id: AC-AFR-048-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Budget bloquear chamadas ao exceder limites."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-049
+    priority: P1
+    milestone: "M6"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Mode host não alegar controle do modelo do host."
+    acceptanceCriteria:
+      - id: AC-AFR-049-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Mode host não alegar controle do modelo do host."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-050
+    priority: P1
+    milestone: "M6"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Mode offline não fazer chamada remota."
+    acceptanceCriteria:
+      - id: AC-AFR-050-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Mode offline não fazer chamada remota."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-051
+    priority: P1
+    milestone: "M7"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Agentes declararem permissões e orçamento."
+    acceptanceCriteria:
+      - id: AC-AFR-051-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Agentes declararem permissões e orçamento."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-052
+    priority: P1
+    milestone: "M7"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Agentes receberem contexto mínimo necessário."
+    acceptanceCriteria:
+      - id: AC-AFR-052-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Agentes receberem contexto mínimo necessário."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-053
+    priority: P1
+    milestone: "M7"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Agentes rodarem serialmente se paralelismo indisponível."
+    acceptanceCriteria:
+      - id: AC-AFR-053-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Agentes rodarem serialmente se paralelismo indisponível."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-054
+    priority: P1
+    milestone: "M7"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Execução paralela prevenir escrita conflitante."
+    acceptanceCriteria:
+      - id: AC-AFR-054-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Execução paralela prevenir escrita conflitante."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-055
+    priority: P1
+    milestone: "M7"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Review independente não se autoaprovar."
+    acceptanceCriteria:
+      - id: AC-AFR-055-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Review independente não se autoaprovar."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-056
+    priority: P1
+    milestone: "M7"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Skills serem validadas em schema e testes."
+    acceptanceCriteria:
+      - id: AC-AFR-056-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Skills serem validadas em schema e testes."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-057
+    priority: P1
+    milestone: "M7"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Skills serem carregadas sob demanda."
+    acceptanceCriteria:
+      - id: AC-AFR-057-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Skills serem carregadas sob demanda."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-058
+    priority: P1
+    milestone: "M7"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Tools validarem entrada e saída em runtime."
+    acceptanceCriteria:
+      - id: AC-AFR-058-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Tools validarem entrada e saída em runtime."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-059
+    priority: P1
+    milestone: "M7"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Tools exigirem política antes de ações com side effect."
+    acceptanceCriteria:
+      - id: AC-AFR-059-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Tools exigirem política antes de ações com side effect."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-060
+    priority: P1
+    milestone: "M7"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Tool execução não escapar do workspace sem permissão."
+    acceptanceCriteria:
+      - id: AC-AFR-060-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Tool execução não escapar do workspace sem permissão."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-061
+    priority: P1
+    milestone: "M8"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Workflow DSL rejeitar ciclos indevidos/nós inválidos."
+    acceptanceCriteria:
+      - id: AC-AFR-061-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Workflow DSL rejeitar ciclos indevidos/nós inválidos."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-062
+    priority: P1
+    milestone: "M8"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Workflow persistir estado e executar checkpoint."
+    acceptanceCriteria:
+      - id: AC-AFR-062-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Workflow persistir estado e executar checkpoint."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-063
+    priority: P1
+    milestone: "M8"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Workflow retomar após interrupção controlada."
+    acceptanceCriteria:
+      - id: AC-AFR-063-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Workflow retomar após interrupção controlada."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-064
+    priority: P1
+    milestone: "M8"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Workflow suportar cancelar/timeout/retry limitado."
+    acceptanceCriteria:
+      - id: AC-AFR-064-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Workflow suportar cancelar/timeout/retry limitado."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-065
+    priority: P1
+    milestone: "M8"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Workflow side effects serem idempotentes ou compensáveis."
+    acceptanceCriteria:
+      - id: AC-AFR-065-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Workflow side effects serem idempotentes ou compensáveis."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-066
+    priority: P1
+    milestone: "M8"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Workflow de feature implementar teste e evidência reais."
+    acceptanceCriteria:
+      - id: AC-AFR-066-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Workflow de feature implementar teste e evidência reais."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-067
+    priority: P1
+    milestone: "M8"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Workflow aprovações permanecerem bloqueadas em CI."
+    acceptanceCriteria:
+      - id: AC-AFR-067-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Workflow aprovações permanecerem bloqueadas em CI."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-068
+    priority: P1
+    milestone: "M8"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Workflow dry-run não gastar nem alterar sistema."
+    acceptanceCriteria:
+      - id: AC-AFR-068-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Workflow dry-run não gastar nem alterar sistema."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-069
+    priority: P1
+    milestone: "M9"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "RAG indexar Markdown e texto em modo offline."
+    acceptanceCriteria:
+      - id: AC-AFR-069-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: RAG indexar Markdown e texto em modo offline."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-070
+    priority: P1
+    milestone: "M9"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "RAG recuperar requisito por ID e citar fonte."
+    acceptanceCriteria:
+      - id: AC-AFR-070-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: RAG recuperar requisito por ID e citar fonte."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-071
+    priority: P1
+    milestone: "M9"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "RAG permitir filtros de licença, versão e ACL."
+    acceptanceCriteria:
+      - id: AC-AFR-071-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: RAG permitir filtros de licença, versão e ACL."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-072
+    priority: P1
+    milestone: "M9"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "RAG reindexar/invalidar fonte alterada/removida."
+    acceptanceCriteria:
+      - id: AC-AFR-072-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: RAG reindexar/invalidar fonte alterada/removida."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-073
+    priority: P1
+    milestone: "M9"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "RAG manter origem e hashes por chunk."
+    acceptanceCriteria:
+      - id: AC-AFR-073-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: RAG manter origem e hashes por chunk."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-074
+    priority: P1
+    milestone: "M9"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "RAG bloquear acesso cross-project sem permissão."
+    acceptanceCriteria:
+      - id: AC-AFR-074-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: RAG bloquear acesso cross-project sem permissão."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-075
+    priority: P1
+    milestone: "M9"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "RAG falha sem fonte retornar sem inventar texto."
+    acceptanceCriteria:
+      - id: AC-AFR-075-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: RAG falha sem fonte retornar sem inventar texto."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-076
+    priority: P1
+    milestone: "M9"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Vector embeddings serem módulo opcional, não obrigatório."
+    acceptanceCriteria:
+      - id: AC-AFR-076-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Vector embeddings serem módulo opcional, não obrigatório."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-077
+    priority: P1
+    milestone: "M10"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Memória registrar escopo, TTL, consentimento e origem."
+    acceptanceCriteria:
+      - id: AC-AFR-077-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Memória registrar escopo, TTL, consentimento e origem."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-078
+    priority: P1
+    milestone: "M10"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Memória permitir inspeção e exclusão efetiva."
+    acceptanceCriteria:
+      - id: AC-AFR-078-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Memória permitir inspeção e exclusão efetiva."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-079
+    priority: P1
+    milestone: "M10"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "ContextBundle exportar decisões, REQs e checkpoints."
+    acceptanceCriteria:
+      - id: AC-AFR-079-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: ContextBundle exportar decisões, REQs e checkpoints."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-080
+    priority: P1
+    milestone: "M10"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "ContextBundle rejeitar hashes inconsistentes."
+    acceptanceCriteria:
+      - id: AC-AFR-080-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: ContextBundle rejeitar hashes inconsistentes."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-081
+    priority: P1
+    milestone: "M10"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "ContextBundle remover segredos antes de exportar."
+    acceptanceCriteria:
+      - id: AC-AFR-081-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: ContextBundle remover segredos antes de exportar."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-082
+    priority: P1
+    milestone: "M10"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Import mostrar preview e conflitos antes de aplicar."
+    acceptanceCriteria:
+      - id: AC-AFR-082-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Import mostrar preview e conflitos antes de aplicar."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-083
+    priority: P1
+    milestone: "M10"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Import impedir zip-slip e execução arbitrária."
+    acceptanceCriteria:
+      - id: AC-AFR-083-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Import impedir zip-slip e execução arbitrária."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-084
+    priority: P1
+    milestone: "M11"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Evidence linking exigir hashes e contexto da execução."
+    acceptanceCriteria:
+      - id: AC-AFR-084-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Evidence linking exigir hashes e contexto da execução."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-085
+    priority: P1
+    milestone: "M11"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Evidência expirada ou obsoleta não aprovar requisito."
+    acceptanceCriteria:
+      - id: AC-AFR-085-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Evidência expirada ou obsoleta não aprovar requisito."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-086
+    priority: P1
+    milestone: "M11"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Security Policy Engine aplicar default deny."
+    acceptanceCriteria:
+      - id: AC-AFR-086-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Security Policy Engine aplicar default deny."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-087
+    priority: P1
+    milestone: "M11"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Path traversal, symlink e comando hostil serem bloqueados."
+    acceptanceCriteria:
+      - id: AC-AFR-087-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Path traversal, symlink e comando hostil serem bloqueados."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-088
+    priority: P1
+    milestone: "M11"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "MCP remoto opcional seguir autenticação vigente."
+    acceptanceCriteria:
+      - id: AC-AFR-088-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: MCP remoto opcional seguir autenticação vigente."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-089
+    priority: P1
+    milestone: "M11"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Prompt injection em RAG/tool não alterar políticas."
+    acceptanceCriteria:
+      - id: AC-AFR-089-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Prompt injection em RAG/tool não alterar políticas."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-090
+    priority: P1
+    milestone: "M11"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Logs redigirem secrets e dados sensíveis."
+    acceptanceCriteria:
+      - id: AC-AFR-090-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Logs redigirem secrets e dados sensíveis."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-091
+    priority: P1
+    milestone: "M12"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Plugin SDK oferecer template e contract tests."
+    acceptanceCriteria:
+      - id: AC-AFR-091-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Plugin SDK oferecer template e contract tests."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-092
+    priority: P1
+    milestone: "M12"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Registry exigir manifesto/versão/compatibilidade."
+    acceptanceCriteria:
+      - id: AC-AFR-092-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Registry exigir manifesto/versão/compatibilidade."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-093
+    priority: P1
+    milestone: "M12"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Plugin com permissões extras solicitar aprovação."
+    acceptanceCriteria:
+      - id: AC-AFR-093-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Plugin com permissões extras solicitar aprovação."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-094
+    priority: P1
+    milestone: "M12"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Plugin adulterado/fonte não confiável ser bloqueado."
+    acceptanceCriteria:
+      - id: AC-AFR-094-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Plugin adulterado/fonte não confiável ser bloqueado."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-095
+    priority: P1
+    milestone: "M12"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "`ases plugin remove` preservar dados não pertencentes."
+    acceptanceCriteria:
+      - id: AC-AFR-095-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: `ases plugin remove` preservar dados não pertencentes."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-096
+    priority: P1
+    milestone: "M11"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Observability fornecer trace, erros e custos locais."
+    acceptanceCriteria:
+      - id: AC-AFR-096-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Observability fornecer trace, erros e custos locais."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-097
+    priority: P1
+    milestone: "M11"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Telemetria remota ser opt-in e revogável."
+    acceptanceCriteria:
+      - id: AC-AFR-097-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Telemetria remota ser opt-in e revogável."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-098
+    priority: P1
+    milestone: "M11"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Métricas de agentes diferenciarem sucesso medido e relato."
+    acceptanceCriteria:
+      - id: AC-AFR-098-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Métricas de agentes diferenciarem sucesso medido e relato."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-099
+    priority: P1
+    milestone: "M11"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Relatório auditável indicar PASS/FAIL/BLOCKED/SKIPPED."
+    acceptanceCriteria:
+      - id: AC-AFR-099-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Relatório auditável indicar PASS/FAIL/BLOCKED/SKIPPED."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-100
+    priority: P1
+    milestone: "M11"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Evals de RAG e agente rodarem sobre fixtures versionadas."
+    acceptanceCriteria:
+      - id: AC-AFR-100-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Evals de RAG e agente rodarem sobre fixtures versionadas."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-101
+    priority: P1
+    milestone: "M13"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "E2E instalar, inicializar, executar, atualizar e desinstalar."
+    acceptanceCriteria:
+      - id: AC-AFR-101-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: E2E instalar, inicializar, executar, atualizar e desinstalar."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-102
+    priority: P1
+    milestone: "M13"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "CI fazer lint/typecheck/unit/integration/build/smoke."
+    acceptanceCriteria:
+      - id: AC-AFR-102-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: CI fazer lint/typecheck/unit/integration/build/smoke."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-103
+    priority: P1
+    milestone: "M13"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "CI verificar segurança, licença, provenance e SBOM."
+    acceptanceCriteria:
+      - id: AC-AFR-103-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: CI verificar segurança, licença, provenance e SBOM."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-104
+    priority: P1
+    milestone: "M13"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Release somente publicar após autorização do owner."
+    acceptanceCriteria:
+      - id: AC-AFR-104-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Release somente publicar após autorização do owner."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-105
+    priority: P1
+    milestone: "M13"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Documentação de instalação usar comandos realmente testados."
+    acceptanceCriteria:
+      - id: AC-AFR-105-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Documentação de instalação usar comandos realmente testados."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-106
+    priority: P1
+    milestone: "M13"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Documentação pt-BR e inglês cobrir comandos centrais."
+    acceptanceCriteria:
+      - id: AC-AFR-106-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Documentação pt-BR e inglês cobrir comandos centrais."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-107
+    priority: P1
+    milestone: "M13"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "TUI respeitar NO_COLOR, non-TTY, saída legível."
+    acceptanceCriteria:
+      - id: AC-AFR-107-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: TUI respeitar NO_COLOR, non-TTY, saída legível."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-108
+    priority: P1
+    milestone: "M13"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Erros terem códigos e ações corretivas documentados."
+    acceptanceCriteria:
+      - id: AC-AFR-108-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Erros terem códigos e ações corretivas documentados."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-109
+    priority: P1
+    milestone: "M13"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Backups serem testáveis por restore em sandbox."
+    acceptanceCriteria:
+      - id: AC-AFR-109-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Backups serem testáveis por restore em sandbox."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-110
+    priority: P1
+    milestone: "M13"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Migrações de DB serem reversíveis ou documentarem limite."
+    acceptanceCriteria:
+      - id: AC-AFR-110-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Migrações de DB serem reversíveis ou documentarem limite."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-111
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Vetor local + pgvector/Qdrant/Vectorize via adapters."
+    acceptanceCriteria:
+      - id: AC-AFR-111-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Vetor local + pgvector/Qdrant/Vectorize via adapters."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-112
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Dashboard local mostrar REQ/WORKFLOW/EVIDENCE/COST."
+    acceptanceCriteria:
+      - id: AC-AFR-112-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Dashboard local mostrar REQ/WORKFLOW/EVIDENCE/COST."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-113
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Visualização do grafo de rastreabilidade."
+    acceptanceCriteria:
+      - id: AC-AFR-113-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Visualização do grafo de rastreabilidade."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-114
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Agentes de performance e acessibilidade avançados."
+    acceptanceCriteria:
+      - id: AC-AFR-114-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Agentes de performance e acessibilidade avançados."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-115
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Tool discovery e ranking por capabilities."
+    acceptanceCriteria:
+      - id: AC-AFR-115-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Tool discovery e ranking por capabilities."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-116
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Benchmark de modelo com comparação reproduzível."
+    acceptanceCriteria:
+      - id: AC-AFR-116-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Benchmark de modelo com comparação reproduzível."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-117
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Integração opt-in GitHub Issues/PR e GitLab."
+    acceptanceCriteria:
+      - id: AC-AFR-117-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Integração opt-in GitHub Issues/PR e GitLab."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-118
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Marketplace público com revisão de segurança."
+    acceptanceCriteria:
+      - id: AC-AFR-118-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Marketplace público com revisão de segurança."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-119
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Cloud storage/sync e backup cifrado opt-in."
+    acceptanceCriteria:
+      - id: AC-AFR-119-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Cloud storage/sync e backup cifrado opt-in."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-120
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Adaptadores para Cloudflare/Supabase/PostgreSQL."
+    acceptanceCriteria:
+      - id: AC-AFR-120-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Adaptadores para Cloudflare/Supabase/PostgreSQL."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-121
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "LSP/AST para impacto semântico no código."
+    acceptanceCriteria:
+      - id: AC-AFR-121-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: LSP/AST para impacto semântico no código."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-122
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Geração e verificação de OpenAPI/JSON Schema."
+    acceptanceCriteria:
+      - id: AC-AFR-122-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Geração e verificação de OpenAPI/JSON Schema."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-123
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Architecture drift detector por ADR/contratos."
+    acceptanceCriteria:
+      - id: AC-AFR-123-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Architecture drift detector por ADR/contratos."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-124
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Mutation testing e regressão baseada em impacto."
+    acceptanceCriteria:
+      - id: AC-AFR-124-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Mutation testing e regressão baseada em impacto."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-125
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Policy-as-code para equipes."
+    acceptanceCriteria:
+      - id: AC-AFR-125-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Policy-as-code para equipes."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-126
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Import/export de tarefas para trackers."
+    acceptanceCriteria:
+      - id: AC-AFR-126-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Import/export de tarefas para trackers."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-127
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "i18n es-ES e it-IT para CLI e docs."
+    acceptanceCriteria:
+      - id: AC-AFR-127-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: i18n es-ES e it-IT para CLI e docs."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-128
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Provisionamento de templates por linguagem e stack."
+    acceptanceCriteria:
+      - id: AC-AFR-128-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Provisionamento de templates por linguagem e stack."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-129
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Bibliotecas de conhecimento curadas e licenciadas."
+    acceptanceCriteria:
+      - id: AC-AFR-129-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Bibliotecas de conhecimento curadas e licenciadas."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-130
+    priority: P2
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Telemetria OpenTelemetry exportável e revogável."
+    acceptanceCriteria:
+      - id: AC-AFR-130-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Telemetria OpenTelemetry exportável e revogável."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-131
+    priority: P3
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "A2A ou protocolo agente-agente com ACL isolada."
+    acceptanceCriteria:
+      - id: AC-AFR-131-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: A2A ou protocolo agente-agente com ACL isolada."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-132
+    priority: P3
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Multi-repo e multi-organização seguros."
+    acceptanceCriteria:
+      - id: AC-AFR-132-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Multi-repo e multi-organização seguros."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-133
+    priority: P3
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Console web multiusuário com autenticação/roles."
+    acceptanceCriteria:
+      - id: AC-AFR-133-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Console web multiusuário com autenticação/roles."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-134
+    priority: P3
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "SSO enterprise e políticas centralizadas."
+    acceptanceCriteria:
+      - id: AC-AFR-134-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: SSO enterprise e políticas centralizadas."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-135
+    priority: P3
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Versionamento e descoberta de agentes comunitários."
+    acceptanceCriteria:
+      - id: AC-AFR-135-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Versionamento e descoberta de agentes comunitários."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-136
+    priority: P3
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "UX visual editor de workflows (não requerido ao CLI)."
+    acceptanceCriteria:
+      - id: AC-AFR-136-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: UX visual editor de workflows (não requerido ao CLI)."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-137
+    priority: P3
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Remote execution opt-in com isolamento forte."
+    acceptanceCriteria:
+      - id: AC-AFR-137-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Remote execution opt-in com isolamento forte."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-138
+    priority: P3
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Plugin/extension para IDEs adicionais."
+    acceptanceCriteria:
+      - id: AC-AFR-138-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Plugin/extension para IDEs adicionais."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-139
+    priority: P3
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Controle de SLA, incidentes e suporte empresarial."
+    acceptanceCriteria:
+      - id: AC-AFR-139-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Controle de SLA, incidentes e suporte empresarial."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []
+  - id: AFR-140
+    priority: P3
+    milestone: "M15+"
+    owner: "UNASSIGNED"
+    status: "PENDING"
+    summary: "Comparação automática de custos/latência entre modelos."
+    acceptanceCriteria:
+      - id: AC-AFR-140-01
+        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Comparação automática de custos/latência entre modelos."
+        verification: "automated-or-reviewed"
+    artifacts: []
+    tests: []

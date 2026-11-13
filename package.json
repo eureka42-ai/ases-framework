@@ -1,0 +1,25 @@
+{
+  "name": "eureka42-ases-framework",
+  "version": "0.0.0-dev",
+  "private": true,
+  "description": "EUREKA42 ASES Framework development workspace",
+  "type": "module",
+  "packageManager": "pnpm@10.20.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "check": "tsc -b --pretty false && node --test packages/cli/dist/**/*.test.js",
+    "test": "npm run build && node --test packages/cli/dist/**/*.test.js",
+    "clean": "tsc -b --clean"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3"
+  }
+}
+
