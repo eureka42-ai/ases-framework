@@ -20,7 +20,7 @@ O EUREKA42 ASES possui um núcleo portátil e artefatos separados por host. Eles
 5. Propõe defaults quando faltam decisões.
 6. Registra tudo como `PROPOSED` até confirmação explícita.
 
-O comando determinístico `ases interview` é a fonte operacional inicial. As Skills ensinam cada host a conduzir o mesmo fluxo quando o binário não estiver disponível. Os executáveis locais confirmados nesta rodada: Codex 0.167.2, Claude Code 2.1.323, Kimi Code 2.5.3 e Gemini CLI 0.42.0. Nenhum host foi promovido a `SUPPORTED`, pois ainda falta prova de descoberta e execução funcional dentro da sessão. O validador Claude apontou que a distribuição no diretório público exige licença aprovada; não inserimos um SPDX placeholder.
+O comando determinístico `ases interview` é a fonte operacional inicial. As Skills ensinam cada host a conduzir o mesmo fluxo quando o binário não estiver disponível. Os executáveis locais confirmados nesta rodada: Codex 0.167.2, Claude Code 2.1.323, Kimi Code 2.5.3 e Gemini CLI 0.42.0. Nenhum host foi promovido a `SUPPORTED`, pois ainda falta prova de descoberta e execução funcional dentro da sessão. O validador Claude apontou que a distribuição no diretório público exige licença aprovada; não inserimos um SPDX placeholder. Gemini pediu confiança no workspace antes de `extensions link`; a instalação aguarda confirmação. `kimi doctor` validou somente a configuração do Kimi, não o plugin.
 
 ## Segurança
 

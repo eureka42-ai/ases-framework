@@ -41,6 +41,9 @@ Atualizado em: 2026-11-13
 - Ciclo de estados ASES-300 implementado; `VERIFIED` exige arquivo local dentro do workspace, calcula SHA-256, e `N_A` exige justificativa; histórico de transições mantido.
 - Testes: 11/11 PASS; validadores de integração: PASS.
 - Validação host nesta rodada: Claude `--strict` schema válido com requisito de licença apontado; Gemini extension PASS; manifests e Skills locais PASS; sessões interativas ainda pendentes.
+- Validação continuada: `npm test` 11/11 PASS; `git diff --check` PASS; `kimi doctor` PASS para configuração local (não é validação do plugin).
+- Gemini local link: aguardando confirmação do usuário no prompt de confiança do workspace.
+- Claude `plugin test` não executou porque o adapter não está instalado; não houve instalação automática.
 
 ## Próximas tarefas READY
 
