@@ -106,7 +106,20 @@ test("catalog status requires evidence for VERIFIED and rationale for N_A", asyn
   assert.equal(accepted.exitCode, 0);
   assert.equal(JSON.parse(accepted.output).status, "VERIFIED");
   assert.match(JSON.parse(accepted.output).evidence[0].sha256, /^[a-f0-9]{64}$/);
+  assert.equal(JSON.parse(accepted.output).history.length, 1);
   const outside = await run(["requirements", "set-status", root, "REQ-002", "VERIFIED", "--evidence", "../outside.txt", "--json"]);
   assert.equal(outside.exitCode, 5);
+});
+
+test("imports classification and priority when both share a source line", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-catalog-fields-"));
+  const md = join(root, "ases.md");
+  const sections = Array.from({ length: 300 }, (_, i) => `### REQ-${String(i + 1).padStart(3, "0")} — Item ${i + 1}\n\nClassificação sugerida: CORE. Prioridade sugerida: HIGH.\n\nCritério de aceite mínimo: aceitar.`).join("\n\n");
+  await writeFile(md, sections);
+  const imported = await run(["catalog", "import-ases300", md, root, "--json"]);
+  assert.equal(imported.exitCode, 0);
+  const payload = JSON.parse(await readFile(join(root, ".ases", "catalogs", "ases-300.json"), "utf8"));
+  assert.equal(payload.requirements[0].classification, "CORE");
+  assert.equal(payload.requirements[0].priority, "HIGH");
 });
 

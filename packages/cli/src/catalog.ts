@@ -26,8 +26,8 @@ export async function importAses300(sourcePath: string, workspace: string): Prom
     const end = headings[index + 1]?.index ?? source.length;
     const body = source.slice(start, end).trim();
     const value = (label: string) => body.match(new RegExp(`^${label}:\\s*([^\\n]+)`, "mi"))?.[1]?.trim();
-    const classification = value("Classificação sugerida");
-    const priority = value("Prioridade sugerida");
+    const classification = body.match(/^Classificação sugerida:\s*([A-Z_]+)/mi)?.[1];
+    const priority = body.match(/Prioridade sugerida:\s*([A-Z_]+)/i)?.[1];
     const applicability = value("Aplicabilidade");
     const acceptanceCriteria = value("Critério de aceite mínimo");
     return {

@@ -6,7 +6,7 @@ Atualizado em: 2026-11-13
 
 - M0: IMPLEMENTED / PARTIALLY_VERIFIED
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
-- Repositório Git: branch `main`; alterações desta etapa pendentes de push
+- Repositório Git: branch `main`; correção do parser e regressão local nesta rodada, pendentes de commit/push
 - Fonte diretora: presente e lida
 - ASES-300: DOCX original de trabalho e conversão Markdown presentes; importador local verificou 300 IDs; fidelidade da conversão ainda requer revisão.
 - ASES-500 separado: consolidação presente como reconstrução para validação; original independente ausente e homologação pendente.
@@ -27,7 +27,7 @@ Atualizado em: 2026-11-13
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Dependências de desenvolvimento instaladas; `package-lock.json` gerado pelo npm como bootstrap enquanto o pnpm não está ativado.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (10/10).
+- Testes unitários: PASS (12/12) em 2026-11-13; `npm test` também compilou TypeScript e validou as integrações.
 - Manifests/Skills locais: PASS (3 manifests, 5 Skills).
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
@@ -39,11 +39,12 @@ Atualizado em: 2026-11-13
 - `ases requirements list/show` implementados para catálogo importado.
 - Importação real da fonte local: PASS; 300 itens, SHA-256 `22e439ea514e1f365d3611a8644aac861f8c739054f8c35084a0e94e30302314`.
 - Ciclo de estados ASES-300 implementado; `VERIFIED` exige arquivo local dentro do workspace, calcula SHA-256, e `N_A` exige justificativa; histórico de transições mantido.
-- Testes: 11/11 PASS; validadores de integração: PASS.
+- Testes de estado do catálogo: evidência com SHA-256, histórico de transição, justificativa para `N_A` e rejeição de caminhos externos cobertos.
+- Parser ASES-300: classificação e prioridade agora são extraídas separadamente quando aparecem na mesma linha; regressão automatizada PASS.
+- Validadores de integração: PASS (3 manifests, 5 Skills).
 - Validação host nesta rodada: Claude `--strict` schema válido com requisito de licença apontado; Gemini extension PASS; manifests e Skills locais PASS; sessões interativas ainda pendentes.
-- Validação continuada: `npm test` 11/11 PASS; `git diff --check` PASS; `kimi doctor` PASS para configuração local (não é validação do plugin).
-- Gemini local link: aguardando confirmação do usuário no prompt de confiança do workspace.
-- O usuário permitiu confiar no workspace Gemini; a instalação foi cancelada no segundo aviso de segurança, que explica a injeção de instruções e instalação da Skill. `gemini extensions list` confirmou que nada foi instalado.
+- Validação continuada anterior: `git diff --check` PASS; `kimi doctor` PASS para configuração local (não é validação do plugin).
+- Gemini: usuário autorizou confiança no workspace; recusou o aviso subsequente de instalação/injeção de instruções. `gemini extensions list` confirmou que nada foi instalado.
 - Claude Code oferece `--plugin-dir` para carga local temporária; teste em sessão sem inferência ainda não concluído.
 - Claude `plugin test` não executou porque o adapter não está instalado; não houve instalação automática.
 
