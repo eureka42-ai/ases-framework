@@ -188,6 +188,7 @@ ASES_PROJECT_MODE=offline ases config explain ./meu-projeto/.ases/config.json --
 | `ases requirements show [workspace] <REQ-ID>` | Exibe origem, texto e critério de aceite | Nenhum |
 | `ases requirements trace [workspace] [REQ-ID]` | Mostra decisão → requisito → testes → evidências e integridade | Nenhum |
 | `ases requirements set-status <workspace> <REQ-ID> <status>` | Atualiza estado e referências de rastreabilidade | Grava catálogo local |
+| `ases requirements set-decision <workspace> <REQ-ID> <state>` | Atualiza decisão sem alterar estado da implementação | Grava catálogo local |
 
 Os demais comandos do documento-mestre são contratos planejados, não funcionalidades existentes. Eles somente serão documentados como disponíveis depois de implementados e testados.
 
@@ -224,6 +225,7 @@ ases requirements set-status ./meu-projeto REQ-001 IMPLEMENTED --decision ADR-00
 ases requirements set-status ./meu-projeto REQ-001 VERIFIED --evidence "evidence/resultado-teste.txt" --decision ADR-001 --test "packages/api/test/records.test.ts"
 ases requirements set-status ./meu-projeto REQ-002 N_A --na-reason "Capacidade fora do escopo aprovado nesta versão"
 ases requirements set-status ./meu-projeto REQ-003 BLOCKED --blocked-by "credencial OIDC" --reason "A equipe ainda não recebeu o client secret de homologação."
+ases requirements set-decision ./meu-projeto REQ-001 ACCEPTED --ref ADR-001 --reason "Alternativa aprovada pelo responsável técnico."
 ases requirements trace ./meu-projeto REQ-001 --json
 ```
 

@@ -225,8 +225,16 @@ test("catalog status requires evidence for VERIFIED and rationale for N_A", asyn
   assert.equal(JSON.parse(accepted.output).history.length, 1);
   const current = await run(["requirements", "show", root, "REQ-001", "--json"]);
   assert.equal(JSON.parse(current.output).requirements[0].evidence[0].integrity, "CURRENT");
+  assert.equal((await run(["requirements", "set-decision", root, "REQ-002", "ACCEPTED", "--json"])).exitCode, 5);
+  const decision = await run(["requirements", "set-decision", root, "REQ-001", "ACCEPTED", "--ref", "ADR-001", "--reason", "arquitetura aprovada", "--json"]);
+  assert.equal(decision.exitCode, 0);
+  assert.equal(JSON.parse(decision.output).status, "VERIFIED");
+  assert.equal(JSON.parse(decision.output).decision.status, "ACCEPTED");
+  assert.equal(JSON.parse(decision.output).decision.history[0].to, "ACCEPTED");
   const trace = await run(["requirements", "trace", root, "REQ-001", "--json"]);
   const traced = JSON.parse(trace.output).requirements[0];
+  assert.equal(traced.decision.status, "ACCEPTED");
+  assert.equal(traced.status, "VERIFIED");
   assert.deepEqual(traced.decisions, ["ADR-001"]);
   assert.deepEqual(traced.tests, ["packages/cli/test/records.test.ts"]);
   assert.equal(traced.evidence[0].integrity, "CURRENT");

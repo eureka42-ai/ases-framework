@@ -6,7 +6,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { renderLogo } from "./brand.js";
 import { runInterview } from "./interview.js";
-import { importAses300, readCatalog, updateRequirement } from "./catalog.js";
+import { importAses300, readCatalog, updateDecision, updateRequirement } from "./catalog.js";
 import { resolveConfigLayers } from "./config-resolution.js";
 
 export const VERSION = "0.0.0-dev";
@@ -42,6 +42,7 @@ Comandos disponíveis:
   catalog import-ases300 <md> Importa e valida a fonte ASES-300 local
   requirements list|show|trace  Consulta catálogo e trilha de evidências
   requirements set-status <workspace> <REQ-ID> <status> [--evidence arquivo|--decision DEC|--test ref|--na-reason texto|--blocked-by ref --reason texto]
+  requirements set-decision <workspace> <REQ-ID> <state> [--ref ADR --reason texto]
   help                    Exibe esta ajuda
 
 Opções:
@@ -260,6 +261,7 @@ export async function run(argv: string[]): Promise<CommandResult> {
         if (action === "trace") return {
           id: item.id,
           status: item.status,
+          decision: item.decision ?? { status: "UNDECIDED", history: [] },
           decisions: item.traceability?.decisionRefs ?? [],
           tests: item.traceability?.testRefs ?? [],
           blocker: item.blocker ?? null,
@@ -269,7 +271,7 @@ export async function run(argv: string[]): Promise<CommandResult> {
       });
       const result = { catalog: "ases-300", status: "IMPORTED_NOT_HOMOLOGATED", source: catalog.source, requirements };
       return { exitCode: 0, output: json ? JSON.stringify(result, null, 2) : selected.map((item) => action === "trace"
-        ? `${item.id} [${item.status}]\n  Decisões: ${(item.traceability?.decisionRefs ?? []).join(", ") || "pendente"}\n  Testes: ${(item.traceability?.testRefs ?? []).join(", ") || "pendente"}\n  Bloqueio: ${item.blocker ? `${item.blocker.dependency} — ${item.blocker.reason}` : "nenhum"}\n  Evidências: ${(item.evidence ?? []).map((evidence) => `${evidence.description} (${evidence.integrity ?? "UNVERIFIABLE"})`).join(", ") || "pendente"}`
+        ? `${item.id} [implementação: ${item.status}; decisão: ${item.decision?.status ?? "UNDECIDED"}]\n  Referências de decisão: ${(item.traceability?.decisionRefs ?? []).join(", ") || "pendente"}\n  Testes: ${(item.traceability?.testRefs ?? []).join(", ") || "pendente"}\n  Bloqueio: ${item.blocker ? `${item.blocker.dependency} — ${item.blocker.reason}` : "nenhum"}\n  Evidências: ${(item.evidence ?? []).map((evidence) => `${evidence.description} (${evidence.integrity ?? "UNVERIFIABLE"})`).join(", ") || "pendente"}`
         : `${item.id} — ${item.title} [${item.status}]${item.evidence?.length ? ` [evidência: ${item.evidence.map((evidence) => evidence.integrity ?? "UNVERIFIABLE").join(", ")}]` : ""}${action === "show" ? `\n${item.acceptanceCriteria ?? item.sourceText}` : ""}`).join("\n") };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -298,6 +300,18 @@ export async function run(argv: string[]): Promise<CommandResult> {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_REQUIREMENT_UPDATE", error: message }, null, 2) : `Falha ao atualizar requisito: ${message}` };
+    }
+  }
+  if (command === "requirements" && args[1] === "set-decision") {
+    try {
+      const status = args[4] as NonNullable<import("./catalog.js").GeneralRequirement["decision"]>["status"];
+      const allowed = ["UNDECIDED", "PROPOSED", "ACCEPTED", "REJECTED", "SUPERSEDED"];
+      if (!allowed.includes(status)) return { exitCode: 2, output: `Estado de decisão inválido; use: ${allowed.join(", ")}` };
+      const result = await updateDecision(args[2]!, args[3]!, status, { ...(optionValues(argv, "--ref")[0] ? { reference: optionValues(argv, "--ref")[0] } : {}), ...(optionValues(argv, "--reason").length ? { rationale: optionValues(argv, "--reason").join(" ") } : {}) });
+      return { exitCode: 0, output: json ? JSON.stringify(result, null, 2) : `${result.id}: decisão ${result.decision?.status}; implementação ${result.status}` };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_DECISION_UPDATE", error: message }, null, 2) : `Falha ao atualizar decisão: ${message}` };
     }
   }
   if (command === "host" && args[1] === "list") {

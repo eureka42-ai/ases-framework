@@ -15,6 +15,12 @@ export interface GeneralRequirement {
   evidence?: Array<{ id: string; kind: string; description: string; sha256?: string; createdAt: string; integrity?: "CURRENT" | "STALE" | "MISSING" | "OUTSIDE_WORKSPACE" | "UNVERIFIABLE" }>;
   traceability?: { decisionRefs: string[]; testRefs: string[] };
   blocker?: { dependency: string; reason: string; createdAt: string };
+  decision?: {
+    status: "UNDECIDED" | "PROPOSED" | "ACCEPTED" | "REJECTED" | "SUPERSEDED";
+    reference?: string;
+    rationale?: string;
+    history: Array<{ from: string; to: string; rationale?: string; at: string }>;
+  };
   waiver?: { justification: string; createdAt: string };
   history?: Array<{ from: string; to: string; at: string }>;
 }
@@ -117,6 +123,24 @@ export async function updateRequirement(workspace: string, id: string, status: G
   }
   requirement.history = [...(requirement.history ?? []), { from: requirement.status, to: status, at: new Date().toISOString() }];
   requirement.status = status;
+  await writeFile(path, `${JSON.stringify({ schemaVersion: "1", catalog: "ases-300", source: catalog.source, status: "IMPORTED_NOT_HOMOLOGATED", requirements: catalog.requirements }, null, 2)}\n`);
+  return requirement;
+}
+
+export async function updateDecision(workspace: string, id: string, status: NonNullable<GeneralRequirement["decision"]>["status"], options: { reference?: string; rationale?: string }): Promise<GeneralRequirement> {
+  const path = join(resolve(workspace), ".ases", "catalogs", "ases-300.json");
+  const catalog = JSON.parse(await readFile(path, "utf8")) as { source: { path: string; sha256: string }; requirements: GeneralRequirement[] };
+  const requirement = catalog.requirements.find((item) => item.id === id);
+  if (!requirement) throw new Error(`Requisito inexistente: ${id}`);
+  if (status !== "UNDECIDED" && !options.rationale?.trim()) throw new Error(`${status} exige --reason`);
+  const previous = requirement.decision?.status ?? "UNDECIDED";
+  const history = [...(requirement.decision?.history ?? []), { from: previous, to: status, ...(options.rationale?.trim() ? { rationale: options.rationale.trim() } : {}), at: new Date().toISOString() }];
+  requirement.decision = {
+    status,
+    ...(options.reference?.trim() ? { reference: options.reference.trim() } : {}),
+    ...(options.rationale?.trim() ? { rationale: options.rationale.trim() } : {}),
+    history
+  };
   await writeFile(path, `${JSON.stringify({ schemaVersion: "1", catalog: "ases-300", source: catalog.source, status: "IMPORTED_NOT_HOMOLOGATED", requirements: catalog.requirements }, null, 2)}\n`);
   return requirement;
 }
