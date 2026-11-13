@@ -253,6 +253,8 @@ ases interview ./meu-projeto
 
 `ases interview` exibe a marca EUREKA42 em teal/verde antes da primeira pergunta. Em modo JSON, informe `--answers <arquivo.json>` para manter `stdout` válido e não misturar perguntas interativas com a saída estruturada.
 
+Antes das perguntas interativas, consulta manifestos conhecidos no diretório informado (`package.json`, `tsconfig.json`, manifests de linguagens e arquivos de deploy/container). Mostra os arquivos encontrados e pistas de nome, tipo, linguagem e banco. Essas pistas são editáveis e não confirmam escolhas. Um `Dockerfile` indica container, mas não define o provedor de hospedagem. Arquivos `.env` e credenciais não são lidos.
+
 Perguntas iniciais:
 
 1. nome e tipo do aplicativo;

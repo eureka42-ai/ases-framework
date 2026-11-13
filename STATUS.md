@@ -21,7 +21,7 @@ Atualizado em: 2026-11-13
 - Schema inicial publicado localmente em `schemas/ases.config.schema.json`.
 - README completo e assets oficiais da marca organizados em `docs/assets/brand/`.
 - Identidade ANSI teal/verde disponível em `ases welcome` e na ajuda.
-- Entrevista inicial implementada com tipo de aplicativo, linguagem, hospedagem, banco, escala e dados sensíveis.
+- Entrevista inicial implementada com tipo de aplicativo, linguagem, hospedagem, banco, escala e dados sensíveis; AFR-016, AFR-017 e AFR-019 rastreados a código e teste.
 - O fluxo interativo apresenta a marca antes das perguntas; a saída `--json` exige arquivo `--answers` para preservar JSON válido.
 - Antes das perguntas, a entrevista consulta somente manifestos conhecidos, exibe arquivos e pistas de stack, deixa inferências editáveis e não lê `.env`/credenciais; destino Docker continua sem confirmação automática.
 - Recomendações ausentes ficam `PROPOSED`; escolhas existentes ficam `REVIEW_REQUIRED`.
@@ -35,7 +35,7 @@ Atualizado em: 2026-11-13
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
 - `npm pack` + instalação do tarball + execução de `ases --version` e `init --dry-run --json`: PASS.
-- Backlog AFR-001..140: IDs preservados; AFR-001..016 refinados e ligados a código/testes; demais critérios permanecem DRAFT.
+- Backlog AFR-001..140: IDs preservados; AFR-001..019 refinados e ligados a código/testes, com AFR-018 ainda pendente; demais critérios permanecem DRAFT.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
