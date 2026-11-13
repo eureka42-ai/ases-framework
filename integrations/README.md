@@ -6,10 +6,10 @@ O EUREKA42 ASES possui um núcleo portátil e artefatos separados por host. Eles
 
 | Host | Artefato | Instalação de desenvolvimento | Estado |
 |---|---|---|---|
-| Codex | `AGENTS.md` + `.agents/skills/` | copiar/mesclar no projeto de destino após revisar o diff | NOT_TESTED |
-| Claude Code | `.claude-plugin/plugin.json`, Skill e command | instalar como plugin local conforme a versão do host | NOT_TESTED |
-| Kimi Code CLI | `kimi.plugin.json` com `sessionStart.skill` | instalar o diretório/repositório e executar `/plugins reload` | NOT_TESTED |
-| Gemini CLI | `gemini-extension.json`, contexto, Skill, command e tema | `gemini extensions link integrations/gemini-cli` em checkout de desenvolvimento | NOT_TESTED |
+| Codex | `AGENTS.md` + `.agents/skills/` | copiar/mesclar no projeto de destino após revisar o diff | MANIFEST/Skill local validado; sessão funcional pendente |
+| Claude Code | `.claude-plugin/plugin.json`, Skill e command | instalar como plugin local conforme a versão do host | `claude plugin validate --strict` sem erro de schema; diretório público exige licença |
+| Kimi Code CLI | `kimi.plugin.json` com `sessionStart.skill` | instalar o diretório/repositório e executar `/plugins reload` | Manifest/Skill local validado; recarga/sessão funcional pendente |
+| Gemini CLI | `gemini-extension.json`, contexto, Skill, command e tema | `gemini extensions link integrations/gemini-cli` em checkout de desenvolvimento | `gemini extensions validate` PASS; sessão funcional pendente |
 
 ## Experiência pretendida
 
@@ -20,7 +20,7 @@ O EUREKA42 ASES possui um núcleo portátil e artefatos separados por host. Eles
 5. Propõe defaults quando faltam decisões.
 6. Registra tudo como `PROPOSED` até confirmação explícita.
 
-O comando determinístico `ases interview` é a fonte operacional inicial. As Skills ensinam cada host a conduzir o mesmo fluxo quando o binário não estiver disponível.
+O comando determinístico `ases interview` é a fonte operacional inicial. As Skills ensinam cada host a conduzir o mesmo fluxo quando o binário não estiver disponível. Os executáveis locais confirmados nesta rodada: Codex 0.167.2, Claude Code 2.1.323, Kimi Code 2.5.3 e Gemini CLI 0.42.0. Nenhum host foi promovido a `SUPPORTED`, pois ainda falta prova de descoberta e execução funcional dentro da sessão. O validador Claude apontou que a distribuição no diretório público exige licença aprovada; não inserimos um SPDX placeholder.
 
 ## Segurança
 
