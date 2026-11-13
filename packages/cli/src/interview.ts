@@ -4,7 +4,16 @@ import { join, resolve } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 import { renderLogo } from "./brand.js";
-import { APPLICATION_TYPES, buildRecommendations, parseApplicationType, type InterviewAnswers } from "./recommendations.js";
+import { APPLICATION_TYPES, buildRecommendations, parseApplicationType, type ApplicationType, type InterviewAnswers } from "./recommendations.js";
+
+export interface WorkspaceContext {
+  files: string[];
+  name?: string;
+  applicationType?: ApplicationType;
+  language?: string;
+  hosting?: string;
+  database?: string;
+}
 
 export interface InterviewResult {
   answers: InterviewAnswers;
@@ -21,6 +30,54 @@ function scale(value: string): InterviewAnswers["expectedScale"] {
   if (normalized === "large" || normalized === "grande") return "large";
   if (normalized === "medium" || normalized === "médio" || normalized === "medio") return "medium";
   return "small";
+}
+
+export async function inspectWorkspaceContext(root: string): Promise<WorkspaceContext> {
+  const context: WorkspaceContext = { files: [] };
+  const has = async (relativePath: string) => {
+    try { await access(join(resolve(root), relativePath), constants.F_OK); return true; } catch { return false; }
+  };
+  const readOptional = async (relativePath: string) => {
+    try { return await readFile(join(resolve(root), relativePath), "utf8"); } catch { return undefined; }
+  };
+  for (const file of ["package.json", "tsconfig.json", "go.mod", "Cargo.toml", "pyproject.toml", "requirements.txt", "composer.json", "Gemfile", "vercel.json", "netlify.toml", "fly.toml", "render.yaml", "Dockerfile", "docker-compose.yml", "compose.yaml"]) {
+    if (await has(file)) context.files.push(file);
+  }
+  const packageText = await readOptional("package.json");
+  let packageJson: Record<string, unknown> = {};
+  if (packageText) {
+    try { packageJson = JSON.parse(packageText) as Record<string, unknown>; } catch { /* malformed manifests are listed, not interpreted */ }
+  }
+  if (typeof packageJson.name === "string" && packageJson.name.trim()) context.name = packageJson.name.trim();
+  const dependencies = { ...(typeof packageJson.dependencies === "object" && packageJson.dependencies ? packageJson.dependencies as Record<string, unknown> : {}), ...(typeof packageJson.devDependencies === "object" && packageJson.devDependencies ? packageJson.devDependencies as Record<string, unknown> : {}) };
+  const packages = new Set(Object.keys(dependencies));
+  if (await has("tsconfig.json") || packages.has("typescript")) context.language = "TypeScript";
+  else if (packageText) context.language = "JavaScript";
+  else if (await has("go.mod")) context.language = "Go";
+  else if (await has("Cargo.toml")) context.language = "Rust";
+  else if (await has("pyproject.toml") || await has("requirements.txt")) context.language = "Python";
+  else if (await has("composer.json")) context.language = "PHP";
+  else if (await has("Gemfile")) context.language = "Ruby";
+
+  if (packages.has("expo") || packages.has("react-native")) context.applicationType = "mobile";
+  else if (packageJson.bin) context.applicationType = "cli";
+  else if (["next", "react", "vue", "svelte", "vite"].some((name) => packages.has(name))) context.applicationType = "web";
+  else if (["express", "fastify", "koa", "hono"].some((name) => packages.has(name))) context.applicationType = "api";
+
+  if (await has("vercel.json")) context.hosting = "Vercel (vercel.json detectado)";
+  else if (await has("netlify.toml")) context.hosting = "Netlify (netlify.toml detectado)";
+  else if (await has("fly.toml")) context.hosting = "Fly.io (fly.toml detectado)";
+  else if (await has("render.yaml")) context.hosting = "Render (render.yaml detectado)";
+  else if (await has("Dockerfile") || await has("docker-compose.yml") || await has("compose.yaml")) context.hosting = "Docker/container (manifesto detectado; destino de hospedagem não confirmado)";
+
+  const prisma = await readOptional("prisma/schema.prisma");
+  const prismaProvider = prisma?.match(/datasource\s+\w+\s*\{[^}]*provider\s*=\s*"([^"]+)"/s)?.[1];
+  if (prismaProvider) context.database = ({ postgresql: "PostgreSQL", mysql: "MySQL", sqlite: "SQLite", mongodb: "MongoDB", sqlserver: "SQL Server" } as Record<string, string>)[prismaProvider] ?? prismaProvider;
+  else if (packages.has("pg") || packages.has("postgres")) context.database = "PostgreSQL (driver detectado)";
+  else if (packages.has("mongoose") || packages.has("mongodb")) context.database = "MongoDB (driver detectado)";
+  else if (packages.has("mysql2")) context.database = "MySQL (driver detectado)";
+  else if (packages.has("better-sqlite3") || packages.has("sqlite3")) context.database = "SQLite (driver detectado)";
+  return context;
 }
 
 export async function loadAnswers(path: string): Promise<InterviewAnswers> {
@@ -42,25 +99,35 @@ export async function loadAnswers(path: string): Promise<InterviewAnswers> {
   };
 }
 
-export async function collectInterviewAnswers(ask: (question: string) => Promise<string>, announce: () => void = () => {}): Promise<InterviewAnswers> {
+export async function collectInterviewAnswers(ask: (question: string) => Promise<string>, announce: () => void = () => {}, context: WorkspaceContext = { files: [] }): Promise<InterviewAnswers> {
   announce();
-  const name = (await ask("Nome do aplicativo: ")).trim();
-  let applicationType = parseApplicationType(await ask(`Tipo (${APPLICATION_TYPES.join("/ ")}): `));
+  const name = (await ask(`Nome do aplicativo${context.name ? ` [detectado: ${context.name}]` : ""}: `)).trim() || context.name;
+  let applicationType = parseApplicationType(await ask(`Tipo (${APPLICATION_TYPES.join("/ ")})${context.applicationType ? ` [detectado: ${context.applicationType}]` : ""}: `)) ?? context.applicationType;
   while (!applicationType) applicationType = parseApplicationType(await ask(`Escolha um tipo válido (${APPLICATION_TYPES.join("/ ")}): `));
-  const language = (await ask("Linguagem já escolhida? (Enter para receber sugestão): ")).trim() || undefined;
-  const hosting = (await ask("Hospedagem já escolhida? (Enter para receber sugestão): ")).trim() || undefined;
-  const database = (await ask("Banco de dados já escolhido? (Enter para receber sugestão): ")).trim() || undefined;
+  const language = (await ask(`Linguagem já escolhida?${context.language ? ` [detectada: ${context.language}; Enter mantém]` : " (Enter para receber sugestão)"}: `)).trim() || context.language;
+  const hosting = (await ask(`Hospedagem já escolhida?${context.hosting ? ` [artefato detectado: ${context.hosting}; informe destino ou Enter para sugestão]` : " (Enter para receber sugestão)"}: `)).trim() || undefined;
+  const database = (await ask(`Banco de dados já escolhido?${context.database ? ` [detectado: ${context.database}; Enter mantém]` : " (Enter para receber sugestão)"}: `)).trim() || context.database;
   const expectedScale = scale(await ask("Escala esperada (small/medium/large) [small]: "));
   const sensitiveData = yes(await ask("Tratará dados pessoais ou sensíveis? (s/N): "));
   return { name: name || "Novo aplicativo", applicationType, ...(language ? { language } : {}), ...(hosting ? { hosting } : {}), ...(database ? { database } : {}), expectedScale, sensitiveData };
 }
 
-export async function promptAnswers(streams: { input?: NodeJS.ReadableStream; output?: NodeJS.WritableStream } = {}): Promise<InterviewAnswers> {
+export async function promptAnswers(streams: { input?: NodeJS.ReadableStream; output?: NodeJS.WritableStream; root?: string } = {}): Promise<InterviewAnswers> {
+  const context = await inspectWorkspaceContext(streams.root ?? process.cwd());
   const inputStream = streams.input ?? input;
   const outputStream = streams.output ?? output;
   const rl = createInterface({ input: inputStream, output: outputStream });
   try {
-    return await collectInterviewAnswers((question) => rl.question(question), () => { outputStream.write(`${renderLogo()}\n\n`); });
+    return await collectInterviewAnswers((question) => rl.question(question), () => {
+      const facts = [context.files.length ? `Arquivos reconhecidos: ${context.files.join(", ")}` : "Nenhum manifesto conhecido detectado."];
+      if (context.name) facts.push(`Nome detectado: ${context.name}`);
+      if (context.applicationType) facts.push(`Tipo sugerido pelos arquivos: ${context.applicationType}`);
+      if (context.language) facts.push(`Linguagem detectada: ${context.language}`);
+      if (context.hosting) facts.push(`Infraestrutura detectada: ${context.hosting}`);
+      if (context.database) facts.push(`Banco detectado: ${context.database}`);
+      facts.push("Detecções são pistas locais; confirme ou corrija nas respostas. Arquivos .env e credenciais não são lidos.");
+      outputStream.write(`${renderLogo()}\n\nContexto do workspace:\n${facts.map((fact) => `- ${fact}`).join("\n")}\n\n`);
+    }, context);
   } finally {
     rl.close();
   }
@@ -72,7 +139,7 @@ function renderSpec(result: InterviewResult): string {
 }
 
 export async function runInterview(options: { root: string; answersPath?: string; dryRun: boolean }): Promise<InterviewResult> {
-  const answers = options.answersPath ? await loadAnswers(options.answersPath) : await promptAnswers();
+  const answers = options.answersPath ? await loadAnswers(options.answersPath) : await promptAnswers({ root: options.root });
   const result: InterviewResult = { answers, recommendations: buildRecommendations(answers) };
   const root = resolve(options.root);
   const files = [join(root, ".ases", "interview.json"), join(root, ".ases", "SPEC.md")];

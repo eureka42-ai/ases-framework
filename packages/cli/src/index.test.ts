@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, symlink, unlink } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, symlink, unlink } from "node:fs/promises";
 import { writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import { checkNodeVersion, run, validateConfig, VERSION } from "./index.js";
-import { collectInterviewAnswers } from "./interview.js";
+import { collectInterviewAnswers, inspectWorkspaceContext } from "./interview.js";
 
 test("reports version offline", async () => {
   assert.deepEqual(await run(["--version"]), { exitCode: 0, output: VERSION });
@@ -165,6 +165,39 @@ test("interactive interview announces Eureka42 before the first question", async
   assert.equal(answers.applicationType, "web");
   assert.match(events[0]!, /^logo:/);
   assert.match(events[1]!, /^question:Nome do aplicativo/);
+});
+
+test("interview inspects project manifests before questions without reading .env", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-interview-context-"));
+  await writeFile(join(root, "package.json"), JSON.stringify({ name: "portal-existing", dependencies: { next: "1.0.0", pg: "1.0.0", typescript: "1.0.0" } }));
+  await writeFile(join(root, "tsconfig.json"), "{}");
+  await writeFile(join(root, "Dockerfile"), "FROM node");
+  await writeFile(join(root, ".env"), "DATABASE_URL=never-print-this-secret");
+  const prismaDir = join(root, "prisma");
+  await mkdir(prismaDir);
+  await writeFile(join(prismaDir, "schema.prisma"), 'datasource db { provider = "postgresql" url = env("DATABASE_URL") }');
+  const context = await inspectWorkspaceContext(root);
+  assert.equal(context.applicationType, "web");
+  assert.equal(context.language, "TypeScript");
+  assert.equal(context.database, "PostgreSQL");
+  assert.match(context.hosting ?? "", /Docker/);
+  assert.ok(!context.files.includes(".env"));
+  assert.doesNotMatch(JSON.stringify(context), /never-print-this-secret/);
+
+  const responses = ["", "", "", "", "", "medium", "s"];
+  const questions: string[] = [];
+  const answers = await collectInterviewAnswers(async (question) => {
+    questions.push(question);
+    return responses.shift() ?? "";
+  }, () => {}, context);
+  assert.equal(answers.name, "portal-existing");
+  assert.equal(answers.applicationType, "web");
+  assert.equal(answers.language, "TypeScript");
+  assert.equal(answers.database, "PostgreSQL");
+  assert.equal(answers.hosting, undefined);
+  assert.match(questions[1]!, /detectado: web/);
+  assert.match(questions[2]!, /detectada: TypeScript/);
+  assert.match(questions[3]!, /Docker/);
 });
 
 test("interview recommends missing stack and persists proposal", async () => {

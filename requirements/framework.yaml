@@ -188,14 +188,17 @@ requirements:
     priority: P0
     milestone: "M3"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Entrevista consultar documentos antes de perguntar."
     acceptanceCriteria:
       - id: AC-AFR-016-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Entrevista consultar documentos antes de perguntar."
-        verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+        description: "Antes da entrevista interativa, inspeciona apenas manifestos conhecidos no workspace, deriva pistas de nome, tipo, linguagem, hospedagem e banco, e apresenta arquivos/fatos detectados antes da primeira pergunta. Valores inferidos podem ser corrigidos; destino de hospedagem não é confirmado por um Dockerfile."
+        verification: "automated"
+      - id: AC-AFR-016-02
+        description: "Não lê nem expõe arquivos .env ou credenciais; testes cobrem inferências, precedência de respostas e ausência de segredo no contexto."
+        verification: "automated"
+    artifacts: ["packages/cli/src/interview.ts"]
+    tests: ["packages/cli/src/index.test.ts :: interview inspects project manifests before questions without reading .env"]
   - id: AFR-017
     priority: P0
     milestone: "M3"
