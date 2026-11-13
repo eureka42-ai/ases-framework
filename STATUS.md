@@ -29,21 +29,22 @@ Atualizado em: 2026-11-13
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (20/20) em 2026-11-13; `pnpm test` também compilou TypeScript e validou as integrações.
+- Testes unitários: PASS (21/21) em 2026-11-13; `pnpm test` também compilou TypeScript e validou as integrações.
 - Manifests/Skills locais: PASS (3 manifests, 5 Skills).
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
 - `npm pack` + instalação do tarball + execução de `ases --version` e `init --dry-run --json`: PASS.
-- Backlog AFR-001..140: IDs preservados; AFR-001..008, AFR-010..015 refinados e ligados a código/testes; AFR-009 parcial; demais critérios permanecem DRAFT.
+- Backlog AFR-001..140: IDs preservados; AFR-001..015 refinados e ligados a código/testes; demais critérios permanecem DRAFT.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
+- Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
 - Importador ASES-300 implementado; grava catálogo por workspace com hash e textos dos requisitos.
 - `ases requirements list/show` implementados para catálogo importado.
 - Importação real da fonte local: PASS; 300 itens, SHA-256 `22e439ea514e1f365d3611a8644aac861f8c739054f8c35084a0e94e30302314`.
 - Ciclo de estados ASES-300 implementado; `VERIFIED` exige arquivo local dentro do workspace, calcula SHA-256, e `N_A` exige justificativa; histórico de transições mantido.
 - Validação de evidências resolve caminhos reais e rejeita links simbólicos para fora do workspace; apenas arquivos regulares podem comprovar `VERIFIED`.
 - `requirements show/list` recalculam integridade de evidências (`CURRENT`, `STALE`, `MISSING`, `OUTSIDE_WORKSPACE`, `UNVERIFIABLE`); README documenta limites da checagem semântica.
-- Testes: 20/20 PASS; incluem estados de decisão independentes, rastreabilidade de teste/evidência, bloqueios justificados, integridade do catálogo/evidências, piso Node.js, identidade da entrevista e resolução segura de configuração.
+- Testes: 21/21 PASS; incluem separação de catálogos, estados de decisão independentes, rastreabilidade, bloqueios justificados, integridade, piso Node.js, identidade da entrevista e resolução segura de configuração.
 - Parser ASES-300: classificação e prioridade agora são extraídas separadamente quando aparecem na mesma linha; regressão automatizada PASS.
 - Validadores de integração: PASS (3 manifests, 5 Skills).
 - Validação host nesta rodada: Claude `--strict` schema válido com requisito de licença apontado; Gemini extension PASS; manifests e Skills locais PASS; sessões interativas ainda pendentes.
@@ -54,9 +55,8 @@ Atualizado em: 2026-11-13
 
 ## Próximas tarefas READY
 
-1. Implementar catálogo específico de produto (AFR-009).
-2. Testar instalação, descoberta e execução das integrações em sessões reais dos quatro hosts.
-3. Prosseguir a entrevista com personas, autenticação, integrações, observabilidade e critérios de aceite.
+1. Testar instalação, descoberta e execução das integrações em sessões reais dos quatro hosts.
+2. Prosseguir a entrevista com personas, autenticação, integrações, observabilidade e critérios de aceite.
 
 ## Bloqueios de conclusão integral
 

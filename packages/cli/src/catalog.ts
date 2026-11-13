@@ -25,13 +25,19 @@ export interface GeneralRequirement {
   history?: Array<{ from: string; to: string; at: string }>;
 }
 
-export async function importAses300(sourcePath: string, workspace: string): Promise<{ count: number; hash: string; output: string }> {
-  const source = await readFile(resolve(sourcePath), "utf8");
-  const hash = createHash("sha256").update(source).digest("hex");
-  const headings = [...source.matchAll(/^###\s+(REQ-(\d{3}))\s+[—-]\s+(.+)$/gm)];
-  const requirements: GeneralRequirement[] = headings.map((heading, index) => {
+type CatalogFile = { schemaVersion: "1"; catalog: string; productId?: string; source: { path: string; sha256: string }; status: string; requirements: GeneralRequirement[] };
+
+function catalogPath(workspace: string, productId?: string): string {
+  if (!productId) return join(resolve(workspace), ".ases", "catalogs", "ases-300.json");
+  if (!/^[a-z0-9][a-z0-9-]*$/.test(productId)) throw new Error("product-id deve usar letras minúsculas, números e hífens");
+  return join(resolve(workspace), ".ases", "catalogs", "products", `${productId}.json`);
+}
+
+function parseRequirements(sourcePath: string, source: string, hash: string, allHeadings: RegExpMatchArray[], selected: RegExpMatchArray[]): GeneralRequirement[] {
+  return selected.map((heading) => {
+    const index = allHeadings.findIndex((item) => item.index === heading.index);
     const start = heading.index! + heading[0].length;
-    const end = headings[index + 1]?.index ?? source.length;
+    const end = allHeadings[index + 1]?.index ?? source.length;
     const body = source.slice(start, end).trim();
     const value = (label: string) => body.match(new RegExp(`^${label}:\\s*([^\\n]+)`, "mi"))?.[1]?.trim();
     const classification = body.match(/^Classificação sugerida:\s*([A-Z_]+)/mi)?.[1];
@@ -39,17 +45,19 @@ export async function importAses300(sourcePath: string, workspace: string): Prom
     const applicability = value("Aplicabilidade");
     const acceptanceCriteria = value("Critério de aceite mínimo");
     return {
-      id: heading[1]!,
-      title: heading[3]!.trim(),
-      sourceText: body,
-      ...(classification ? { classification } : {}),
-      ...(priority ? { priority } : {}),
-      ...(applicability ? { applicability } : {}),
-      ...(acceptanceCriteria ? { acceptanceCriteria } : {}),
-      source: { path: basename(sourcePath), sha256: hash },
-      status: "PENDING"
+      id: heading[1]!, title: heading[3]!.trim(), sourceText: body,
+      ...(classification ? { classification } : {}), ...(priority ? { priority } : {}),
+      ...(applicability ? { applicability } : {}), ...(acceptanceCriteria ? { acceptanceCriteria } : {}),
+      source: { path: basename(sourcePath), sha256: hash }, status: "PENDING"
     };
   });
+}
+
+export async function importAses300(sourcePath: string, workspace: string): Promise<{ count: number; hash: string; output: string }> {
+  const source = await readFile(resolve(sourcePath), "utf8");
+  const hash = createHash("sha256").update(source).digest("hex");
+  const headings = [...source.matchAll(/^###\s+(REQ-(\d{3}))\s+[—-]\s+(.+)$/gm)];
+  const requirements = parseRequirements(sourcePath, source, hash, headings, headings);
   const ids = new Set(requirements.map((item) => item.id));
   const missing = Array.from({ length: 300 }, (_, i) => `REQ-${String(i + 1).padStart(3, "0")}`).filter((id) => !ids.has(id));
   const duplicates = requirements.length - ids.size;
@@ -60,8 +68,24 @@ export async function importAses300(sourcePath: string, workspace: string): Prom
   return { count: requirements.length, hash, output };
 }
 
-export async function readCatalog(workspace: string): Promise<{ source: { path: string; sha256: string }; requirements: GeneralRequirement[] }> {
-  const catalog = JSON.parse(await readFile(join(resolve(workspace), ".ases", "catalogs", "ases-300.json"), "utf8")) as { source: { path: string; sha256: string }; requirements: GeneralRequirement[] };
+export async function importProductRequirements(sourcePath: string, workspace: string, productId: string): Promise<{ count: number; hash: string; output: string }> {
+  const source = await readFile(resolve(sourcePath), "utf8");
+  const hash = createHash("sha256").update(source).digest("hex");
+  const allHeadings = [...source.matchAll(/^###\s+(REQ-(\d{3}))\s+[—-]\s+(.+)$/gm)];
+  const headings = allHeadings.filter((heading) => Number(heading[2]) >= 301 && Number(heading[2]) <= 500);
+  const requirements = parseRequirements(sourcePath, source, hash, allHeadings, headings);
+  const ids = new Set(requirements.map((item) => item.id));
+  const missing = Array.from({ length: 200 }, (_, i) => `REQ-${String(i + 301).padStart(3, "0")}`).filter((id) => !ids.has(id));
+  const duplicates = requirements.length - ids.size;
+  if (requirements.length !== 200 || missing.length || duplicates) throw new Error(`Catálogo de produto inválido: encontrados=${requirements.length}, ausentes=${missing.join(",") || "nenhum"}, duplicados=${duplicates}`);
+  const output = catalogPath(workspace, productId);
+  await mkdir(dirname(output), { recursive: true });
+  await writeFile(output, `${JSON.stringify({ schemaVersion: "1", catalog: "product", productId, source: { path: basename(sourcePath), sha256: hash }, status: "IMPORTED_NOT_HOMOLOGATED", requirements }, null, 2)}\n`, { flag: "wx" });
+  return { count: requirements.length, hash, output };
+}
+
+export async function readCatalog(workspace: string, productId?: string): Promise<CatalogFile> {
+  const catalog = JSON.parse(await readFile(catalogPath(workspace, productId), "utf8")) as CatalogFile;
   const workspaceRoot = await realpath(resolve(workspace));
   for (const requirement of catalog.requirements) {
     for (const evidence of requirement.evidence ?? []) {
@@ -91,9 +115,9 @@ export async function readCatalog(workspace: string): Promise<{ source: { path: 
   return catalog;
 }
 
-export async function updateRequirement(workspace: string, id: string, status: GeneralRequirement["status"], options: { evidence?: string; naReason?: string; decisionRefs?: string[]; testRefs?: string[]; blockedBy?: string; blockedReason?: string }): Promise<GeneralRequirement> {
-  const path = join(resolve(workspace), ".ases", "catalogs", "ases-300.json");
-  const catalog = JSON.parse(await readFile(path, "utf8")) as { source: { path: string; sha256: string }; requirements: GeneralRequirement[] };
+export async function updateRequirement(workspace: string, id: string, status: GeneralRequirement["status"], options: { evidence?: string; naReason?: string; decisionRefs?: string[]; testRefs?: string[]; blockedBy?: string; blockedReason?: string; productId?: string }): Promise<GeneralRequirement> {
+  const path = catalogPath(workspace, options.productId);
+  const catalog = JSON.parse(await readFile(path, "utf8")) as CatalogFile;
   const requirement = catalog.requirements.find((item) => item.id === id);
   if (!requirement) throw new Error(`Requisito inexistente: ${id}`);
   if (status === "VERIFIED" && !options.evidence?.trim()) throw new Error("VERIFIED exige --evidence com caminho de arquivo existente dentro do workspace");
@@ -123,13 +147,13 @@ export async function updateRequirement(workspace: string, id: string, status: G
   }
   requirement.history = [...(requirement.history ?? []), { from: requirement.status, to: status, at: new Date().toISOString() }];
   requirement.status = status;
-  await writeFile(path, `${JSON.stringify({ schemaVersion: "1", catalog: "ases-300", source: catalog.source, status: "IMPORTED_NOT_HOMOLOGATED", requirements: catalog.requirements }, null, 2)}\n`);
+  await writeFile(path, `${JSON.stringify(catalog, null, 2)}\n`);
   return requirement;
 }
 
-export async function updateDecision(workspace: string, id: string, status: NonNullable<GeneralRequirement["decision"]>["status"], options: { reference?: string; rationale?: string }): Promise<GeneralRequirement> {
-  const path = join(resolve(workspace), ".ases", "catalogs", "ases-300.json");
-  const catalog = JSON.parse(await readFile(path, "utf8")) as { source: { path: string; sha256: string }; requirements: GeneralRequirement[] };
+export async function updateDecision(workspace: string, id: string, status: NonNullable<GeneralRequirement["decision"]>["status"], options: { reference?: string; rationale?: string; productId?: string }): Promise<GeneralRequirement> {
+  const path = catalogPath(workspace, options.productId);
+  const catalog = JSON.parse(await readFile(path, "utf8")) as CatalogFile;
   const requirement = catalog.requirements.find((item) => item.id === id);
   if (!requirement) throw new Error(`Requisito inexistente: ${id}`);
   if (status !== "UNDECIDED" && !options.rationale?.trim()) throw new Error(`${status} exige --reason`);
@@ -141,7 +165,7 @@ export async function updateDecision(workspace: string, id: string, status: NonN
     ...(options.rationale?.trim() ? { rationale: options.rationale.trim() } : {}),
     history
   };
-  await writeFile(path, `${JSON.stringify({ schemaVersion: "1", catalog: "ases-300", source: catalog.source, status: "IMPORTED_NOT_HOMOLOGATED", requirements: catalog.requirements }, null, 2)}\n`);
+  await writeFile(path, `${JSON.stringify(catalog, null, 2)}\n`);
   return requirement;
 }
 

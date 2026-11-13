@@ -6,7 +6,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { renderLogo } from "./brand.js";
 import { runInterview } from "./interview.js";
-import { importAses300, readCatalog, updateDecision, updateRequirement } from "./catalog.js";
+import { importAses300, importProductRequirements, readCatalog, updateDecision, updateRequirement } from "./catalog.js";
 import { resolveConfigLayers } from "./config-resolution.js";
 
 export const VERSION = "0.0.0-dev";
@@ -40,9 +40,10 @@ Comandos disponíveis:
   config validate [path]  Valida a configuração JSON do projeto
   config explain [path]   Resolve defaults, ambiente e --set sem revelar secrets
   catalog import-ases300 <md> Importa e valida a fonte ASES-300 local
-  requirements list|show|trace  Consulta catálogo e trilha de evidências
-  requirements set-status <workspace> <REQ-ID> <status> [--evidence arquivo|--decision DEC|--test ref|--na-reason texto|--blocked-by ref --reason texto]
-  requirements set-decision <workspace> <REQ-ID> <state> [--ref ADR --reason texto]
+  catalog import-product <id> <md> [workspace] Importa requisitos específicos separados
+  requirements list|show|trace  Consulta catálogo e trilha de evidências [--product id]
+  requirements set-status <workspace> <REQ-ID> <status> [--product id|--evidence arquivo|--decision DEC|--test ref|--na-reason texto|--blocked-by ref --reason texto]
+  requirements set-decision <workspace> <REQ-ID> <state> [--product id|--ref ADR --reason texto]
   help                    Exibe esta ajuda
 
 Opções:
@@ -250,9 +251,20 @@ export async function run(argv: string[]): Promise<CommandResult> {
       return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_CATALOG_IMPORT", error: message }, null, 2) : `Falha ao importar catálogo: ${message}` };
     }
   }
+  if (command === "catalog" && args[1] === "import-product") {
+    try {
+      if (!args[2] || !args[3]) return { exitCode: 2, output: "Uso: ases catalog import-product <product-id> <arquivo.md> [workspace]" };
+      const result = await importProductRequirements(args[3], args[4] ?? process.cwd(), args[2]);
+      return { exitCode: 0, output: json ? JSON.stringify({ ...result, catalog: "product", productId: args[2], status: "IMPORTED_NOT_HOMOLOGATED" }, null, 2) : `Importados ${result.count} requisitos do produto ${args[2]}; fonte ${result.hash}; status IMPORTED_NOT_HOMOLOGATED; saída ${result.output}` };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_PRODUCT_CATALOG_IMPORT", error: message }, null, 2) : `Falha ao importar catálogo do produto: ${message}` };
+    }
+  }
   if (command === "requirements" && ["list", "show", "trace"].includes(args[1] ?? "")) {
     try {
-      const catalog = await readCatalog(args[2] ?? process.cwd());
+      const productId = optionValues(argv, "--product")[0];
+      const catalog = await readCatalog(args[2] ?? process.cwd(), productId);
       const action = args[1]!;
       const selected = action === "show" || (action === "trace" && args[3]) ? catalog.requirements.filter((item) => item.id === args[3]) : catalog.requirements;
       if ((action === "show" || (action === "trace" && args[3])) && selected.length === 0) return { exitCode: 2, output: json ? JSON.stringify({ code: "ASES_REQUIREMENT_NOT_FOUND", id: args[3] }) : `Requisito não encontrado: ${args[3]}` };
@@ -269,7 +281,7 @@ export async function run(argv: string[]): Promise<CommandResult> {
         };
         return item;
       });
-      const result = { catalog: "ases-300", status: "IMPORTED_NOT_HOMOLOGATED", source: catalog.source, requirements };
+      const result = { catalog: catalog.catalog, ...(catalog.productId ? { productId: catalog.productId } : {}), status: catalog.status, source: catalog.source, requirements };
       return { exitCode: 0, output: json ? JSON.stringify(result, null, 2) : selected.map((item) => action === "trace"
         ? `${item.id} [implementação: ${item.status}; decisão: ${item.decision?.status ?? "UNDECIDED"}]\n  Referências de decisão: ${(item.traceability?.decisionRefs ?? []).join(", ") || "pendente"}\n  Testes: ${(item.traceability?.testRefs ?? []).join(", ") || "pendente"}\n  Bloqueio: ${item.blocker ? `${item.blocker.dependency} — ${item.blocker.reason}` : "nenhum"}\n  Evidências: ${(item.evidence ?? []).map((evidence) => `${evidence.description} (${evidence.integrity ?? "UNVERIFIABLE"})`).join(", ") || "pendente"}`
         : `${item.id} — ${item.title} [${item.status}]${item.evidence?.length ? ` [evidência: ${item.evidence.map((evidence) => evidence.integrity ?? "UNVERIFIABLE").join(", ")}]` : ""}${action === "show" ? `\n${item.acceptanceCriteria ?? item.sourceText}` : ""}`).join("\n") };
@@ -294,7 +306,8 @@ export async function run(argv: string[]): Promise<CommandResult> {
         ...(blockedBy ? { blockedBy } : {}),
         ...(blockedReason ? { blockedReason } : {}),
         ...(optionValues(argv, "--decision").length ? { decisionRefs: optionValues(argv, "--decision") } : {}),
-        ...(optionValues(argv, "--test").length ? { testRefs: optionValues(argv, "--test") } : {})
+        ...(optionValues(argv, "--test").length ? { testRefs: optionValues(argv, "--test") } : {}),
+        ...(optionValues(argv, "--product")[0] ? { productId: optionValues(argv, "--product")[0] } : {})
       });
       return { exitCode: 0, output: json ? JSON.stringify(requirement, null, 2) : `${requirement.id}: ${requirement.status}` };
     } catch (error) {
@@ -307,7 +320,7 @@ export async function run(argv: string[]): Promise<CommandResult> {
       const status = args[4] as NonNullable<import("./catalog.js").GeneralRequirement["decision"]>["status"];
       const allowed = ["UNDECIDED", "PROPOSED", "ACCEPTED", "REJECTED", "SUPERSEDED"];
       if (!allowed.includes(status)) return { exitCode: 2, output: `Estado de decisão inválido; use: ${allowed.join(", ")}` };
-      const result = await updateDecision(args[2]!, args[3]!, status, { ...(optionValues(argv, "--ref")[0] ? { reference: optionValues(argv, "--ref")[0] } : {}), ...(optionValues(argv, "--reason").length ? { rationale: optionValues(argv, "--reason").join(" ") } : {}) });
+      const result = await updateDecision(args[2]!, args[3]!, status, { ...(optionValues(argv, "--ref")[0] ? { reference: optionValues(argv, "--ref")[0] } : {}), ...(optionValues(argv, "--reason").length ? { rationale: optionValues(argv, "--reason").join(" ") } : {}), ...(optionValues(argv, "--product")[0] ? { productId: optionValues(argv, "--product")[0] } : {}) });
       return { exitCode: 0, output: json ? JSON.stringify(result, null, 2) : `${result.id}: decisão ${result.decision?.status}; implementação ${result.status}` };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

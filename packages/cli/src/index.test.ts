@@ -287,3 +287,30 @@ test("catalog import rejects missing, duplicate and project-specific IDs", async
   assert.equal((await run(["catalog", "import-ases300", extendedPath, join(root, "extended-workspace"), "--json"])).exitCode, 5);
 });
 
+test("imports product requirements into a catalog isolated from ASES-300", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-product-catalog-"));
+  const generalPath = join(root, "general.md");
+  const productPath = join(root, "product.md");
+  const general = Array.from({ length: 300 }, (_, i) => `### REQ-${String(i + 1).padStart(3, "0")} — General ${i + 1}\n\nGeral.`).join("\n\n");
+  const product = Array.from({ length: 200 }, (_, i) => `### REQ-${String(i + 301).padStart(3, "0")} — Produto ${i + 301}\n\nEspecífico.`).join("\n\n");
+  await writeFile(generalPath, general);
+  await writeFile(productPath, `${general}\n\n${product}`);
+  assert.equal((await run(["catalog", "import-ases300", generalPath, root, "--json"])).exitCode, 0);
+  const productImport = await run(["catalog", "import-product", "eureka42", productPath, root, "--json"]);
+  assert.equal(productImport.exitCode, 0);
+  assert.equal(JSON.parse(productImport.output).count, 200);
+  const generalList = await run(["requirements", "list", root, "--json"]);
+  const productList = await run(["requirements", "list", root, "--product", "eureka42", "--json"]);
+  assert.equal(JSON.parse(generalList.output).requirements.length, 300);
+  assert.equal(JSON.parse(productList.output).catalog, "product");
+  assert.equal(JSON.parse(productList.output).productId, "eureka42");
+  assert.equal(JSON.parse(productList.output).requirements.length, 200);
+  assert.equal(JSON.parse(productList.output).requirements[0].id, "REQ-301");
+  const updated = await run(["requirements", "set-status", root, "REQ-301", "IMPLEMENTED", "--product", "eureka42", "--json"]);
+  assert.equal(updated.exitCode, 0);
+  const generalCatalog = JSON.parse(await readFile(join(root, ".ases", "catalogs", "ases-300.json"), "utf8"));
+  const productCatalog = JSON.parse(await readFile(join(root, ".ases", "catalogs", "products", "eureka42.json"), "utf8"));
+  assert.equal(generalCatalog.requirements[0].status, "PENDING");
+  assert.equal(productCatalog.requirements[0].status, "IMPLEMENTED");
+});
+

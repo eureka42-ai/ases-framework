@@ -55,7 +55,7 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases doctor` | Implementado localmente | Node, plataforma, Git, npm, pnpm, workspace/config e ações corretivas |
 | `ases config validate` | Implementado no schema inicial | Configuração JSON bootstrap |
 | `ases config explain` | Implementado no schema inicial | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Estruturado | AFR-001..006 refinados e ligados a código/testes; demais critérios seguem em rascunho |
+| Backlog AFR-001..140 | Estruturado | AFR-001..015 refinados e ligados a código/testes; demais critérios seguem em rascunho |
 | ASES-300 normativo | Bloqueado pela fonte | Nenhum REQ-001..300 foi inventado |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP, hosts, providers e RAG | Planejado | Não declarar suporte antes dos testes |
@@ -184,11 +184,12 @@ ASES_PROJECT_MODE=offline ases config explain ./meu-projeto/.ases/config.json --
 | `ases config explain [path] [--set chave=valor]` | Resolve defaults e overrides seguros com suas origens | Nenhum |
 | `ases host list` | Detecta Codex, Claude, Kimi e Gemini instalados | Nenhum |
 | `ases catalog import-ases300 <md> [workspace]` | Valida 300 IDs e importa o catálogo geral | Grava `.ases/catalogs/ases-300.json` |
-| `ases requirements list [workspace]` | Lista requisitos gerais importados | Nenhum |
-| `ases requirements show [workspace] <REQ-ID>` | Exibe origem, texto e critério de aceite | Nenhum |
-| `ases requirements trace [workspace] [REQ-ID]` | Mostra decisão → requisito → testes → evidências e integridade | Nenhum |
-| `ases requirements set-status <workspace> <REQ-ID> <status>` | Atualiza estado e referências de rastreabilidade | Grava catálogo local |
-| `ases requirements set-decision <workspace> <REQ-ID> <state>` | Atualiza decisão sem alterar estado da implementação | Grava catálogo local |
+| `ases catalog import-product <id> <md> [workspace]` | Importa REQ-301..500 para catálogo específico | Grava `.ases/catalogs/products/<id>.json` |
+| `ases requirements list [workspace] [--product id]` | Lista requisitos gerais ou específicos | Nenhum |
+| `ases requirements show [workspace] <REQ-ID> [--product id]` | Exibe origem, texto e critério de aceite | Nenhum |
+| `ases requirements trace [workspace] [REQ-ID] [--product id]` | Mostra decisão → requisito → testes → evidências e integridade | Nenhum |
+| `ases requirements set-status <workspace> <REQ-ID> <status> [--product id]` | Atualiza estado e referências de rastreabilidade | Grava catálogo local |
+| `ases requirements set-decision <workspace> <REQ-ID> <state> [--product id]` | Atualiza decisão sem alterar estado da implementação | Grava catálogo local |
 
 Os demais comandos do documento-mestre são contratos planejados, não funcionalidades existentes. Eles somente serão documentados como disponíveis depois de implementados e testados.
 
@@ -216,6 +217,16 @@ ases requirements show ./meu-projeto REQ-001
 ```
 
 O importador exige exatamente `REQ-001..REQ-300`, sem lacunas ou duplicatas, registra SHA-256 e conserva o texto e o critério de aceite de cada requisito. O artefato é local em `.ases/catalogs/ases-300.json` e inicia como `IMPORTED_NOT_HOMOLOGATED`, pois a conversão Markdown ainda requer revisão contra o DOCX. A referência específica Eureka42 não é misturada ao catálogo geral.
+
+Requisitos específicos de produto usam outro arquivo e outro filtro de IDs. A matriz Eureka42 local contém a consolidação ASES e os 200 requisitos de domínio; somente `REQ-301..REQ-500` são importados para `.ases/catalogs/products/eureka42.json`:
+
+```bash
+ases catalog import-product eureka42 \
+  ./FONTES_ASES_PARA_DESKTOP_FRAMEWORK/referencia_especifica_eureka42/05_EUREKA42_REQUISITOS_500_CONSOLIDADOS.md \
+  ./meu-projeto
+ases requirements list ./meu-projeto --product eureka42
+ases requirements show ./meu-projeto REQ-301 --product eureka42
+```
 
 Estados podem ser atualizados com `PENDING`, `READY`, `IN_PROGRESS`, `IMPLEMENTED`, `VERIFIED`, `FAILED`, `BLOCKED` e `N_A`. `VERIFIED` exige `--evidence`; `N_A` exige `--na-reason`:
 
