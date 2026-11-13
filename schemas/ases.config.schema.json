@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eureka42.org/schemas/ases.config.schema.json",
+  "title": "EUREKA42 ASES project configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "project"],
+  "properties": {
+    "schemaVersion": { "const": "1" },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "locale", "mode", "privacy"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "name": { "type": "string", "minLength": 1 },
+        "locale": { "enum": ["pt-BR", "en-US"] },
+        "mode": { "enum": ["host", "standalone", "headless", "offline"] },
+        "privacy": { "const": "local-only" }
+      }
+    }
+  }
+}
+

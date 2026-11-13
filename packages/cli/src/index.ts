@@ -2,6 +2,8 @@ import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { constants } from "node:fs";
 import { basename, join, resolve } from "node:path";
 import { platform, release } from "node:os";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 
 export const VERSION = "0.0.0-dev";
 
@@ -29,6 +31,7 @@ Comandos disponíveis:
   init [diretório]        Inicializa um workspace local de forma idempotente
   doctor [diretório]      Diagnostica o ambiente sem chamadas remotas
   config validate [path]  Valida a configuração JSON do projeto
+  config explain [path]   Explica valores e origens da configuração
   help                    Exibe esta ajuda
 
 Opções:
@@ -36,6 +39,8 @@ Opções:
   --dry-run               Mostra o plano sem escrever arquivos
   --version               Exibe a versão
 `;
+
+const execFileAsync = promisify(execFile);
 
 function slugify(value: string): string {
   return value
@@ -112,14 +117,29 @@ async function initProject(rootArg: string | undefined, dryRun: boolean, json: b
 
 async function doctor(rootArg: string | undefined, json: boolean): Promise<CommandResult> {
   const root = resolve(rootArg ?? process.cwd());
+  const git = await detectCommand("git", ["--version"]);
+  const npm = await detectCommand("npm", ["--version"]);
+  const pnpm = await detectCommand("pnpm", ["--version"]);
   const checks = [
     { id: "node", status: "pass", detail: process.version },
     { id: "platform", status: "pass", detail: `${platform()} ${release()}` },
+    { id: "git", status: git.available ? "pass" : "warn", detail: git.detail },
+    { id: "npm", status: npm.available ? "pass" : "warn", detail: npm.detail },
+    { id: "pnpm", status: pnpm.available ? "pass" : "warn", detail: pnpm.detail },
     { id: "workspace", status: (await exists(root)) ? "pass" : "fail", detail: root },
     { id: "ases-config", status: (await exists(join(root, ".ases", "config.json"))) ? "pass" : "warn", detail: "execute ases init para inicializar" }
   ];
   const exitCode = checks.some((check) => check.status === "fail") ? 2 : 0;
   return { exitCode, output: json ? JSON.stringify({ root, checks }, null, 2) : checks.map((c) => `${c.status.toUpperCase()} ${c.id}: ${c.detail}`).join("\n") };
+}
+
+async function detectCommand(command: string, args: string[]): Promise<{ available: boolean; detail: string }> {
+  try {
+    const { stdout, stderr } = await execFileAsync(command, args, { timeout: 5_000 });
+    return { available: true, detail: (stdout || stderr).trim() };
+  } catch {
+    return { available: false, detail: `${command} não encontrado ou indisponível` };
+  }
 }
 
 async function validateConfigCommand(pathArg: string | undefined, json: boolean): Promise<CommandResult> {
@@ -136,6 +156,32 @@ async function validateConfigCommand(pathArg: string | undefined, json: boolean)
   }
 }
 
+async function explainConfigCommand(pathArg: string | undefined, json: boolean): Promise<CommandResult> {
+  const path = resolve(pathArg ?? join(process.cwd(), ".ases", "config.json"));
+  try {
+    const content = await readFile(path, "utf8");
+    const value = JSON.parse(content) as unknown;
+    const errors = validateConfig(value);
+    if (errors.length > 0) {
+      const payload = { path, valid: false, errors };
+      return { exitCode: 3, output: json ? JSON.stringify(payload, null, 2) : `FAIL config inválida:\n${errors.join("\n")}` };
+    }
+    const config = value as ProjectConfig;
+    const resolved = [
+      { key: "schemaVersion", value: config.schemaVersion, source: path },
+      { key: "project.id", value: config.project.id, source: path },
+      { key: "project.name", value: config.project.name, source: path },
+      { key: "project.locale", value: config.project.locale, source: path },
+      { key: "project.mode", value: config.project.mode, source: path },
+      { key: "project.privacy", value: config.project.privacy, source: path }
+    ];
+    return { exitCode: 0, output: json ? JSON.stringify({ path, valid: true, resolved }, null, 2) : resolved.map((item) => `${item.key}=${item.value}  [${item.source}]`).join("\n") };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return { exitCode: 3, output: json ? JSON.stringify({ path, valid: false, code: "ASES_CONFIG_READ", error: message }, null, 2) : `FAIL não foi possível explicar ${path}: ${message}` };
+  }
+}
+
 export async function run(argv: string[]): Promise<CommandResult> {
   const json = argv.includes("--json");
   const dryRun = argv.includes("--dry-run");
@@ -146,6 +192,7 @@ export async function run(argv: string[]): Promise<CommandResult> {
   if (command === "init") return initProject(args[1], dryRun, json);
   if (command === "doctor") return doctor(args[1], json);
   if (command === "config" && args[1] === "validate") return validateConfigCommand(args[2], json);
+  if (command === "config" && args[1] === "explain") return explainConfigCommand(args[2], json);
   return { exitCode: 1, output: json ? JSON.stringify({ code: "ASES_COMMAND_UNKNOWN", command }) : `Comando desconhecido: ${command}\n\n${help}` };
 }
 

@@ -32,3 +32,22 @@ test("validates project config", () => {
   assert.ok(validateConfig({ schemaVersion: "2", project: {} }).length > 0);
 });
 
+test("explains config values with their source", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-explain-"));
+  await run(["init", root]);
+  const result = await run(["config", "explain", join(root, ".ases", "config.json"), "--json"]);
+  const payload = JSON.parse(result.output);
+  assert.equal(result.exitCode, 0);
+  assert.equal(payload.valid, true);
+  assert.equal(payload.resolved.find((item: { key: string }) => item.key === "project.mode").value, "host");
+});
+
+test("doctor reports local runtime tools", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-doctor-"));
+  const result = await run(["doctor", root, "--json"]);
+  const payload = JSON.parse(result.output);
+  assert.equal(result.exitCode, 0);
+  assert.ok(payload.checks.some((check: { id: string }) => check.id === "git"));
+  assert.ok(payload.checks.some((check: { id: string }) => check.id === "pnpm"));
+});
+
