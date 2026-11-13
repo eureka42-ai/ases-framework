@@ -13,6 +13,7 @@ export interface WorkspaceContext {
   language?: string;
   hosting?: string;
   database?: string;
+  previous?: InterviewAnswers;
 }
 
 export interface InterviewResult {
@@ -80,8 +81,7 @@ export async function inspectWorkspaceContext(root: string): Promise<WorkspaceCo
   return context;
 }
 
-export async function loadAnswers(path: string): Promise<InterviewAnswers> {
-  const raw = JSON.parse(await readFile(resolve(path), "utf8")) as Record<string, unknown>;
+function parseAnswers(raw: Record<string, unknown>): InterviewAnswers {
   const applicationType = parseApplicationType(String(raw.applicationType ?? ""));
   if (!applicationType) throw new Error(`applicationType inválido; use: ${APPLICATION_TYPES.join(", ")}`);
   if (typeof raw.name !== "string" || raw.name.trim() === "") throw new Error("name é obrigatório");
@@ -99,21 +99,28 @@ export async function loadAnswers(path: string): Promise<InterviewAnswers> {
   };
 }
 
+export async function loadAnswers(path: string): Promise<InterviewAnswers> {
+  return parseAnswers(JSON.parse(await readFile(resolve(path), "utf8")) as Record<string, unknown>);
+}
+
 export async function collectInterviewAnswers(ask: (question: string) => Promise<string>, announce: () => void = () => {}, context: WorkspaceContext = { files: [] }): Promise<InterviewAnswers> {
   announce();
-  const name = (await ask(`Nome do aplicativo${context.name ? ` [detectado: ${context.name}]` : ""}: `)).trim() || context.name;
-  let applicationType = parseApplicationType(await ask(`Tipo (${APPLICATION_TYPES.join("/ ")})${context.applicationType ? ` [detectado: ${context.applicationType}]` : ""}: `)) ?? context.applicationType;
+  const previous = context.previous;
+  const name = (await ask(`Nome do aplicativo${previous?.name ? ` [atual: ${previous.name}]` : context.name ? ` [detectado: ${context.name}]` : ""}: `)).trim() || previous?.name || context.name;
+  let applicationType = parseApplicationType(await ask(`Tipo (${APPLICATION_TYPES.join("/ ")})${previous?.applicationType ? ` [atual: ${previous.applicationType}]` : context.applicationType ? ` [detectado: ${context.applicationType}]` : ""}: `)) ?? previous?.applicationType ?? context.applicationType;
   while (!applicationType) applicationType = parseApplicationType(await ask(`Escolha um tipo válido (${APPLICATION_TYPES.join("/ ")}): `));
-  const language = (await ask(`Linguagem já escolhida?${context.language ? ` [detectada: ${context.language}; Enter mantém]` : " (Enter para receber sugestão)"}: `)).trim() || context.language;
-  const hosting = (await ask(`Hospedagem já escolhida?${context.hosting ? ` [artefato detectado: ${context.hosting}; informe destino ou Enter para sugestão]` : " (Enter para receber sugestão)"}: `)).trim() || undefined;
-  const database = (await ask(`Banco de dados já escolhido?${context.database ? ` [detectado: ${context.database}; Enter mantém]` : " (Enter para receber sugestão)"}: `)).trim() || context.database;
-  const expectedScale = scale(await ask("Escala esperada (small/medium/large) [small]: "));
-  const sensitiveData = yes(await ask("Tratará dados pessoais ou sensíveis? (s/N): "));
+  const language = (await ask(`Linguagem já escolhida?${previous?.language ? ` [atual: ${previous.language}]` : context.language ? ` [detectada: ${context.language}; Enter mantém]` : " (Enter para receber sugestão)"}: `)).trim() || previous?.language || context.language;
+  const hosting = (await ask(`Hospedagem já escolhida?${previous?.hosting ? ` [atual: ${previous.hosting}]` : context.hosting ? ` [artefato detectado: ${context.hosting}; informe destino ou Enter para sugestão]` : " (Enter para receber sugestão)"}: `)).trim() || previous?.hosting || undefined;
+  const database = (await ask(`Banco de dados já escolhido?${previous?.database ? ` [atual: ${previous.database}]` : context.database ? ` [detectado: ${context.database}; Enter mantém]` : " (Enter para receber sugestão)"}: `)).trim() || previous?.database || context.database;
+  const expectedScale = scale((await ask(`Escala esperada (small/medium/large) [${previous?.expectedScale ?? "small"}]: `)).trim() || previous?.expectedScale || "small");
+  const sensitiveInput = (await ask(`Tratará dados pessoais ou sensíveis? (s/N) [${previous?.sensitiveData ? "s" : "n"}]: `)).trim();
+  const sensitiveData = sensitiveInput ? yes(sensitiveInput) : previous?.sensitiveData ?? false;
   return { name: name || "Novo aplicativo", applicationType, ...(language ? { language } : {}), ...(hosting ? { hosting } : {}), ...(database ? { database } : {}), expectedScale, sensitiveData };
 }
 
-export async function promptAnswers(streams: { input?: NodeJS.ReadableStream; output?: NodeJS.WritableStream; root?: string } = {}): Promise<InterviewAnswers> {
+export async function promptAnswers(streams: { input?: NodeJS.ReadableStream; output?: NodeJS.WritableStream; root?: string; previous?: InterviewAnswers } = {}): Promise<InterviewAnswers> {
   const context = await inspectWorkspaceContext(streams.root ?? process.cwd());
+  if (streams.previous) context.previous = streams.previous;
   const inputStream = streams.input ?? input;
   const outputStream = streams.output ?? output;
   const rl = createInterface({ input: inputStream, output: outputStream });
@@ -138,15 +145,27 @@ function renderSpec(result: InterviewResult): string {
   return `# ${answers.name}\n\nStatus: PROPOSED\n\n## Perfil\n\n- Tipo: ${answers.applicationType}\n- Escala: ${answers.expectedScale}\n- Dados sensíveis: ${answers.sensitiveData ? "sim — revisão obrigatória" : "não informado"}\n\n## Recomendações\n\n${recommendations.map((item) => `- **${item.field} — ${item.value}** (${item.status}): ${item.rationale}`).join("\n")}\n\n## Próximas decisões\n\n1. Confirmar ou substituir cada recomendação.\n2. Detalhar personas, jornadas, domínio e regras de negócio.\n3. Definir autenticação, autorização, privacidade, integrações e operação.\n4. Transformar decisões confirmadas em requisitos e critérios de aceite.\n`;
 }
 
-export async function runInterview(options: { root: string; answersPath?: string; dryRun: boolean }): Promise<InterviewResult> {
-  const answers = options.answersPath ? await loadAnswers(options.answersPath) : await promptAnswers({ root: options.root });
-  const result: InterviewResult = { answers, recommendations: buildRecommendations(answers) };
+export async function runInterview(options: { root: string; answersPath?: string; resume?: boolean; dryRun: boolean; input?: NodeJS.ReadableStream; output?: NodeJS.WritableStream }): Promise<InterviewResult> {
   const root = resolve(options.root);
+  let previous: InterviewAnswers | undefined;
+  if (options.resume) {
+    if (options.answersPath) throw new Error("--resume e --answers não podem ser usados juntos");
+    try {
+      const saved = JSON.parse(await readFile(join(root, ".ases", "interview.json"), "utf8")) as { answers?: Record<string, unknown> };
+      if (!saved.answers) throw new Error("arquivo não contém respostas");
+      previous = parseAnswers(saved.answers);
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error);
+      throw new Error(`Não foi possível retomar .ases/interview.json: ${reason}`);
+    }
+  }
+  const answers = options.answersPath ? await loadAnswers(options.answersPath) : await promptAnswers({ root, ...(previous ? { previous } : {}), ...(options.input ? { input: options.input } : {}), ...(options.output ? { output: options.output } : {}) });
+  const result: InterviewResult = { answers, recommendations: buildRecommendations(answers) };
   const files = [join(root, ".ases", "interview.json"), join(root, ".ases", "SPEC.md")];
   result.files = files;
   if (!options.dryRun) {
     await mkdir(join(root, ".ases"), { recursive: true });
-    for (const path of files) {
+    for (const path of options.resume ? [] : files) {
       try {
         await access(path, constants.F_OK);
         throw new Error(`Arquivo existente; preservado: ${path}`);
@@ -154,8 +173,8 @@ export async function runInterview(options: { root: string; answersPath?: string
         if (error instanceof Error && error.message.startsWith("Arquivo existente;")) throw error;
       }
     }
-    await writeFile(files[0]!, `${JSON.stringify({ schemaVersion: "1", status: "PROPOSED", ...result }, null, 2)}\n`, { flag: "wx" });
-    await writeFile(files[1]!, renderSpec(result), { flag: "wx" });
+    await writeFile(files[0]!, `${JSON.stringify({ schemaVersion: "1", status: "PROPOSED", ...result }, null, 2)}\n`, { flag: options.resume ? "w" : "wx" });
+    await writeFile(files[1]!, renderSpec(result), { flag: options.resume ? "w" : "wx" });
   }
   return result;
 }

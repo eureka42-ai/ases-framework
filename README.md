@@ -251,6 +251,8 @@ ases welcome
 ases interview ./meu-projeto
 ```
 
+Para continuar uma entrevista já salva, use `ases interview ./meu-projeto --resume`. As respostas atuais aparecem como padrão: pressione Enter para mantê-las ou informe um novo valor. As recomendações e o `SPEC.md` são recalculados. O fluxo normal continua recusando sobrescrever arquivos existentes; a atualização só ocorre quando `--resume` é explícito.
+
 `ases interview` exibe a marca EUREKA42 em teal/verde antes da primeira pergunta. Em modo JSON, informe `--answers <arquivo.json>` para manter `stdout` válido e não misturar perguntas interativas com a saída estruturada.
 
 Antes das perguntas interativas, consulta manifestos conhecidos no diretório informado (`package.json`, `tsconfig.json`, manifests de linguagens e arquivos de deploy/container). Mostra os arquivos encontrados e pistas de nome, tipo, linguagem e banco. Essas pistas são editáveis e não confirmam escolhas. Um `Dockerfile` indica container, mas não define o provedor de hospedagem. Arquivos `.env` e credenciais não são lidos.

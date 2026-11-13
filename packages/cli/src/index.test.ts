@@ -3,9 +3,10 @@ import { mkdir, mkdtemp, readFile, symlink, unlink } from "node:fs/promises";
 import { writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { PassThrough } from "node:stream";
 import test from "node:test";
 import { checkNodeVersion, run, validateConfig, VERSION } from "./index.js";
-import { collectInterviewAnswers, inspectWorkspaceContext } from "./interview.js";
+import { collectInterviewAnswers, inspectWorkspaceContext, runInterview } from "./interview.js";
 
 test("reports version offline", async () => {
   assert.deepEqual(await run(["--version"]), { exitCode: 0, output: VERSION });
@@ -220,6 +221,30 @@ test("interview evaluates user choices instead of silently confirming", async ()
   const payload = JSON.parse(result.output);
   assert.equal(result.exitCode, 0);
   assert.ok(payload.recommendations.some((item: { status: string }) => item.status === "REVIEW_REQUIRED"));
+});
+
+test("interview resumes persisted decisions and updates only changed answers", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-interview-resume-"));
+  const answersPath = join(root, "answers.json");
+  await writeFile(answersPath, JSON.stringify({ name: "Portal Retomado", applicationType: "web", language: "TypeScript", hosting: "Vercel", database: "PostgreSQL", expectedScale: "medium", sensitiveData: true }));
+  await runInterview({ root, answersPath, dryRun: false });
+
+  const input = new PassThrough();
+  const output = new PassThrough();
+  const resumed = runInterview({ root, resume: true, dryRun: false, input, output });
+  for (const answer of ["", "", "Go", "", "", "", ""]) {
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    input.write(`${answer}\n`);
+  }
+  const result = await resumed;
+  assert.equal(result.answers.name, "Portal Retomado");
+  assert.equal(result.answers.language, "Go");
+  assert.equal(result.answers.hosting, "Vercel");
+  assert.equal(result.answers.database, "PostgreSQL");
+  assert.equal(result.answers.expectedScale, "medium");
+  assert.equal(result.answers.sensitiveData, true);
+  const saved = JSON.parse(await readFile(join(root, ".ases", "interview.json"), "utf8"));
+  assert.equal(saved.answers.language, "Go");
 });
 
 test("host list reports adapters without claiming support", async () => {
