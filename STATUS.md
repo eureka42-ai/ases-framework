@@ -38,6 +38,8 @@ Atualizado em: 2026-11-13
 - Importador ASES-300 implementado; grava catálogo por workspace com hash e textos dos requisitos.
 - `ases requirements list/show` implementados para catálogo importado.
 - Importação real da fonte local: PASS; 300 itens, SHA-256 `22e439ea514e1f365d3611a8644aac861f8c739054f8c35084a0e94e30302314`.
+- Ciclo inicial de estados ASES-300 implementado; `VERIFIED` exige evidência referenciada e `N_A` justificativa.
+- Testes: 11/11 PASS; validadores de integração: PASS.
 
 ## Próximas tarefas READY
 
@@ -51,6 +53,7 @@ Atualizado em: 2026-11-13
 
 - A conversão ASES-300 requer revisão contra o DOCX antes de declarar o catálogo homologado.
 - O original independente ASES-500 não foi localizado; a consolidação permanece reconstrução para validação.
+- Evidências são referências declarativas nesta versão; verificação automática do artefato e obsolescência por mudanças ainda não implementadas.
 - A licença/copyright do software, metodologia e marca não foi aprovada; não é possível finalizar distribuição pública dos plugins.
 - Os quatro executáveis de host foram detectados, mas detecção não prova descoberta e execução do plugin em sessão real.
 - O roadmap completo M0–M14 é maior que o vertical slice atual; componentes não construídos continuam `PLANNED` ou `NOT_IMPLEMENTED`.

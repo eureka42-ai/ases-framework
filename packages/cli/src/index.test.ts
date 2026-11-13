@@ -93,3 +93,16 @@ test("host list reports adapters without claiming support", async () => {
   assert.ok(payload.hosts.every((host: { support: string }) => host.support === "NOT_TESTED"));
 });
 
+test("catalog status requires evidence for VERIFIED and rationale for N_A", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-req-state-"));
+  const md = join(root, "ases.md");
+  const sections = Array.from({ length: 300 }, (_, i) => `### REQ-${String(i + 1).padStart(3, "0")} — Requisito ${i + 1}\n\nCritério de aceite mínimo: comprovar requisito ${i + 1}.`).join("\n\n");
+  await writeFile(md, sections);
+  assert.equal((await run(["catalog", "import-ases300", md, root, "--json"])).exitCode, 0);
+  assert.equal((await run(["requirements", "set-status", root, "REQ-001", "VERIFIED", "--json"])).exitCode, 5);
+  assert.equal((await run(["requirements", "set-status", root, "REQ-001", "N_A", "--json"])).exitCode, 5);
+  const accepted = await run(["requirements", "set-status", root, "REQ-001", "VERIFIED", "--evidence", "test:unit/req-001", "--json"]);
+  assert.equal(accepted.exitCode, 0);
+  assert.equal(JSON.parse(accepted.output).status, "VERIFIED");
+});
+

@@ -11,7 +11,9 @@ export interface GeneralRequirement {
   applicability?: string;
   acceptanceCriteria?: string;
   source: { path: string; sha256: string };
-  status: "PENDING";
+  status: "PENDING" | "READY" | "IN_PROGRESS" | "IMPLEMENTED" | "VERIFIED" | "FAILED" | "BLOCKED" | "N_A";
+  evidence?: Array<{ id: string; kind: string; description: string; createdAt: string }>;
+  waiver?: { justification: string; createdAt: string };
 }
 
 export async function importAses300(sourcePath: string, workspace: string): Promise<{ count: number; hash: string; output: string }> {
@@ -51,5 +53,19 @@ export async function importAses300(sourcePath: string, workspace: string): Prom
 
 export async function readCatalog(workspace: string): Promise<{ source: { path: string; sha256: string }; requirements: GeneralRequirement[] }> {
   return JSON.parse(await readFile(join(resolve(workspace), ".ases", "catalogs", "ases-300.json"), "utf8")) as { source: { path: string; sha256: string }; requirements: GeneralRequirement[] };
+}
+
+export async function updateRequirement(workspace: string, id: string, status: GeneralRequirement["status"], options: { evidence?: string; naReason?: string }): Promise<GeneralRequirement> {
+  const path = join(resolve(workspace), ".ases", "catalogs", "ases-300.json");
+  const catalog = JSON.parse(await readFile(path, "utf8")) as { source: { path: string; sha256: string }; requirements: GeneralRequirement[] };
+  const requirement = catalog.requirements.find((item) => item.id === id);
+  if (!requirement) throw new Error(`Requisito inexistente: ${id}`);
+  if (status === "VERIFIED" && !options.evidence?.trim()) throw new Error("VERIFIED exige --evidence com referência verificável");
+  if (status === "N_A" && !options.naReason?.trim()) throw new Error("N_A exige --na-reason");
+  if (status === "VERIFIED") requirement.evidence = [...(requirement.evidence ?? []), { id: `EVD-${Date.now()}`, kind: "user-reference", description: options.evidence!.trim(), createdAt: new Date().toISOString() }];
+  if (status === "N_A") requirement.waiver = { justification: options.naReason!.trim(), createdAt: new Date().toISOString() };
+  requirement.status = status;
+  await writeFile(path, `${JSON.stringify({ schemaVersion: "1", catalog: "ases-300", source: catalog.source, status: "IMPORTED_NOT_HOMOLOGATED", requirements: catalog.requirements }, null, 2)}\n`);
+  return requirement;
 }
 

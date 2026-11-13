@@ -186,6 +186,7 @@ ases config explain ./meu-projeto/.ases/config.json --json
 | `ases catalog import-ases300 <md> [workspace]` | Valida 300 IDs e importa o catálogo geral | Grava `.ases/catalogs/ases-300.json` |
 | `ases requirements list [workspace]` | Lista requisitos gerais importados | Nenhum |
 | `ases requirements show [workspace] <REQ-ID>` | Exibe origem, texto e critério de aceite | Nenhum |
+| `ases requirements set-status <workspace> <REQ-ID> <status>` | Atualiza estado do requisito | Grava catálogo local |
 
 Os demais comandos do documento-mestre são contratos planejados, não funcionalidades existentes. Eles somente serão documentados como disponíveis depois de implementados e testados.
 
@@ -202,6 +203,16 @@ ases requirements show ./meu-projeto REQ-001
 ```
 
 O importador exige exatamente `REQ-001..REQ-300`, sem lacunas ou duplicatas, registra SHA-256 e conserva o texto e o critério de aceite de cada requisito. O artefato é local em `.ases/catalogs/ases-300.json` e inicia como `IMPORTED_NOT_HOMOLOGATED`, pois a conversão Markdown ainda requer revisão contra o DOCX. A referência específica Eureka42 não é misturada ao catálogo geral.
+
+Estados podem ser atualizados com `PENDING`, `READY`, `IN_PROGRESS`, `IMPLEMENTED`, `VERIFIED`, `FAILED`, `BLOCKED` e `N_A`. `VERIFIED` exige `--evidence`; `N_A` exige `--na-reason`:
+
+```bash
+ases requirements set-status ./meu-projeto REQ-001 IMPLEMENTED
+ases requirements set-status ./meu-projeto REQ-001 VERIFIED --evidence "test:unit/req-001"
+ases requirements set-status ./meu-projeto REQ-002 N_A --na-reason "Capacidade fora do escopo aprovado nesta versão"
+```
+
+Referências textuais de evidência ficam registradas, mas o CLI ainda não valida automaticamente se o artefato apontado existe ou se comprova o critério.
 
 ## Entrevista inteligente de projeto
 

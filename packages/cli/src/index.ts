@@ -6,7 +6,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { renderLogo } from "./brand.js";
 import { runInterview } from "./interview.js";
-import { importAses300, readCatalog } from "./catalog.js";
+import { importAses300, readCatalog, updateRequirement } from "./catalog.js";
 
 export const VERSION = "0.0.0-dev";
 
@@ -40,6 +40,7 @@ Comandos disponíveis:
   config explain [path]   Explica valores e origens da configuração
   catalog import-ases300 <md> Importa e valida a fonte ASES-300 local
   requirements list|show  Consulta o catálogo ASES-300 importado
+  requirements set-status <workspace> <REQ-ID> <status> [--evidence ref|--na-reason texto]
   help                    Exibe esta ajuda
 
 Opções:
@@ -233,6 +234,20 @@ export async function run(argv: string[]): Promise<CommandResult> {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_CATALOG_UNAVAILABLE", error: message }, null, 2) : `Catálogo não disponível: ${message}\nImporte a fonte ASES-300 localmente primeiro.` };
+    }
+  }
+  if (command === "requirements" && args[1] === "set-status") {
+    try {
+      const status = args[4] as import("./catalog.js").GeneralRequirement["status"];
+      const allowed = ["PENDING", "READY", "IN_PROGRESS", "IMPLEMENTED", "VERIFIED", "FAILED", "BLOCKED", "N_A"];
+      if (!allowed.includes(status)) return { exitCode: 2, output: `Status inválido; use: ${allowed.join(", ")}` };
+      const evidenceIndex = argv.indexOf("--evidence");
+      const naIndex = argv.indexOf("--na-reason");
+      const requirement = await updateRequirement(args[2]!, args[3]!, status, { ...(evidenceIndex >= 0 ? { evidence: argv[evidenceIndex + 1] } : {}), ...(naIndex >= 0 ? { naReason: argv.slice(naIndex + 1).join(" ") } : {}) });
+      return { exitCode: 0, output: json ? JSON.stringify(requirement, null, 2) : `${requirement.id}: ${requirement.status}` };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_REQUIREMENT_UPDATE", error: message }, null, 2) : `Falha ao atualizar requisito: ${message}` };
     }
   }
   if (command === "host" && args[1] === "list") {
