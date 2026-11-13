@@ -12,7 +12,7 @@ export interface GeneralRequirement {
   acceptanceCriteria?: string;
   source: { path: string; sha256: string };
   status: "PENDING" | "READY" | "IN_PROGRESS" | "IMPLEMENTED" | "VERIFIED" | "FAILED" | "BLOCKED" | "N_A";
-  evidence?: Array<{ id: string; kind: string; description: string; sha256?: string; createdAt: string }>;
+  evidence?: Array<{ id: string; kind: string; description: string; sha256?: string; createdAt: string; integrity?: "CURRENT" | "STALE" | "MISSING" | "OUTSIDE_WORKSPACE" | "UNVERIFIABLE" }>;
   waiver?: { justification: string; createdAt: string };
   history?: Array<{ from: string; to: string; at: string }>;
 }
@@ -53,7 +53,34 @@ export async function importAses300(sourcePath: string, workspace: string): Prom
 }
 
 export async function readCatalog(workspace: string): Promise<{ source: { path: string; sha256: string }; requirements: GeneralRequirement[] }> {
-  return JSON.parse(await readFile(join(resolve(workspace), ".ases", "catalogs", "ases-300.json"), "utf8")) as { source: { path: string; sha256: string }; requirements: GeneralRequirement[] };
+  const catalog = JSON.parse(await readFile(join(resolve(workspace), ".ases", "catalogs", "ases-300.json"), "utf8")) as { source: { path: string; sha256: string }; requirements: GeneralRequirement[] };
+  const workspaceRoot = await realpath(resolve(workspace));
+  for (const requirement of catalog.requirements) {
+    for (const evidence of requirement.evidence ?? []) {
+      if (!evidence.sha256 || evidence.kind !== "workspace-file") {
+        evidence.integrity = "UNVERIFIABLE";
+        continue;
+      }
+      try {
+        const path = resolve(workspaceRoot, evidence.description);
+        const canonicalPath = await realpath(path);
+        const relativePath = relative(workspaceRoot, canonicalPath);
+        if (isAbsolute(evidence.description) || !relativePath || relativePath === ".." || relativePath.startsWith(`..${sep}`) || isAbsolute(relativePath)) {
+          evidence.integrity = "OUTSIDE_WORKSPACE";
+          continue;
+        }
+        if (!(await stat(canonicalPath)).isFile()) {
+          evidence.integrity = "UNVERIFIABLE";
+          continue;
+        }
+        const currentHash = createHash("sha256").update(await readFile(canonicalPath)).digest("hex");
+        evidence.integrity = currentHash === evidence.sha256 ? "CURRENT" : "STALE";
+      } catch (error) {
+        evidence.integrity = (error as NodeJS.ErrnoException).code === "ENOENT" ? "MISSING" : "UNVERIFIABLE";
+      }
+    }
+  }
+  return catalog;
 }
 
 export async function updateRequirement(workspace: string, id: string, status: GeneralRequirement["status"], options: { evidence?: string; naReason?: string }): Promise<GeneralRequirement> {

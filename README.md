@@ -208,11 +208,11 @@ Estados podem ser atualizados com `PENDING`, `READY`, `IN_PROGRESS`, `IMPLEMENTE
 
 ```bash
 ases requirements set-status ./meu-projeto REQ-001 IMPLEMENTED
-ases requirements set-status ./meu-projeto REQ-001 VERIFIED --evidence "test:unit/req-001"
+ases requirements set-status ./meu-projeto REQ-001 VERIFIED --evidence "evidence/resultado-teste.txt"
 ases requirements set-status ./meu-projeto REQ-002 N_A --na-reason "Capacidade fora do escopo aprovado nesta versão"
 ```
 
-Referências textuais de evidência ficam registradas, mas o CLI ainda não valida automaticamente se o artefato apontado existe ou se comprova o critério.
+Para `VERIFIED`, `--evidence` deve apontar para um arquivo regular existente dentro do workspace. O CLI calcula SHA-256 e rejeita caminhos externos e links simbólicos que escapem do workspace. `requirements show` recalcula a integridade e marca a evidência como `CURRENT`, `STALE`, `MISSING`, `OUTSIDE_WORKSPACE` ou `UNVERIFIABLE`; isso identifica mudanças no arquivo, mas não avalia se o conteúdo comprova semanticamente o critério de aceite.
 
 ## Entrevista inteligente de projeto
 
