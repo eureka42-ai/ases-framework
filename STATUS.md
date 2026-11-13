@@ -8,7 +8,7 @@ Atualizado em: 2026-11-13
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
 - Repositório Git: branch `main`; fluxo de entrevista com identidade antes das perguntas, pendente de commit/push
 - Fonte diretora: presente e lida
-- ASES-300: DOCX original de trabalho e conversão Markdown presentes; importador local verificou 300 IDs; fidelidade da conversão ainda requer revisão.
+- ASES-300: DOCX e conversão Markdown presentes localmente; revisão estrutural preliminar confirmou 300 IDs/títulos e hashes íntegros; conferência visual/editorial ainda pendente.
 - ASES-500 separado: consolidação presente como reconstrução para validação; original independente ausente e homologação pendente.
 - Publicação: NOT_AUTHORIZED
 
@@ -71,4 +71,5 @@ Atualizado em: 2026-11-13
 
 - `evidence/M0-M1-2026-11-13.md`
 - `evidence/M1-2026-11-13-progress-2.md`
+- `evidence/ASES-300-markdown-structure-review-2026-11-13.md`
 
