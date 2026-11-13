@@ -42,21 +42,25 @@ export async function loadAnswers(path: string): Promise<InterviewAnswers> {
   };
 }
 
+export async function collectInterviewAnswers(ask: (question: string) => Promise<string>, announce: () => void = () => {}): Promise<InterviewAnswers> {
+  announce();
+  const name = (await ask("Nome do aplicativo: ")).trim();
+  let applicationType = parseApplicationType(await ask(`Tipo (${APPLICATION_TYPES.join("/ ")}): `));
+  while (!applicationType) applicationType = parseApplicationType(await ask(`Escolha um tipo válido (${APPLICATION_TYPES.join("/ ")}): `));
+  const language = (await ask("Linguagem já escolhida? (Enter para receber sugestão): ")).trim() || undefined;
+  const hosting = (await ask("Hospedagem já escolhida? (Enter para receber sugestão): ")).trim() || undefined;
+  const database = (await ask("Banco de dados já escolhido? (Enter para receber sugestão): ")).trim() || undefined;
+  const expectedScale = scale(await ask("Escala esperada (small/medium/large) [small]: "));
+  const sensitiveData = yes(await ask("Tratará dados pessoais ou sensíveis? (s/N): "));
+  return { name: name || "Novo aplicativo", applicationType, ...(language ? { language } : {}), ...(hosting ? { hosting } : {}), ...(database ? { database } : {}), expectedScale, sensitiveData };
+}
+
 export async function promptAnswers(streams: { input?: NodeJS.ReadableStream; output?: NodeJS.WritableStream } = {}): Promise<InterviewAnswers> {
   const inputStream = streams.input ?? input;
   const outputStream = streams.output ?? output;
   const rl = createInterface({ input: inputStream, output: outputStream });
-  outputStream.write(`${renderLogo()}\n\n`);
   try {
-    const name = (await rl.question("Nome do aplicativo: ")).trim();
-    let applicationType = parseApplicationType(await rl.question(`Tipo (${APPLICATION_TYPES.join("/ ")}): `));
-    while (!applicationType) applicationType = parseApplicationType(await rl.question(`Escolha um tipo válido (${APPLICATION_TYPES.join("/ ")}): `));
-    const language = (await rl.question("Linguagem já escolhida? (Enter para receber sugestão): ")).trim() || undefined;
-    const hosting = (await rl.question("Hospedagem já escolhida? (Enter para receber sugestão): ")).trim() || undefined;
-    const database = (await rl.question("Banco de dados já escolhido? (Enter para receber sugestão): ")).trim() || undefined;
-    const expectedScale = scale(await rl.question("Escala esperada (small/medium/large) [small]: "));
-    const sensitiveData = yes(await rl.question("Tratará dados pessoais ou sensíveis? (s/N): "));
-    return { name: name || "Novo aplicativo", applicationType, ...(language ? { language } : {}), ...(hosting ? { hosting } : {}), ...(database ? { database } : {}), expectedScale, sensitiveData };
+    return await collectInterviewAnswers((question) => rl.question(question), () => { outputStream.write(`${renderLogo()}\n\n`); });
   } finally {
     rl.close();
   }

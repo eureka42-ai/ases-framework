@@ -4,7 +4,8 @@ import { writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { run, validateConfig, VERSION } from "./index.js";
+import { checkNodeVersion, run, validateConfig, VERSION } from "./index.js";
+import { collectInterviewAnswers } from "./interview.js";
 
 test("reports version offline", async () => {
   assert.deepEqual(await run(["--version"]), { exitCode: 0, output: VERSION });
@@ -33,6 +34,12 @@ test("validates project config", () => {
   assert.ok(validateConfig({ schemaVersion: "2", project: {} }).length > 0);
   assert.match(validateConfig({ schemaVersion: "1", unexpected: true, project: { id: "demo", name: "Demo", locale: "pt-BR", mode: "host", privacy: "local-only" } })[0]!, /propriedade não permitida/);
   assert.match(validateConfig({ schemaVersion: "1", project: { id: "demo", name: "Demo", locale: "pt-BR", mode: "host", privacy: "local-only", token: "secret" } })[0]!, /propriedade project não permitida/);
+});
+
+test("doctor enforces the declared Node.js engine floor", () => {
+  assert.deepEqual(checkNodeVersion("22.0.0"), { status: "pass" });
+  assert.match(checkNodeVersion("20.18.1").remediation ?? "", /Node.js 22 ou superior/);
+  assert.equal(checkNodeVersion("unknown").status, "warn");
 });
 
 test("keeps documented CLI error exit codes stable", async () => {
@@ -146,6 +153,18 @@ test("JSON interview requires an answers file", async () => {
   const result = await run(["interview", "--json"]);
   assert.equal(result.exitCode, 2);
   assert.equal(JSON.parse(result.output).code, "ASES_INTERVIEW_JSON_REQUIRES_ANSWERS");
+});
+
+test("interactive interview announces Eureka42 before the first question", async () => {
+  const events: string[] = [];
+  const responses = ["Portal", "web", "", "", "", "small", "n"];
+  const answers = await collectInterviewAnswers(async (question) => {
+    events.push(`question:${question}`);
+    return responses.shift() ?? "";
+  }, () => events.push("logo:EUREKA42 ASES"));
+  assert.equal(answers.applicationType, "web");
+  assert.match(events[0]!, /^logo:/);
+  assert.match(events[1]!, /^question:Nome do aplicativo/);
 });
 
 test("interview recommends missing stack and persists proposal", async () => {

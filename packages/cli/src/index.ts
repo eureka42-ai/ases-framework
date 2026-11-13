@@ -96,6 +96,13 @@ export function validateConfig(value: unknown): string[] {
   return errors;
 }
 
+export function checkNodeVersion(version: string): { status: "pass" | "warn"; remediation?: string } {
+  const major = Number(version.match(/^(\d+)/)?.[1]);
+  return Number.isFinite(major) && major >= 22
+    ? { status: "pass" }
+    : { status: "warn", remediation: "Instale Node.js 22 ou superior, conforme engines.node do projeto." };
+}
+
 async function initProject(rootArg: string | undefined, dryRun: boolean, json: boolean): Promise<CommandResult> {
   const root = resolve(rootArg ?? process.cwd());
   const name = basename(root);
@@ -136,8 +143,10 @@ async function doctor(rootArg: string | undefined, json: boolean): Promise<Comma
   const pnpm = await detectCommand("pnpm", ["--version"]);
   const workspaceExists = await exists(root);
   const configExists = await exists(join(root, ".ases", "config.json"));
+  const nodeVersion = process.versions.node;
+  const nodeSupport = checkNodeVersion(nodeVersion);
   const checks = [
-    { id: "node", status: "pass", detail: process.version },
+    { id: "node", status: nodeSupport.status, detail: `v${nodeVersion}`, ...(nodeSupport.remediation ? { remediation: nodeSupport.remediation } : {}) },
     { id: "platform", status: "pass", detail: `${platform()} ${release()}` },
     { id: "git", status: git.available ? "pass" : "warn", detail: git.detail, ...(git.available ? {} : { remediation: "Instale o Git ou adicione o executável ao PATH." }) },
     { id: "npm", status: npm.available ? "pass" : "warn", detail: npm.detail, ...(npm.available ? {} : { remediation: "Instale Node.js com npm ou adicione o executável ao PATH." }) },

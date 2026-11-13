@@ -48,10 +48,10 @@ requirements:
     summary: "`ases doctor` identificar ambiente, riscos e instruções corretivas."
     acceptanceCriteria:
       - id: AC-AFR-004-01
-        description: "ases doctor informa versão de Node, sistema, Git/npm/pnpm, existência do workspace e configuração ASES; cada dependência ausente ou estado corrigível inclui uma próxima ação em JSON e texto."
+        description: "ases doctor informa versão de Node, sistema, Git/npm/pnpm, existência do workspace e configuração ASES; marca Node abaixo de engines.node (22) e cada dependência ausente/estado corrigível com próxima ação em JSON e texto."
         verification: "automated-or-reviewed"
     artifacts: ["packages/cli/src/index.ts"]
-    tests: ["packages/cli/src/index.test.ts :: doctor reports local runtime tools"]
+    tests: ["packages/cli/src/index.test.ts :: doctor reports local runtime tools", "packages/cli/src/index.test.ts :: doctor enforces the declared Node.js engine floor", "packages/cli/src/index.test.ts :: doctor provides repair instructions when PATH tools are missing"]
   - id: AFR-005
     priority: P0
     milestone: "M1"

@@ -29,7 +29,7 @@ Atualizado em: 2026-11-13
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (17/17) em 2026-11-13; `pnpm test` também compilou TypeScript e validou as integrações.
+- Testes unitários: PASS (19/19) em 2026-11-13; `pnpm test` também compilou TypeScript e validou as integrações.
 - Manifests/Skills locais: PASS (3 manifests, 5 Skills).
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
@@ -43,7 +43,7 @@ Atualizado em: 2026-11-13
 - Ciclo de estados ASES-300 implementado; `VERIFIED` exige arquivo local dentro do workspace, calcula SHA-256, e `N_A` exige justificativa; histórico de transições mantido.
 - Validação de evidências resolve caminhos reais e rejeita links simbólicos para fora do workspace; apenas arquivos regulares podem comprovar `VERIFIED`.
 - `requirements show/list` recalculam integridade de evidências (`CURRENT`, `STALE`, `MISSING`, `OUTSIDE_WORKSPACE`, `UNVERIFIABLE`); README documenta limites da checagem semântica.
-- Testes: 17/17 PASS; incluem resolução de configuração, não exposição de valores secretos, diagnóstico corretivo, SHA-256, histórico, `N_A`, rejeição de caminhos externos/symlinks e mudanças/remoções de evidência.
+- Testes: 19/19 PASS; incluem piso Node.js declarado, ordem da identidade na entrevista, resolução de configuração, não exposição de valores secretos, diagnóstico corretivo, SHA-256, histórico, `N_A`, rejeição de caminhos externos/symlinks e mudanças/remoções de evidência.
 - Parser ASES-300: classificação e prioridade agora são extraídas separadamente quando aparecem na mesma linha; regressão automatizada PASS.
 - Validadores de integração: PASS (3 manifests, 5 Skills).
 - Validação host nesta rodada: Claude `--strict` schema válido com requisito de licença apontado; Gemini extension PASS; manifests e Skills locais PASS; sessões interativas ainda pendentes.
