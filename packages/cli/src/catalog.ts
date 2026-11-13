@@ -12,8 +12,9 @@ export interface GeneralRequirement {
   acceptanceCriteria?: string;
   source: { path: string; sha256: string };
   status: "PENDING" | "READY" | "IN_PROGRESS" | "IMPLEMENTED" | "VERIFIED" | "FAILED" | "BLOCKED" | "N_A";
-  evidence?: Array<{ id: string; kind: string; description: string; createdAt: string }>;
+  evidence?: Array<{ id: string; kind: string; description: string; sha256?: string; createdAt: string }>;
   waiver?: { justification: string; createdAt: string };
+  history?: Array<{ from: string; to: string; at: string }>;
 }
 
 export async function importAses300(sourcePath: string, workspace: string): Promise<{ count: number; hash: string; output: string }> {
@@ -60,10 +61,17 @@ export async function updateRequirement(workspace: string, id: string, status: G
   const catalog = JSON.parse(await readFile(path, "utf8")) as { source: { path: string; sha256: string }; requirements: GeneralRequirement[] };
   const requirement = catalog.requirements.find((item) => item.id === id);
   if (!requirement) throw new Error(`Requisito inexistente: ${id}`);
-  if (status === "VERIFIED" && !options.evidence?.trim()) throw new Error("VERIFIED exige --evidence com referência verificável");
+  if (status === "VERIFIED" && !options.evidence?.trim()) throw new Error("VERIFIED exige --evidence com caminho de arquivo existente dentro do workspace");
   if (status === "N_A" && !options.naReason?.trim()) throw new Error("N_A exige --na-reason");
-  if (status === "VERIFIED") requirement.evidence = [...(requirement.evidence ?? []), { id: `EVD-${Date.now()}`, kind: "user-reference", description: options.evidence!.trim(), createdAt: new Date().toISOString() }];
+  if (status === "VERIFIED") {
+    const workspaceRoot = resolve(workspace);
+    const evidencePath = resolve(workspaceRoot, options.evidence!.trim());
+    if (!evidencePath.startsWith(`${workspaceRoot}/`)) throw new Error("A evidência precisa estar dentro do workspace");
+    const evidenceBytes = await readFile(evidencePath);
+    requirement.evidence = [...(requirement.evidence ?? []), { id: `EVD-${Date.now()}`, kind: "workspace-file", description: options.evidence!.trim(), sha256: createHash("sha256").update(evidenceBytes).digest("hex"), createdAt: new Date().toISOString() }];
+  }
   if (status === "N_A") requirement.waiver = { justification: options.naReason!.trim(), createdAt: new Date().toISOString() };
+  requirement.history = [...(requirement.history ?? []), { from: requirement.status, to: status, at: new Date().toISOString() }];
   requirement.status = status;
   await writeFile(path, `${JSON.stringify({ schemaVersion: "1", catalog: "ases-300", source: catalog.source, status: "IMPORTED_NOT_HOMOLOGATED", requirements: catalog.requirements }, null, 2)}\n`);
   return requirement;

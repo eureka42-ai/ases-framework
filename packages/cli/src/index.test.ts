@@ -101,8 +101,12 @@ test("catalog status requires evidence for VERIFIED and rationale for N_A", asyn
   assert.equal((await run(["catalog", "import-ases300", md, root, "--json"])).exitCode, 0);
   assert.equal((await run(["requirements", "set-status", root, "REQ-001", "VERIFIED", "--json"])).exitCode, 5);
   assert.equal((await run(["requirements", "set-status", root, "REQ-001", "N_A", "--json"])).exitCode, 5);
-  const accepted = await run(["requirements", "set-status", root, "REQ-001", "VERIFIED", "--evidence", "test:unit/req-001", "--json"]);
+  await writeFile(join(root, "evidence.txt"), "test evidence");
+  const accepted = await run(["requirements", "set-status", root, "REQ-001", "VERIFIED", "--evidence", "evidence.txt", "--json"]);
   assert.equal(accepted.exitCode, 0);
   assert.equal(JSON.parse(accepted.output).status, "VERIFIED");
+  assert.match(JSON.parse(accepted.output).evidence[0].sha256, /^[a-f0-9]{64}$/);
+  const outside = await run(["requirements", "set-status", root, "REQ-002", "VERIFIED", "--evidence", "../outside.txt", "--json"]);
+  assert.equal(outside.exitCode, 5);
 });
 

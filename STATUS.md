@@ -6,7 +6,7 @@ Atualizado em: 2026-11-13
 
 - M0: IMPLEMENTED / PARTIALLY_VERIFIED
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
-- Repositório Git: branch `main`; atualizações locais pendentes de push
+- Repositório Git: branch `main`; alterações desta etapa pendentes de push
 - Fonte diretora: presente e lida
 - ASES-300: DOCX original de trabalho e conversão Markdown presentes; importador local verificou 300 IDs; fidelidade da conversão ainda requer revisão.
 - ASES-500 separado: consolidação presente como reconstrução para validação; original independente ausente e homologação pendente.
@@ -38,7 +38,7 @@ Atualizado em: 2026-11-13
 - Importador ASES-300 implementado; grava catálogo por workspace com hash e textos dos requisitos.
 - `ases requirements list/show` implementados para catálogo importado.
 - Importação real da fonte local: PASS; 300 itens, SHA-256 `22e439ea514e1f365d3611a8644aac861f8c739054f8c35084a0e94e30302314`.
-- Ciclo inicial de estados ASES-300 implementado; `VERIFIED` exige evidência referenciada e `N_A` justificativa.
+- Ciclo de estados ASES-300 implementado; `VERIFIED` exige arquivo local dentro do workspace, calcula SHA-256, e `N_A` exige justificativa; histórico de transições mantido.
 - Testes: 11/11 PASS; validadores de integração: PASS.
 
 ## Próximas tarefas READY
@@ -53,7 +53,7 @@ Atualizado em: 2026-11-13
 
 - A conversão ASES-300 requer revisão contra o DOCX antes de declarar o catálogo homologado.
 - O original independente ASES-500 não foi localizado; a consolidação permanece reconstrução para validação.
-- Evidências são referências declarativas nesta versão; verificação automática do artefato e obsolescência por mudanças ainda não implementadas.
+- Evidências são verificadas na gravação; detecção posterior de obsolescência por mudanças no código ainda não implementada.
 - A licença/copyright do software, metodologia e marca não foi aprovada; não é possível finalizar distribuição pública dos plugins.
 - Os quatro executáveis de host foram detectados, mas detecção não prova descoberta e execução do plugin em sessão real.
 - O roadmap completo M0–M14 é maior que o vertical slice atual; componentes não construídos continuam `PLANNED` ou `NOT_IMPLEMENTED`.
