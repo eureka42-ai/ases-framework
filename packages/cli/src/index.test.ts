@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile } from "node:fs/promises";
+import { mkdtemp, readFile, symlink } from "node:fs/promises";
 import { writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -109,6 +109,12 @@ test("catalog status requires evidence for VERIFIED and rationale for N_A", asyn
   assert.equal(JSON.parse(accepted.output).history.length, 1);
   const outside = await run(["requirements", "set-status", root, "REQ-002", "VERIFIED", "--evidence", "../outside.txt", "--json"]);
   assert.equal(outside.exitCode, 5);
+  const externalRoot = await mkdtemp(join(tmpdir(), "ases-outside-evidence-"));
+  const externalEvidence = join(externalRoot, "evidence.txt");
+  await writeFile(externalEvidence, "external evidence");
+  await symlink(externalEvidence, join(root, "linked-evidence.txt"));
+  const linked = await run(["requirements", "set-status", root, "REQ-002", "VERIFIED", "--evidence", "linked-evidence.txt", "--json"]);
+  assert.equal(linked.exitCode, 5);
 });
 
 test("imports classification and priority when both share a source line", async () => {

@@ -6,7 +6,7 @@ Atualizado em: 2026-11-13
 
 - M0: IMPLEMENTED / PARTIALLY_VERIFIED
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
-- Repositório Git: branch `main`; correção do parser e regressão local nesta rodada, pendentes de commit/push
+- Repositório Git: branch `main`; correção de parser e validação de evidências desta rodada, pendentes de commit/push
 - Fonte diretora: presente e lida
 - ASES-300: DOCX original de trabalho e conversão Markdown presentes; importador local verificou 300 IDs; fidelidade da conversão ainda requer revisão.
 - ASES-500 separado: consolidação presente como reconstrução para validação; original independente ausente e homologação pendente.
@@ -39,6 +39,7 @@ Atualizado em: 2026-11-13
 - `ases requirements list/show` implementados para catálogo importado.
 - Importação real da fonte local: PASS; 300 itens, SHA-256 `22e439ea514e1f365d3611a8644aac861f8c739054f8c35084a0e94e30302314`.
 - Ciclo de estados ASES-300 implementado; `VERIFIED` exige arquivo local dentro do workspace, calcula SHA-256, e `N_A` exige justificativa; histórico de transições mantido.
+- Validação de evidências resolve caminhos reais e rejeita links simbólicos para fora do workspace; apenas arquivos regulares podem comprovar `VERIFIED`.
 - Testes de estado do catálogo: evidência com SHA-256, histórico de transição, justificativa para `N_A` e rejeição de caminhos externos cobertos.
 - Parser ASES-300: classificação e prioridade agora são extraídas separadamente quando aparecem na mesma linha; regressão automatizada PASS.
 - Validadores de integração: PASS (3 manifests, 5 Skills).

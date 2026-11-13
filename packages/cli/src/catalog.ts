@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
-import { readFile, mkdir, writeFile } from "node:fs/promises";
-import { basename, dirname, join, resolve } from "node:path";
+import { readFile, mkdir, realpath, stat, writeFile } from "node:fs/promises";
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 
 export interface GeneralRequirement {
   id: string;
@@ -64,10 +64,16 @@ export async function updateRequirement(workspace: string, id: string, status: G
   if (status === "VERIFIED" && !options.evidence?.trim()) throw new Error("VERIFIED exige --evidence com caminho de arquivo existente dentro do workspace");
   if (status === "N_A" && !options.naReason?.trim()) throw new Error("N_A exige --na-reason");
   if (status === "VERIFIED") {
-    const workspaceRoot = resolve(workspace);
+    const workspaceRoot = await realpath(resolve(workspace));
     const evidencePath = resolve(workspaceRoot, options.evidence!.trim());
-    if (!evidencePath.startsWith(`${workspaceRoot}/`)) throw new Error("A evidência precisa estar dentro do workspace");
-    const evidenceBytes = await readFile(evidencePath);
+    if (isAbsolute(options.evidence!.trim())) throw new Error("A evidência precisa estar dentro do workspace");
+    const canonicalEvidencePath = await realpath(evidencePath);
+    const evidenceRelativePath = relative(workspaceRoot, canonicalEvidencePath);
+    if (!evidenceRelativePath || evidenceRelativePath === ".." || evidenceRelativePath.startsWith(`..${sep}`) || isAbsolute(evidenceRelativePath)) {
+      throw new Error("A evidência precisa estar dentro do workspace");
+    }
+    if (!(await stat(canonicalEvidencePath)).isFile()) throw new Error("A evidência precisa ser um arquivo regular");
+    const evidenceBytes = await readFile(canonicalEvidencePath);
     requirement.evidence = [...(requirement.evidence ?? []), { id: `EVD-${Date.now()}`, kind: "workspace-file", description: options.evidence!.trim(), sha256: createHash("sha256").update(evidenceBytes).digest("hex"), createdAt: new Date().toISOString() }];
   }
   if (status === "N_A") requirement.waiver = { justification: options.naReason!.trim(), createdAt: new Date().toISOString() };
