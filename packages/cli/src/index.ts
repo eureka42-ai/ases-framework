@@ -6,6 +6,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { renderLogo } from "./brand.js";
 import { runInterview } from "./interview.js";
+import { importAses300, readCatalog } from "./catalog.js";
 
 export const VERSION = "0.0.0-dev";
 
@@ -37,6 +38,8 @@ Comandos disponíveis:
   doctor [diretório]      Diagnostica o ambiente sem chamadas remotas
   config validate [path]  Valida a configuração JSON do projeto
   config explain [path]   Explica valores e origens da configuração
+  catalog import-ases300 <md> Importa e valida a fonte ASES-300 local
+  requirements list|show  Consulta o catálogo ASES-300 importado
   help                    Exibe esta ajuda
 
 Opções:
@@ -210,6 +213,28 @@ export async function run(argv: string[]): Promise<CommandResult> {
     }
   }
   if (command === "doctor") return doctor(args[1], json);
+  if (command === "catalog" && args[1] === "import-ases300") {
+    try {
+      if (!args[2]) return { exitCode: 2, output: "Uso: ases catalog import-ases300 <arquivo.md> [workspace]" };
+      const result = await importAses300(args[2], args[3] ?? process.cwd());
+      return { exitCode: 0, output: json ? JSON.stringify({ ...result, status: "IMPORTED_NOT_HOMOLOGATED" }, null, 2) : `Importados ${result.count} requisitos; fonte ${result.hash}; status IMPORTED_NOT_HOMOLOGATED; saída ${result.output}` };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_CATALOG_IMPORT", error: message }, null, 2) : `Falha ao importar catálogo: ${message}` };
+    }
+  }
+  if (command === "requirements" && (args[1] === "list" || args[1] === "show")) {
+    try {
+      const catalog = await readCatalog(args[2] ?? process.cwd());
+      const selected = args[1] === "show" ? catalog.requirements.filter((item) => item.id === args[3]) : catalog.requirements;
+      if (args[1] === "show" && selected.length === 0) return { exitCode: 2, output: json ? JSON.stringify({ code: "ASES_REQUIREMENT_NOT_FOUND", id: args[3] }) : `Requisito não encontrado: ${args[3]}` };
+      const result = { catalog: "ases-300", status: "IMPORTED_NOT_HOMOLOGATED", source: catalog.source, requirements: selected.map((item) => args[1] === "list" ? { id: item.id, title: item.title, status: item.status } : item) };
+      return { exitCode: 0, output: json ? JSON.stringify(result, null, 2) : selected.map((item) => `${item.id} — ${item.title} [${item.status}]${args[1] === "show" ? `\n${item.acceptanceCriteria ?? item.sourceText}` : ""}`).join("\n") };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_CATALOG_UNAVAILABLE", error: message }, null, 2) : `Catálogo não disponível: ${message}\nImporte a fonte ASES-300 localmente primeiro.` };
+    }
+  }
   if (command === "host" && args[1] === "list") {
     const definitions = [
       { id: "codex", command: "codex", integration: "integrations/codex" },

@@ -6,9 +6,9 @@ Atualizado em: 2026-11-13
 
 - M0: IMPLEMENTED / PARTIALLY_VERIFIED
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
-- Repositório Git: branch `main`, commits locais e remote Eureka42 sincronizado até `f278b15`
+- Repositório Git: branch `main`; atualizações locais pendentes de push
 - Fonte diretora: presente e lida
-- ASES-300: DOCX original de trabalho e conversão Markdown presentes; 300 IDs documentados no manifesto; fidelidade de conversão ainda requer revisão.
+- ASES-300: DOCX original de trabalho e conversão Markdown presentes; importador local verificou 300 IDs; fidelidade da conversão ainda requer revisão.
 - ASES-500 separado: consolidação presente como reconstrução para validação; original independente ausente e homologação pendente.
 - Publicação: NOT_AUTHORIZED
 
@@ -35,6 +35,9 @@ Atualizado em: 2026-11-13
 - Backlog AFR-001..140: gerado em YAML com IDs preservados; critérios permanecem DRAFT e precisam ser refinados por incremento.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
+- Importador ASES-300 implementado; grava catálogo por workspace com hash e textos dos requisitos.
+- `ases requirements list/show` implementados para catálogo importado.
+- Importação real da fonte local: PASS; 300 itens, SHA-256 `22e439ea514e1f365d3611a8644aac861f8c739054f8c35084a0e94e30302314`.
 
 ## Próximas tarefas READY
 
@@ -46,7 +49,8 @@ Atualizado em: 2026-11-13
 
 ## Bloqueios de conclusão integral
 
-- O documento-fonte ASES-300 e a fonte independente ASES-500 não estão neste workspace; não é possível certificar ou popular o catálogo real sem esses documentos.
+- A conversão ASES-300 requer revisão contra o DOCX antes de declarar o catálogo homologado.
+- O original independente ASES-500 não foi localizado; a consolidação permanece reconstrução para validação.
 - A licença/copyright do software, metodologia e marca não foi aprovada; não é possível finalizar distribuição pública dos plugins.
 - Os quatro executáveis de host foram detectados, mas detecção não prova descoberta e execução do plugin em sessão real.
 - O roadmap completo M0–M14 é maior que o vertical slice atual; componentes não construídos continuam `PLANNED` ou `NOT_IMPLEMENTED`.

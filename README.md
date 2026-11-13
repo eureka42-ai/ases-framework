@@ -183,8 +183,25 @@ ases config explain ./meu-projeto/.ases/config.json --json
 | `ases config validate [path]` | Valida o contrato inicial da config | Nenhum |
 | `ases config explain [path]` | Mostra valores e suas origens | Nenhum |
 | `ases host list` | Detecta Codex, Claude, Kimi e Gemini instalados | Nenhum |
+| `ases catalog import-ases300 <md> [workspace]` | Valida 300 IDs e importa o catálogo geral | Grava `.ases/catalogs/ases-300.json` |
+| `ases requirements list [workspace]` | Lista requisitos gerais importados | Nenhum |
+| `ases requirements show [workspace] <REQ-ID>` | Exibe origem, texto e critério de aceite | Nenhum |
 
 Os demais comandos do documento-mestre são contratos planejados, não funcionalidades existentes. Eles somente serão documentados como disponíveis depois de implementados e testados.
+
+### Importar a fonte ASES-300
+
+As fontes locais estão organizadas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`. Importe a conversão Markdown para um workspace:
+
+```bash
+ases catalog import-ases300 \
+  ./FONTES_ASES_PARA_DESKTOP_FRAMEWORK/markdown/ASES-300_DOCUMENTACAO_INTEGRAL.md \
+  ./meu-projeto
+ases requirements list ./meu-projeto
+ases requirements show ./meu-projeto REQ-001
+```
+
+O importador exige exatamente `REQ-001..REQ-300`, sem lacunas ou duplicatas, registra SHA-256 e conserva o texto e o critério de aceite de cada requisito. O artefato é local em `.ases/catalogs/ases-300.json` e inicia como `IMPORTED_NOT_HOMOLOGATED`, pois a conversão Markdown ainda requer revisão contra o DOCX. A referência específica Eureka42 não é misturada ao catálogo geral.
 
 ## Entrevista inteligente de projeto
 
