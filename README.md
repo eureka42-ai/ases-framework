@@ -82,8 +82,8 @@ O projeto ainda não possui pacote público. Clone o repositório e execute a pa
 ```bash
 git clone https://github.com/eureka42-ai/ases-framework.git
 cd ases-framework
-npm ci
-npm test
+corepack pnpm install --frozen-lockfile
+corepack pnpm test
 ```
 
 Para executar o CLI construído:
@@ -105,16 +105,13 @@ ases --version
 
 ### Desenvolvimento com pnpm
 
-`pnpm` é o gerenciador-alvo do monorepo. Enquanto o lockfile definitivo do pnpm não for promovido neste repositório, `npm ci` é o caminho reproduzível verificado. Quando a migração do lockfile for concluída, o fluxo previsto será:
+`pnpm@10.20.0` é fixado em `package.json` e `pnpm-lock.yaml`; Corepack seleciona essa versão. O fluxo reproduzível verificado é:
 
 ```bash
-corepack enable
-pnpm install --frozen-lockfile
-pnpm build
-pnpm test
+corepack pnpm install --frozen-lockfile
+corepack pnpm build
+corepack pnpm test
 ```
-
-Não use `--frozen-lockfile` antes de existir um `pnpm-lock.yaml` validado neste repositório.
 
 ## Primeiro uso
 
@@ -404,14 +401,12 @@ Artefatos de integração não serão instalados em configurações globais sem 
 
 ### `pnpm` tenta acessar a rede ou não está instalado
 
-Use o caminho atualmente verificado:
+Confirme acesso ao registry na primeira instalação e use o lockfile congelado:
 
 ```bash
-npm ci
-npm test
+corepack pnpm install --frozen-lockfile
+corepack pnpm test
 ```
-
-Não altere configurações globais do Corepack apenas para contornar um ambiente restrito.
 
 ### `ases: command not found`
 

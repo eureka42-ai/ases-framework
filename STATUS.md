@@ -26,9 +26,9 @@ Atualizado em: 2026-11-13
 - Integrações experimentais criadas para Codex, Claude Code, Kimi Code CLI e Gemini CLI.
 - Hosts locais detectados: Codex 0.167.2, Claude Code 2.1.323, Kimi 2.5.3 e Gemini 0.42.0.
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
-- Dependências de desenvolvimento instaladas; `package-lock.json` gerado pelo npm como bootstrap enquanto o pnpm não está ativado.
+- Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (13/13) em 2026-11-13; `npm test` também compilou TypeScript e validou as integrações.
+- Testes unitários: PASS (13/13) em 2026-11-13; `pnpm test` também compilou TypeScript e validou as integrações.
 - Manifests/Skills locais: PASS (3 manifests, 5 Skills).
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
@@ -53,11 +53,10 @@ Atualizado em: 2026-11-13
 
 ## Próximas tarefas READY
 
-1. Migrar o lockfile para pnpm quando o Corepack/pnpm estiver disponível e repetir a suite congelada.
-2. Refinar critérios de aceite dos AFRs escolhidos para M1 e ligar testes/artefatos.
-3. Implementar resolução de defaults, projeto, ambiente e flags sem expor secrets.
-4. Testar instalação/descoberta das integrações em sessões descartáveis dos quatro hosts.
-5. Prosseguir a entrevista com personas, autenticação, integrações, observabilidade e critérios de aceite.
+1. Refinar critérios de aceite dos AFRs escolhidos para M1 e ligar testes/artefatos.
+2. Implementar resolução de defaults, projeto, ambiente e flags sem expor secrets.
+3. Testar instalação/descoberta das integrações em sessões descartáveis dos quatro hosts.
+4. Prosseguir a entrevista com personas, autenticação, integrações, observabilidade e critérios de aceite.
 
 ## Bloqueios de conclusão integral
 
