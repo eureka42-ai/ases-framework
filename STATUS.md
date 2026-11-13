@@ -6,7 +6,7 @@ Atualizado em: 2026-11-13
 
 - M0: IMPLEMENTED / PARTIALLY_VERIFIED
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
-- Repositório Git: inicializado, sem commit criado
+- Repositório Git: branch `main`, commits locais e remote Eureka42 sincronizado até `f278b15`
 - Fonte diretora: presente e lida
 - ASES-300: SOURCE_MISSING
 - ASES-500 separado: SOURCE_MISSING / VALIDATION_REQUIRED
@@ -29,7 +29,7 @@ Atualizado em: 2026-11-13
 - Build TypeScript strict: PASS.
 - Testes unitários: PASS (10/10).
 - Manifests/Skills locais: PASS (3 manifests, 5 Skills).
-- Claude plugin validator: PASS; publicação bloqueada pela licença ainda não escolhida.
+- Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
 - `npm pack` + instalação do tarball + execução de `ases --version` e `init --dry-run --json`: PASS.
 - Backlog AFR-001..140: gerado em YAML com IDs preservados; critérios permanecem DRAFT e precisam ser refinados por incremento.
@@ -41,6 +41,13 @@ Atualizado em: 2026-11-13
 3. Implementar resolução de defaults, projeto, ambiente e flags sem expor secrets.
 4. Testar instalação/descoberta das integrações em sessões descartáveis dos quatro hosts.
 5. Prosseguir a entrevista com personas, autenticação, integrações, observabilidade e critérios de aceite.
+
+## Bloqueios de conclusão integral
+
+- O documento-fonte ASES-300 e a fonte independente ASES-500 não estão neste workspace; não é possível certificar ou popular o catálogo real sem esses documentos.
+- A licença/copyright do software, metodologia e marca não foi aprovada; não é possível finalizar distribuição pública dos plugins.
+- Os quatro executáveis de host foram detectados, mas detecção não prova descoberta e execução do plugin em sessão real.
+- O roadmap completo M0–M14 é maior que o vertical slice atual; componentes não construídos continuam `PLANNED` ou `NOT_IMPLEMENTED`.
 
 ## Evidências
 

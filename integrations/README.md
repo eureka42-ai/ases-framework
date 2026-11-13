@@ -1,6 +1,6 @@
 # Host integrations
 
-Status geral: `EXPERIMENTAL / NOT_TESTED_IN_HOST`.
+Status geral: `EXPERIMENTAL`. Os manifests de Claude Code e Gemini CLI passaram seus validadores locais; ainda falta smoke funcional de sessão para cada host. Codex e Kimi foram detectados, mas suas integrações permanecem `NOT_TESTED`.
 
 O EUREKA42 ASES possui um núcleo portátil e artefatos separados por host. Eles não são tratados como equivalentes porque cada CLI possui contratos próprios.
 
