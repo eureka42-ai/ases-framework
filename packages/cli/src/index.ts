@@ -1,12 +1,13 @@
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { constants } from "node:fs";
-import { basename, join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 import { platform, release } from "node:os";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { renderLogo } from "./brand.js";
 import { runInterview } from "./interview.js";
 import { importAses300, readCatalog, updateRequirement } from "./catalog.js";
+import { resolveConfigLayers } from "./config-resolution.js";
 
 export const VERSION = "0.0.0-dev";
 
@@ -37,7 +38,7 @@ Comandos disponíveis:
   host list               Detecta CLIs compatíveis sem alterar configurações
   doctor [diretório]      Diagnostica o ambiente sem chamadas remotas
   config validate [path]  Valida a configuração JSON do projeto
-  config explain [path]   Explica valores e origens da configuração
+  config explain [path]   Resolve defaults, ambiente e --set sem revelar secrets
   catalog import-ases300 <md> Importa e valida a fonte ASES-300 local
   requirements list|show  Consulta o catálogo ASES-300 importado
   requirements set-status <workspace> <REQ-ID> <status> [--evidence ref|--na-reason texto]
@@ -166,26 +167,22 @@ async function validateConfigCommand(pathArg: string | undefined, json: boolean)
   }
 }
 
-async function explainConfigCommand(pathArg: string | undefined, json: boolean): Promise<CommandResult> {
+async function explainConfigCommand(pathArg: string | undefined, json: boolean, flags: string[] = []): Promise<CommandResult> {
   const path = resolve(pathArg ?? join(process.cwd(), ".ases", "config.json"));
   try {
-    const content = await readFile(path, "utf8");
-    const value = JSON.parse(content) as unknown;
-    const errors = validateConfig(value);
-    if (errors.length > 0) {
-      const payload = { path, valid: false, errors };
-      return { exitCode: 3, output: json ? JSON.stringify(payload, null, 2) : `FAIL config inválida:\n${errors.join("\n")}` };
+    let fileConfig: unknown;
+    try {
+      fileConfig = JSON.parse(await readFile(path, "utf8")) as unknown;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
     }
-    const config = value as ProjectConfig;
-    const resolved = [
-      { key: "schemaVersion", value: config.schemaVersion, source: path },
-      { key: "project.id", value: config.project.id, source: path },
-      { key: "project.name", value: config.project.name, source: path },
-      { key: "project.locale", value: config.project.locale, source: path },
-      { key: "project.mode", value: config.project.mode, source: path },
-      { key: "project.privacy", value: config.project.privacy, source: path }
-    ];
-    return { exitCode: 0, output: json ? JSON.stringify({ path, valid: true, resolved }, null, 2) : resolved.map((item) => `${item.key}=${item.value}  [${item.source}]`).join("\n") };
+    const root = basename(dirname(path)) === ".ases" ? dirname(dirname(path)) : dirname(path);
+    const resolution = resolveConfigLayers({ root, fileConfig, fileSource: path, env: process.env, flags });
+    if (resolution.errors.length > 0) {
+      const payload = { path, valid: false, errors: resolution.errors };
+      return { exitCode: 3, output: json ? JSON.stringify(payload, null, 2) : `FAIL config inválida:\n${resolution.errors.join("\n")}` };
+    }
+    return { exitCode: 0, output: json ? JSON.stringify({ path, valid: true, resolved: resolution.resolved }, null, 2) : resolution.resolved.map((item) => `${item.key}=${item.value}  [${item.source}]`).join("\n") };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     return { exitCode: 3, output: json ? JSON.stringify({ path, valid: false, code: "ASES_CONFIG_READ", error: message }, null, 2) : `FAIL não foi possível explicar ${path}: ${message}` };
@@ -265,7 +262,15 @@ export async function run(argv: string[]): Promise<CommandResult> {
     return { exitCode: 0, output: json ? JSON.stringify({ hosts }, null, 2) : hosts.map((host) => `${host.detected ? "DETECTED" : "NOT_FOUND"} ${host.id}${host.version ? `: ${host.version}` : ""} [${host.support}]`).join("\n") };
   }
   if (command === "config" && args[1] === "validate") return validateConfigCommand(args[2], json);
-  if (command === "config" && args[1] === "explain") return explainConfigCommand(args[2], json);
+  if (command === "config" && args[1] === "explain") {
+    const flags: string[] = [];
+    for (let index = 0; index < argv.length; index += 1) {
+      if (argv[index] === "--set") flags.push(argv[index + 1] ?? "");
+      else if (argv[index]?.startsWith("--set=")) flags.push(argv[index]!.slice("--set=".length));
+    }
+    const pathArg = args.slice(2).find((arg) => !flags.includes(arg));
+    return explainConfigCommand(pathArg, json, flags);
+  }
   return { exitCode: 1, output: json ? JSON.stringify({ code: "ASES_COMMAND_UNKNOWN", command }) : `Comando desconhecido: ${command}\n\n${help}` };
 }
 

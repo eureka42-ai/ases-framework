@@ -17,6 +17,7 @@ Atualizado em: 2026-11-13
 - Monorepo TypeScript strict criado.
 - CLI vertical slice implementado: `help`, `--version`, `init`, `doctor`, `config validate`.
 - `config explain` implementado; `doctor` ampliado para Git, npm e pnpm.
+- `config explain` resolve defaults, arquivo, variáveis ASES allowlistadas e `--set` com precedência explícita; segredos fora da allowlist não são lidos nem impressos.
 - Schema inicial publicado localmente em `schemas/ases.config.schema.json`.
 - README completo e assets oficiais da marca organizados em `docs/assets/brand/`.
 - Identidade ANSI teal/verde disponível em `ases welcome` e na ajuda.
@@ -28,7 +29,7 @@ Atualizado em: 2026-11-13
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (13/13) em 2026-11-13; `pnpm test` também compilou TypeScript e validou as integrações.
+- Testes unitários: PASS (15/15) em 2026-11-13; `pnpm test` também compilou TypeScript e validou as integrações.
 - Manifests/Skills locais: PASS (3 manifests, 5 Skills).
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
@@ -42,7 +43,7 @@ Atualizado em: 2026-11-13
 - Ciclo de estados ASES-300 implementado; `VERIFIED` exige arquivo local dentro do workspace, calcula SHA-256, e `N_A` exige justificativa; histórico de transições mantido.
 - Validação de evidências resolve caminhos reais e rejeita links simbólicos para fora do workspace; apenas arquivos regulares podem comprovar `VERIFIED`.
 - `requirements show/list` recalculam integridade de evidências (`CURRENT`, `STALE`, `MISSING`, `OUTSIDE_WORKSPACE`, `UNVERIFIABLE`); README documenta limites da checagem semântica.
-- Testes: 13/13 PASS; incluem SHA-256, histórico, `N_A`, rejeição de caminhos externos/symlinks e mudanças/remoções de evidência.
+- Testes: 15/15 PASS; incluem resolução de configuração, não exposição de valores secretos, SHA-256, histórico, `N_A`, rejeição de caminhos externos/symlinks e mudanças/remoções de evidência.
 - Parser ASES-300: classificação e prioridade agora são extraídas separadamente quando aparecem na mesma linha; regressão automatizada PASS.
 - Validadores de integração: PASS (3 manifests, 5 Skills).
 - Validação host nesta rodada: Claude `--strict` schema válido com requisito de licença apontado; Gemini extension PASS; manifests e Skills locais PASS; sessões interativas ainda pendentes.
@@ -54,9 +55,8 @@ Atualizado em: 2026-11-13
 ## Próximas tarefas READY
 
 1. Refinar critérios de aceite dos AFRs escolhidos para M1 e ligar testes/artefatos.
-2. Implementar resolução de defaults, projeto, ambiente e flags sem expor secrets.
-3. Testar instalação/descoberta das integrações em sessões descartáveis dos quatro hosts.
-4. Prosseguir a entrevista com personas, autenticação, integrações, observabilidade e critérios de aceite.
+2. Testar instalação/descoberta das integrações em sessões descartáveis dos quatro hosts.
+3. Prosseguir a entrevista com personas, autenticação, integrações, observabilidade e critérios de aceite.
 
 ## Bloqueios de conclusão integral
 

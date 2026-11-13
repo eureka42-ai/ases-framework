@@ -41,6 +41,47 @@ test("explains config values with their source", async () => {
   assert.equal(result.exitCode, 0);
   assert.equal(payload.valid, true);
   assert.equal(payload.resolved.find((item: { key: string }) => item.key === "project.mode").value, "host");
+  assert.equal(payload.resolved.find((item: { key: string }) => item.key === "project.mode").source, join(root, ".ases", "config.json"));
+});
+
+test("resolves config defaults, environment and flags without printing unrelated secrets", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-config-layers-"));
+  const configPath = join(root, ".ases", "config.json");
+  const previousMode = process.env.ASES_PROJECT_MODE;
+  const previousSecret = process.env.ASES_DATABASE_URL;
+  process.env.ASES_PROJECT_MODE = "offline";
+  process.env.ASES_DATABASE_URL = "do-not-print-this-secret";
+  try {
+    const result = await run(["config", "explain", configPath, "--set", "project.mode=headless", "--json"]);
+    const payload = JSON.parse(result.output);
+    const mode = payload.resolved.find((item: { key: string }) => item.key === "project.mode");
+    const name = payload.resolved.find((item: { key: string }) => item.key === "project.name");
+    assert.equal(result.exitCode, 0);
+    assert.equal(mode.value, "headless");
+    assert.equal(mode.source, "flag:--set");
+    assert.equal(name.value, root.split("/").at(-1));
+    assert.equal(name.source, "default");
+    assert.doesNotMatch(result.output, /do-not-print-this-secret/);
+  } finally {
+    if (previousMode === undefined) delete process.env.ASES_PROJECT_MODE;
+    else process.env.ASES_PROJECT_MODE = previousMode;
+    if (previousSecret === undefined) delete process.env.ASES_DATABASE_URL;
+    else process.env.ASES_DATABASE_URL = previousSecret;
+  }
+});
+
+test("config explain rejects unknown keys without echoing their values", async () => {
+  const result = await run(["config", "explain", "--set", "project.apiKey=hidden-value", "--json"]);
+  assert.equal(result.exitCode, 3);
+  assert.match(result.output, /project.apiKey/);
+  assert.doesNotMatch(result.output, /hidden-value/);
+  const root = await mkdtemp(join(tmpdir(), "ases-config-invalid-"));
+  const path = join(root, "config.json");
+  await writeFile(path, JSON.stringify({ schemaVersion: "1", project: { name: { password: "hidden-file-secret" } } }));
+  const malformed = await run(["config", "explain", path, "--json"]);
+  assert.equal(malformed.exitCode, 3);
+  assert.match(malformed.output, /project.name é obrigatório/);
+  assert.doesNotMatch(malformed.output, /hidden-file-secret/);
 });
 
 test("doctor reports local runtime tools", async () => {

@@ -163,7 +163,10 @@ ases doctor ./meu-projeto --json
 ases config validate ./meu-projeto/.ases/config.json
 ases config explain ./meu-projeto/.ases/config.json
 ases config explain ./meu-projeto/.ases/config.json --json
+ASES_PROJECT_MODE=offline ases config explain ./meu-projeto/.ases/config.json --set project.mode=headless
 ```
+
+`config explain` resolve `defaults → arquivo → ambiente → flags`; por exemplo, `ASES_PROJECT_NAME`, `ASES_PROJECT_ID`, `ASES_PROJECT_LOCALE` e `ASES_PROJECT_MODE` podem sobrescrever o arquivo. `--set project.mode=offline` tem a maior precedência. A resolução aceita apenas chaves allowlistadas e não enumera nem imprime outras variáveis de ambiente ou valores secretos. `config validate` continua verificando o arquivo explícito sem aplicar overrides.
 
 ## Comandos implementados
 
@@ -178,7 +181,7 @@ ases config explain ./meu-projeto/.ases/config.json --json
 | `ases interview --answers <json>` | Executa a entrevista de modo reproduzível | Cria proposta em `.ases/` |
 | `ases doctor [diretório]` | Diagnostica ferramentas e workspace | Nenhum |
 | `ases config validate [path]` | Valida o contrato inicial da config | Nenhum |
-| `ases config explain [path]` | Mostra valores e suas origens | Nenhum |
+| `ases config explain [path] [--set chave=valor]` | Resolve defaults e overrides seguros com suas origens | Nenhum |
 | `ases host list` | Detecta Codex, Claude, Kimi e Gemini instalados | Nenhum |
 | `ases catalog import-ases300 <md> [workspace]` | Valida 300 IDs e importa o catálogo geral | Grava `.ases/catalogs/ases-300.json` |
 | `ases requirements list [workspace]` | Lista requisitos gerais importados | Nenhum |
