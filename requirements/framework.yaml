@@ -8,73 +8,73 @@ requirements:
     priority: P0
     milestone: "M1"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Iniciar projeto local em diretório vazio sem dependência remota."
     acceptanceCriteria:
       - id: AC-AFR-001-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Iniciar projeto local em diretório vazio sem dependência remota."
+        description: "Em um caminho de workspace vazio, ases init cria .ases/config.json, .ases/STATUS.md e NEXT_STEPS.md sem chamadas de rede; --dry-run descreve os arquivos sem criá-los."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/index.ts"]
+    tests: ["packages/cli/src/index.test.ts :: init dry-run does not write", "packages/cli/src/index.test.ts :: init is idempotent and preserves files"]
   - id: AFR-002
     priority: P0
     milestone: "M1"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Validar configuração contra schema público versionado."
     acceptanceCriteria:
       - id: AC-AFR-002-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Validar configuração contra schema público versionado."
+        description: "config validate aceita apenas schemaVersion 1, as propriedades project obrigatórias e os enums definidos em schemas/ases.config.schema.json; rejeita campos adicionais e retorna código 3 para config inválida."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["schemas/ases.config.schema.json", "packages/cli/src/index.ts"]
+    tests: ["packages/cli/src/index.test.ts :: validates project config", "packages/cli/src/index.test.ts :: keeps documented CLI error exit codes stable"]
   - id: AFR-003
     priority: P0
     milestone: "M1"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Instalação repetida não apagar arquivos existentes."
     acceptanceCriteria:
       - id: AC-AFR-003-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Instalação repetida não apagar arquivos existentes."
+        description: "A segunda execução de ases init retorna ASES_INIT_EXISTS/unchanged e mantém os bytes dos arquivos preexistentes idênticos."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/index.ts"]
+    tests: ["packages/cli/src/index.test.ts :: init is idempotent and preserves files"]
   - id: AFR-004
     priority: P0
     milestone: "M1"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "`ases doctor` identificar ambiente, riscos e instruções corretivas."
     acceptanceCriteria:
       - id: AC-AFR-004-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: `ases doctor` identificar ambiente, riscos e instruções corretivas."
+        description: "ases doctor informa versão de Node, sistema, Git/npm/pnpm, existência do workspace e configuração ASES; cada dependência ausente ou estado corrigível inclui uma próxima ação em JSON e texto."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/index.ts"]
+    tests: ["packages/cli/src/index.test.ts :: doctor reports local runtime tools"]
   - id: AFR-005
     priority: P0
     milestone: "M1"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "CLI oferecer ajuda, versão, JSON, códigos de saída estáveis."
     acceptanceCriteria:
       - id: AC-AFR-005-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: CLI oferecer ajuda, versão, JSON, códigos de saída estáveis."
+        description: "O CLI expõe help e --version, oferece JSON nas operações estruturadas e mantém códigos 0–5 para sucesso, comando desconhecido, uso, config, entrevista e catálogo/requisitos."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/index.ts"]
+    tests: ["packages/cli/src/index.test.ts :: reports version offline", "packages/cli/src/index.test.ts :: keeps documented CLI error exit codes stable"]
   - id: AFR-006
     priority: P0
     milestone: "M1"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Manter `STATUS.md` e checkpoints entre sessões."
     acceptanceCriteria:
       - id: AC-AFR-006-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Manter `STATUS.md` e checkpoints entre sessões."
+        description: "STATUS.md mantém o estado atual, validações, limitações, bloqueios, próxima tarefa e caminho para a evidência da rodada; o registro não declara suporte ou homologação sem prova."
         verification: "automated-or-reviewed"
-    artifacts: []
+    artifacts: ["STATUS.md", "evidence/M0-M1-2026-11-13.md"]
     tests: []
   - id: AFR-007
     priority: P0

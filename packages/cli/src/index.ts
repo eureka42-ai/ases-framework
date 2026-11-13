@@ -77,12 +77,15 @@ export function validateConfig(value: unknown): string[] {
     return ["configuração deve ser um objeto JSON"];
   }
   const config = value as Record<string, unknown>;
+  for (const key of Object.keys(config)) if (key !== "schemaVersion" && key !== "project") errors.push(`propriedade não permitida: ${key}`);
   if (config.schemaVersion !== "1") errors.push("schemaVersion deve ser '1'");
   if (typeof config.project !== "object" || config.project === null || Array.isArray(config.project)) {
     errors.push("project deve ser um objeto");
     return errors;
   }
   const project = config.project as Record<string, unknown>;
+  const projectKeys = new Set(["id", "name", "locale", "mode", "privacy"]);
+  for (const key of Object.keys(project)) if (!projectKeys.has(key)) errors.push(`propriedade project não permitida: ${key}`);
   if (typeof project.id !== "string" || !/^[a-z0-9][a-z0-9-]*$/.test(project.id)) {
     errors.push("project.id deve usar letras minúsculas, números e hífens");
   }
@@ -131,17 +134,19 @@ async function doctor(rootArg: string | undefined, json: boolean): Promise<Comma
   const git = await detectCommand("git", ["--version"]);
   const npm = await detectCommand("npm", ["--version"]);
   const pnpm = await detectCommand("pnpm", ["--version"]);
+  const workspaceExists = await exists(root);
+  const configExists = await exists(join(root, ".ases", "config.json"));
   const checks = [
     { id: "node", status: "pass", detail: process.version },
     { id: "platform", status: "pass", detail: `${platform()} ${release()}` },
-    { id: "git", status: git.available ? "pass" : "warn", detail: git.detail },
-    { id: "npm", status: npm.available ? "pass" : "warn", detail: npm.detail },
-    { id: "pnpm", status: pnpm.available ? "pass" : "warn", detail: pnpm.detail },
-    { id: "workspace", status: (await exists(root)) ? "pass" : "fail", detail: root },
-    { id: "ases-config", status: (await exists(join(root, ".ases", "config.json"))) ? "pass" : "warn", detail: "execute ases init para inicializar" }
+    { id: "git", status: git.available ? "pass" : "warn", detail: git.detail, ...(git.available ? {} : { remediation: "Instale o Git ou adicione o executável ao PATH." }) },
+    { id: "npm", status: npm.available ? "pass" : "warn", detail: npm.detail, ...(npm.available ? {} : { remediation: "Instale Node.js com npm ou adicione o executável ao PATH." }) },
+    { id: "pnpm", status: pnpm.available ? "pass" : "warn", detail: pnpm.detail, ...(pnpm.available ? {} : { remediation: "Ative pnpm pelo Corepack com `corepack pnpm --version` se o projeto exigir esse gerenciador." }) },
+    { id: "workspace", status: workspaceExists ? "pass" : "fail", detail: root, ...(!workspaceExists ? { remediation: `Crie ou corrija o diretório do workspace: ${root}` } : {}) },
+    { id: "ases-config", status: configExists ? "pass" : "warn", detail: "configuração ASES local", ...(!configExists ? { remediation: `Execute ases init ${root} para criar a configuração inicial.` } : {}) }
   ];
   const exitCode = checks.some((check) => check.status === "fail") ? 2 : 0;
-  return { exitCode, output: json ? JSON.stringify({ root, checks }, null, 2) : checks.map((c) => `${c.status.toUpperCase()} ${c.id}: ${c.detail}`).join("\n") };
+  return { exitCode, output: json ? JSON.stringify({ root, checks }, null, 2) : checks.map((c) => `${c.status.toUpperCase()} ${c.id}: ${c.detail}${"remediation" in c ? `\n  Próxima ação: ${c.remediation}` : ""}`).join("\n") };
 }
 
 async function detectCommand(command: string, args: string[]): Promise<{ available: boolean; detail: string }> {

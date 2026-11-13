@@ -22,6 +22,7 @@ const environmentKeys: Partial<Record<ConfigKey, string>> = {
 };
 
 const configKeys = new Set<ConfigKey>(["project.id", "project.name", "project.locale", "project.mode", "project.privacy"]);
+const projectProperties = new Set(["id", "name", "locale", "mode", "privacy"]);
 
 function slugify(value: string): string {
   return value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "ases-project";
@@ -43,12 +44,14 @@ export function resolveConfigLayers(options: {
     ["schemaVersion", "default"], ["project.id", "default"], ["project.name", "default"],
     ["project.locale", "default"], ["project.mode", "default"], ["project.privacy", "default"]
   ]);
+  const inputErrors: string[] = [];
 
   if (options.fileConfig !== undefined) {
     if (!options.fileConfig || typeof options.fileConfig !== "object" || Array.isArray(options.fileConfig)) {
       return { config, resolved: [], errors: ["configuração deve ser um objeto JSON"] };
     }
     const raw = options.fileConfig as Record<string, unknown>;
+    for (const key of Object.keys(raw)) if (key !== "schemaVersion" && key !== "project") inputErrors.push(`propriedade não permitida: ${key}`);
     if (raw.schemaVersion !== undefined) {
       config.schemaVersion = raw.schemaVersion as "1";
       sources.set("schemaVersion", options.fileSource ?? "file");
@@ -56,6 +59,7 @@ export function resolveConfigLayers(options: {
     if (raw.project !== undefined) {
       if (!raw.project || typeof raw.project !== "object" || Array.isArray(raw.project)) return { config, resolved: [], errors: ["project deve ser um objeto"] };
       const project = raw.project as Record<string, unknown>;
+      for (const key of Object.keys(project)) if (!projectProperties.has(key)) inputErrors.push(`propriedade project não permitida: ${key}`);
       for (const key of ["id", "name", "locale", "mode", "privacy"] as const) {
         if (project[key] !== undefined) {
           (config.project as unknown as Record<string, unknown>)[key] = project[key];
@@ -92,7 +96,7 @@ export function resolveConfigLayers(options: {
     { key: "project.mode", value: String(config.project.mode), source: sources.get("project.mode")! },
     { key: "project.privacy", value: String(config.project.privacy), source: sources.get("project.privacy")! }
   ];
-  const errors: string[] = [];
+  const errors: string[] = [...inputErrors];
   if (config.schemaVersion !== "1") errors.push("schemaVersion deve ser '1'");
   if (typeof config.project.id !== "string" || !/^[a-z0-9][a-z0-9-]*$/.test(config.project.id)) errors.push("project.id deve usar letras minúsculas, números e hífens");
   if (typeof config.project.name !== "string" || !config.project.name.trim()) errors.push("project.name é obrigatório");

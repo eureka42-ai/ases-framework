@@ -52,10 +52,10 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | Monorepo TypeScript strict | Implementado | ESM, build por referências TypeScript |
 | `ases --version` e ajuda | Implementado | Funciona offline |
 | `ases init` | Implementado | Idempotente, JSON e `--dry-run` |
-| `ases doctor` | Parcial | Node, plataforma, Git, npm, pnpm, workspace e config |
+| `ases doctor` | Implementado localmente | Node, plataforma, Git, npm, pnpm, workspace/config e ações corretivas |
 | `ases config validate` | Implementado no schema inicial | Configuração JSON bootstrap |
 | `ases config explain` | Implementado no schema inicial | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Estruturado | Critérios ainda serão refinados por incremento |
+| Backlog AFR-001..140 | Estruturado | AFR-001..006 refinados e ligados a código/testes; demais critérios seguem em rascunho |
 | ASES-300 normativo | Bloqueado pela fonte | Nenhum REQ-001..300 foi inventado |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP, hosts, providers e RAG | Planejado | Não declarar suporte antes dos testes |
@@ -189,6 +189,17 @@ ASES_PROJECT_MODE=offline ases config explain ./meu-projeto/.ases/config.json --
 | `ases requirements set-status <workspace> <REQ-ID> <status>` | Atualiza estado do requisito | Grava catálogo local |
 
 Os demais comandos do documento-mestre são contratos planejados, não funcionalidades existentes. Eles somente serão documentados como disponíveis depois de implementados e testados.
+
+### Códigos de saída
+
+| Código | Significado |
+|---:|---|
+| `0` | Comando executado com sucesso |
+| `1` | Comando desconhecido |
+| `2` | Uso, opção ou pré-condição inválida |
+| `3` | Configuração inválida ou indisponível |
+| `4` | Respostas da entrevista inválidas |
+| `5` | Catálogo ou requisito indisponível/inválido |
 
 ### Importar a fonte ASES-300
 

@@ -31,6 +31,23 @@ test("init is idempotent and preserves files", async () => {
 test("validates project config", () => {
   assert.deepEqual(validateConfig({ schemaVersion: "1", project: { id: "demo", name: "Demo", locale: "pt-BR", mode: "host", privacy: "local-only" } }), []);
   assert.ok(validateConfig({ schemaVersion: "2", project: {} }).length > 0);
+  assert.match(validateConfig({ schemaVersion: "1", unexpected: true, project: { id: "demo", name: "Demo", locale: "pt-BR", mode: "host", privacy: "local-only" } })[0]!, /propriedade não permitida/);
+  assert.match(validateConfig({ schemaVersion: "1", project: { id: "demo", name: "Demo", locale: "pt-BR", mode: "host", privacy: "local-only", token: "secret" } })[0]!, /propriedade project não permitida/);
+});
+
+test("keeps documented CLI error exit codes stable", async () => {
+  const unknown = await run(["unknown-command", "--json"]);
+  assert.equal(unknown.exitCode, 1);
+  assert.equal(JSON.parse(unknown.output).code, "ASES_COMMAND_UNKNOWN");
+  const root = await mkdtemp(join(tmpdir(), "ases-cli-exit-"));
+  const invalidPath = join(root, "invalid.json");
+  await writeFile(invalidPath, JSON.stringify({ schemaVersion: "2", project: {} }));
+  const invalid = await run(["config", "validate", invalidPath, "--json"]);
+  assert.equal(invalid.exitCode, 3);
+  const invalidInterview = await run(["interview", "--answers", join(root, "missing-answers.json"), "--json"]);
+  assert.equal(invalidInterview.exitCode, 4);
+  const invalidCatalog = await run(["catalog", "import-ases300", join(root, "missing-source.md"), root, "--json"]);
+  assert.equal(invalidCatalog.exitCode, 5);
 });
 
 test("explains config values with their source", async () => {
@@ -91,6 +108,27 @@ test("doctor reports local runtime tools", async () => {
   assert.equal(result.exitCode, 0);
   assert.ok(payload.checks.some((check: { id: string }) => check.id === "git"));
   assert.ok(payload.checks.some((check: { id: string }) => check.id === "pnpm"));
+  assert.match(payload.checks.find((check: { id: string }) => check.id === "ases-config").remediation, /ases init/);
+});
+
+test("doctor provides repair instructions when PATH tools are missing", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-doctor-no-path-"));
+  const previousPath = process.env.PATH;
+  process.env.PATH = "";
+  try {
+    const result = await run(["doctor", root, "--json"]);
+    const checks = JSON.parse(result.output).checks;
+    for (const id of ["git", "npm", "pnpm"]) {
+      const check = checks.find((item: { id: string }) => item.id === id);
+      assert.equal(check.status, "warn");
+      assert.ok(check.remediation.length > 0);
+    }
+    const text = await run(["doctor", root]);
+    assert.match(text.output, /Próxima ação: Instale o Git/);
+  } finally {
+    if (previousPath === undefined) delete process.env.PATH;
+    else process.env.PATH = previousPath;
+  }
 });
 
 test("renders Eureka42 identity without color when NO_COLOR is set", async () => {
