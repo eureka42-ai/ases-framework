@@ -43,6 +43,8 @@ Atualizado em: 2026-11-13
 - Validação host nesta rodada: Claude `--strict` schema válido com requisito de licença apontado; Gemini extension PASS; manifests e Skills locais PASS; sessões interativas ainda pendentes.
 - Validação continuada: `npm test` 11/11 PASS; `git diff --check` PASS; `kimi doctor` PASS para configuração local (não é validação do plugin).
 - Gemini local link: aguardando confirmação do usuário no prompt de confiança do workspace.
+- O usuário permitiu confiar no workspace Gemini; a instalação foi cancelada no segundo aviso de segurança, que explica a injeção de instruções e instalação da Skill. `gemini extensions list` confirmou que nada foi instalado.
+- Claude Code oferece `--plugin-dir` para carga local temporária; teste em sessão sem inferência ainda não concluído.
 - Claude `plugin test` não executou porque o adapter não está instalado; não houve instalação automática.
 
 ## Próximas tarefas READY
