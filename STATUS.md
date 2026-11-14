@@ -39,7 +39,7 @@ Atualizado em: 2026-11-14
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (53/53) em 2026-11-14; `pnpm test` também compila TypeScript e valida as integrações. GitHub Actions para o commit `ae2bde0`: PASS nos jobs Node.js 22 e 24; ver [execução CI](https://github.com/eureka42-ai/ases-framework/actions/runs/43613309183).
+- Testes unitários: PASS (53/53) em 2026-11-14; `pnpm test` também compila TypeScript e valida as integrações. O commit `16a39d5` também passou nos jobs Node.js 22 e 24 do GitHub Actions; ver [execução CI](https://github.com/eureka42-ai/ases-framework/actions/runs/43614094061).
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 5 Skills sincronizadas).
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
@@ -106,8 +106,10 @@ Atualizado em: 2026-11-14
 - `evidence/M5-2026-11-14-progress-6.md`
 - `evidence/M5-2026-11-14-progress-7.md`
 - `evidence/M5-2026-11-14-progress-8.md`
+- `evidence/M5-2026-11-14-progress-9.md`
 - `evidence/M1-2026-11-14-progress-2.md`
 - `evidence/ASES-300-markdown-structure-review-2026-11-13.md`
 - `evidence/ASES-300-visual-review-2026-11-14.md`
 - `evidence/CI-2026-11-14.md`
+- `evidence/CI-2026-11-14-progress-2.md`
 
