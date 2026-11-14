@@ -137,7 +137,8 @@ Saída esperada:
   "create": [
     "/caminho/meu-projeto/.ases/config.json",
     "/caminho/meu-projeto/.ases/STATUS.md",
-    "/caminho/meu-projeto/NEXT_STEPS.md"
+    "/caminho/meu-projeto/NEXT_STEPS.md",
+    "/caminho/meu-projeto/.ases/install-manifest.json"
   ]
 }
 ```
@@ -150,14 +151,25 @@ ases init ./meu-projeto
 
 O comando cria apenas os arquivos que controla. Se o workspace já estiver inicializado, retorna `ASES_INIT_EXISTS` e não sobrescreve o conteúdo existente.
 
-### 4. Diagnosticar o ambiente
+### 4. Remover os arquivos iniciais sem apagar trabalho do projeto
+
+`ases uninstall ./meu-projeto` mostra um plano. Só os arquivos listados no manifesto local e ainda idênticos aos hashes registrados podem ser removidos. Revise o plano e acrescente `--apply` para executá-lo:
+
+```bash
+ases uninstall ./meu-projeto --json
+ases uninstall ./meu-projeto --apply
+```
+
+Arquivos modificados, symlinks, entrevistas, catálogos e outros dados dentro de `.ases/` são preservados. O diretório `.ases/` só sai se estiver vazio. Um workspace inicializado por uma versão anterior sem `.ases/install-manifest.json` não é removido automaticamente; os arquivos ficam intactos para revisão manual.
+
+### 5. Diagnosticar o ambiente
 
 ```bash
 ases doctor ./meu-projeto
 ases doctor ./meu-projeto --json
 ```
 
-### 5. Validar e explicar a configuração
+### 6. Validar e explicar a configuração
 
 ```bash
 ases config validate ./meu-projeto/.ases/config.json
@@ -176,6 +188,7 @@ ASES_PROJECT_MODE=offline ases config explain ./meu-projeto/.ases/config.json --
 | `ases --version` | Exibe a versão do CLI | Nenhum |
 | `ases init [diretório]` | Inicializa `.ases/` e próximos passos | Cria arquivos locais |
 | `ases init --dry-run` | Mostra o plano de inicialização | Nenhum |
+| `ases uninstall [diretório]` | Planeja desinstalação dos arquivos ASES ainda intactos | Nenhum; exige `--apply` para remover, compara SHA-256 e preserva alterações/dados |
 | `ases welcome` | Exibe a identidade Eureka42 em teal/verde | Nenhum |
 | `ases interview [diretório]` | Pergunta tipo, stack, hospedagem, banco, escala e dados | Cria proposta em `.ases/` |
 | `ases interview --answers <json>` | Executa a entrevista de modo reproduzível | Cria proposta em `.ases/` |
@@ -407,6 +420,7 @@ A suite atual cobre:
 
 - versão offline;
 - `init --dry-run` sem escrita;
+- `uninstall` em dry-run, remoção explícita, preservação de arquivos modificados, symlinks e dados não gerenciados;
 - inicialização idempotente;
 - validação da configuração;
 - explicação das origens da configuração;

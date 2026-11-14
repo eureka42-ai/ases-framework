@@ -6,7 +6,7 @@ Atualizado em: 2026-11-14
 
 - M0: IMPLEMENTED / PARTIALLY_VERIFIED
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
-- Repositório Git: branch `main`; integração Codex publicada; ciclo local seguro do plugin Claude validado nesta rodada
+- Repositório Git: branch `main`; integrações Codex/Claude publicadas; AFR-030 implementado nesta rodada
 - Fonte diretora: presente e lida
 - ASES-300: DOCX e conversão Markdown presentes localmente; revisão estrutural preliminar confirmou 300 IDs/títulos e hashes íntegros; conferência visual/editorial ainda pendente.
 - ASES-500 separado: consolidação presente como reconstrução para validação; original independente ausente e homologação pendente.
@@ -27,6 +27,7 @@ Atualizado em: 2026-11-14
 - Recomendações ausentes ficam `PROPOSED`; escolhas existentes ficam `REVIEW_REQUIRED`.
 - AFR-018 avalia divergência entre respostas e manifestos, e registra riscos bloqueantes de dados sensíveis/escala alta no JSON e SPEC sem confirmar automaticamente.
 - Integrações experimentais criadas para Codex, Claude Code, Kimi Code CLI e Gemini CLI.
+- AFR-030 implementado: `ases init` grava manifesto local com hashes; `ases uninstall` é read-only por padrão e só remove arquivos ASES inalterados com `--apply`, preservando edições, symlinks e dados do projeto.
 - Plugin portátil nativo do Codex implementado em `integrations/codex/`: manifesto Agent Plugins, onboarding Skill compartilhada, ícones Eureka42 e marketplace de repositório em `.agents/plugins/marketplace.json`.
 - Instalação e inventário do plugin Codex passaram em `CODEX_HOME=/tmp/eureka42-codex-smoke` isolado; `codex plugin list` mostrou `installed, enabled`. Isso não comprova a execução do onboarding numa conversa.
 - `ases host plan <host> <workspace>` gera plano somente leitura com diffs, conflitos, hashes de assets binários e proteção contra symlink escape.
@@ -36,12 +37,12 @@ Atualizado em: 2026-11-14
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (35/35) em 2026-11-14; `pnpm test` também compila TypeScript e valida as integrações.
+- Testes unitários: PASS (40/40) em 2026-11-14; `pnpm test` também compila TypeScript e valida as integrações.
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 5 Skills sincronizadas).
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; instalação local do tarball + `ases --version` e `ases host plan` em workspace externo: PASS.
-- Backlog AFR-001..140: 32 requisitos IMPLEMENTED e ligados a código/testes/evidência; 108 seguem PENDING, muitos ainda sem detalhamento suficiente para estimar rodadas com precisão.
+- Backlog AFR-001..140: 33 requisitos IMPLEMENTED e ligados a código/testes/evidência; 107 seguem PENDING, muitos ainda sem detalhamento suficiente para estimar rodadas com precisão.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -51,7 +52,7 @@ Atualizado em: 2026-11-14
 - Ciclo de estados ASES-300 implementado; `VERIFIED` exige arquivo local dentro do workspace, calcula SHA-256, e `N_A` exige justificativa; histórico de transições mantido.
 - Validação de evidências resolve caminhos reais e rejeita links simbólicos para fora do workspace; apenas arquivos regulares podem comprovar `VERIFIED`.
 - `requirements show/list` recalculam integridade de evidências (`CURRENT`, `STALE`, `MISSING`, `OUTSIDE_WORKSPACE`, `UNVERIFIABLE`); README documenta limites da checagem semântica.
-- Testes: 30/30 PASS; incluem MCP stdio moderno/legado, isolamento de workspace, rejeição de symlinks e segredo em logs, plano host/diff e prevenção de symlink escape, análise de contradições e riscos, persistência de achados na SPEC, inspeção segura de manifestos e retomada de decisões na entrevista, separação de catálogos, estados de decisão independentes, rastreabilidade, bloqueios justificados, integridade, piso Node.js, identidade da entrevista e resolução segura de configuração.
+- Regressões cobrem MCP stdio moderno/legado, isolamento de workspace, rejeição de symlinks e segredo em logs, plano host/diff e prevenção de symlink escape, análise de contradições e riscos, persistência de achados na SPEC, inspeção segura de manifestos e retomada de decisões na entrevista, separação de catálogos, ciclo de decisões, rastreabilidade, bloqueios justificados, integridade, piso Node.js, identidade da entrevista, configuração segura e desinstalação conservadora.
 - Parser ASES-300: classificação e prioridade agora são extraídas separadamente quando aparecem na mesma linha; regressão automatizada PASS.
 - Validadores de integração: PASS (4 manifests, 2 marketplaces, 5 Skills).
 - Validação host estática nesta rodada: Claude schema PASS, profile de diretório bloqueado por licença; Gemini extension PASS; `kimi doctor` validou só os arquivos de configuração; Codex 0.169.0 detectado. Descoberta/execução em sessões de agente permanecem pendentes.
@@ -97,5 +98,6 @@ Atualizado em: 2026-11-14
 - `evidence/M5-2026-11-14-progress-3.md`
 - `evidence/M5-2026-11-14-progress-4.md`
 - `evidence/M5-2026-11-14-progress-5.md`
+- `evidence/M1-2026-11-14-progress-2.md`
 - `evidence/ASES-300-markdown-structure-review-2026-11-13.md`
 

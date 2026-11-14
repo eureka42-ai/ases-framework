@@ -362,14 +362,14 @@ requirements:
     priority: P0
     milestone: "M1"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Desinstalação preservar dados e customizações do usuário."
     acceptanceCriteria:
       - id: AC-AFR-030-01
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Desinstalação preservar dados e customizações do usuário."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/index.ts", "README.md"]
+    tests: ["packages/cli/src/index.test.ts :: uninstall defaults to a read-only plan and preserves project data", "packages/cli/src/index.test.ts :: uninstall preserves customized and symlinked files and keeps its manifest", "packages/cli/src/index.test.ts :: uninstall refuses to remove legacy workspaces without an ownership manifest", "packages/cli/src/index.test.ts :: uninstall dry-run takes precedence over apply", "packages/cli/src/index.test.ts :: uninstall rejects a tampered ownership manifest without deleting files"]
   - id: AFR-031
     priority: P1
     milestone: "M5"

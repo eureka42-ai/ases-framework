@@ -35,6 +35,74 @@ test("init is idempotent and preserves files", async () => {
   assert.equal(configAfter, configBefore);
 });
 
+test("uninstall defaults to a read-only plan and preserves project data", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-uninstall-plan-"));
+  await run(["init", root]);
+  const interviewPath = join(root, ".ases", "interview.json");
+  await writeFile(interviewPath, "{\"answers\":{}}\n");
+  const plan = await run(["uninstall", root, "--json"]);
+  assert.equal(JSON.parse(plan.output).status, "planned");
+  assert.equal(JSON.parse(plan.output).wouldRemove.length, 3);
+  assert.equal(await readFile(join(root, ".ases", "config.json"), "utf8") !== "", true);
+  const applied = await run(["uninstall", root, "--apply", "--json"]);
+  assert.equal(JSON.parse(applied.output).status, "uninstalled");
+  await assert.rejects(readFile(join(root, ".ases", "config.json"), "utf8"));
+  assert.equal(await readFile(interviewPath, "utf8"), "{\"answers\":{}}\n");
+});
+
+test("uninstall preserves customized and symlinked files and keeps its manifest", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-uninstall-preserve-"));
+  await run(["init", root]);
+  const configPath = join(root, ".ases", "config.json");
+  const config = JSON.parse(await readFile(configPath, "utf8"));
+  config.project.name = "Custom name";
+  await writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`);
+  const outsidePath = join(root, "outside.txt");
+  await writeFile(outsidePath, "user-owned target\n");
+  const statusPath = join(root, ".ases", "STATUS.md");
+  await unlink(statusPath);
+  await symlink(outsidePath, statusPath);
+  const applied = await run(["uninstall", root, "--apply", "--json"]);
+  const payload = JSON.parse(applied.output);
+  assert.equal(payload.status, "partial");
+  assert.deepEqual(new Set(payload.preserved.map((item: { path: string }) => item.path)), new Set([".ases/config.json", ".ases/STATUS.md", ".ases/install-manifest.json"]));
+  assert.equal(await readFile(outsidePath, "utf8"), "user-owned target\n");
+  await assert.rejects(readFile(join(root, "NEXT_STEPS.md"), "utf8"));
+});
+
+test("uninstall refuses to remove legacy workspaces without an ownership manifest", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-uninstall-legacy-"));
+  await mkdir(join(root, ".ases"), { recursive: true });
+  const configPath = join(root, ".ases", "config.json");
+  await writeFile(configPath, "user configuration\n");
+  const result = await run(["uninstall", root, "--apply", "--json"]);
+  assert.equal(JSON.parse(result.output).status, "not-managed");
+  assert.equal(await readFile(configPath, "utf8"), "user configuration\n");
+});
+
+test("uninstall dry-run takes precedence over apply", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-uninstall-dry-precedence-"));
+  await run(["init", root]);
+  const configPath = join(root, ".ases", "config.json");
+  const result = await run(["uninstall", root, "--apply", "--dry-run", "--json"]);
+  assert.equal(JSON.parse(result.output).status, "planned");
+  assert.notEqual(JSON.parse(result.output).apply, true);
+  assert.ok(await readFile(configPath, "utf8"));
+});
+
+test("uninstall rejects a tampered ownership manifest without deleting files", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-uninstall-tampered-"));
+  await run(["init", root]);
+  const manifestPath = join(root, ".ases", "install-manifest.json");
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  manifest.files[0].sha256 = "0".repeat(64);
+  await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+  const result = await run(["uninstall", root, "--apply", "--json"]);
+  assert.equal(result.exitCode, 3);
+  assert.equal(JSON.parse(result.output).code, "ASES_UNINSTALL_MANIFEST_INVALID");
+  assert.ok(await readFile(join(root, ".ases", "config.json"), "utf8"));
+});
+
 test("validates project config", () => {
   assert.deepEqual(validateConfig({ schemaVersion: "1", project: { id: "demo", name: "Demo", locale: "pt-BR", mode: "host", privacy: "local-only" } }), []);
   assert.ok(validateConfig({ schemaVersion: "2", project: {} }).length > 0);

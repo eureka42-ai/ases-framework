@@ -1,7 +1,8 @@
-import { access, mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, lstat, mkdir, readFile, rmdir, unlink, writeFile } from "node:fs/promises";
 import { constants } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
 import { platform, release } from "node:os";
+import { createHash } from "node:crypto";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { renderLogo } from "./brand.js";
@@ -34,6 +35,7 @@ Uso: ases <comando> [opções]
 
 Comandos disponíveis:
   init [diretório]        Inicializa um workspace local de forma idempotente
+  uninstall [diretório]  Remove somente arquivos ASES intactos (--apply para executar)
   interview [diretório]   Entrevista o projeto e propõe stack inicial
   welcome                 Exibe a identidade Eureka42 no terminal
   host list               Detecta CLIs compatíveis sem alterar configurações
@@ -52,6 +54,7 @@ Comandos disponíveis:
 Opções:
   --json                  Saída estruturada em JSON
   --dry-run               Mostra o plano sem escrever arquivos
+  --apply                 Executa ases uninstall após conferir os hashes
   --answers <arquivo>     Respostas JSON para entrevista não interativa
   --resume                Retoma a entrevista salva em .ases/interview.json
   --version               Exibe a versão
@@ -129,7 +132,8 @@ async function initProject(rootArg: string | undefined, dryRun: boolean, json: b
   const configPath = join(asesDir, "config.json");
   const statusPath = join(asesDir, "STATUS.md");
   const nextStepsPath = join(root, "NEXT_STEPS.md");
-  const plan = [configPath, statusPath, nextStepsPath];
+  const manifestPath = join(asesDir, "install-manifest.json");
+  const plan = [configPath, statusPath, nextStepsPath, manifestPath];
   const conflicts = [];
   for (const path of plan) if (await exists(path)) conflicts.push(path);
 
@@ -147,12 +151,114 @@ async function initProject(rootArg: string | undefined, dryRun: boolean, json: b
     schemaVersion: "1",
     project: { id: slugify(name), name, locale: "pt-BR", mode: "host", privacy: "local-only" }
   };
+  const generated = [
+    { path: ".ases/config.json", absolute: configPath, content: `${JSON.stringify(config, null, 2)}\n` },
+    { path: ".ases/STATUS.md", absolute: statusPath, content: "# Status do projeto ASES\n\nEstado: INITIALIZED\n\nNenhum requisito foi verificado ainda.\n" },
+    { path: "NEXT_STEPS.md", absolute: nextStepsPath, content: "# Próximos passos\n\n1. Execute `ases doctor`.\n2. Revise `.ases/config.json`.\n3. Mantenha decisões humanas como `PROPOSED` até confirmação.\n" }
+  ];
   await mkdir(asesDir, { recursive: true });
-  await writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`, { flag: "wx" });
-  await writeFile(statusPath, "# Status do projeto ASES\n\nEstado: INITIALIZED\n\nNenhum requisito foi verificado ainda.\n", { flag: "wx" });
-  await writeFile(nextStepsPath, "# Próximos passos\n\n1. Execute `ases doctor`.\n2. Revise `.ases/config.json`.\n3. Mantenha decisões humanas como `PROPOSED` até confirmação.\n", { flag: "wx" });
+  for (const file of generated) await writeFile(file.absolute, file.content, { flag: "wx" });
+  const manifestBase = {
+    format: "eureka42-ases-install-manifest",
+    schemaVersion: "1",
+    files: generated.map((file) => ({ path: file.path, sha256: createHash("sha256").update(file.content).digest("hex") }))
+  };
+  const manifest = { ...manifestBase, manifestSha256: createHash("sha256").update(JSON.stringify(manifestBase)).digest("hex") };
+  await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, { flag: "wx" });
   const payload = { status: "initialized", root, created: plan };
   return { exitCode: 0, output: json ? JSON.stringify(payload, null, 2) : `Workspace inicializado em ${root}.\n${plan.join("\n")}` };
+}
+
+const uninstallableFiles = new Set([".ases/config.json", ".ases/STATUS.md", "NEXT_STEPS.md"]);
+
+interface InstallManifest {
+  format: "eureka42-ases-install-manifest";
+  schemaVersion: "1";
+  files: Array<{ path: string; sha256: string }>;
+  manifestSha256: string;
+}
+
+async function uninstallProject(rootArg: string | undefined, apply: boolean, json: boolean): Promise<CommandResult> {
+  const root = resolve(rootArg ?? process.cwd());
+  const asesDir = join(root, ".ases");
+  const manifestPath = join(asesDir, "install-manifest.json");
+  try {
+    const asesInfo = await lstat(asesDir);
+    if (!asesInfo.isDirectory() || asesInfo.isSymbolicLink()) {
+      return { exitCode: 3, output: json ? JSON.stringify({ code: "ASES_UNINSTALL_UNSAFE_PATH", root, path: asesDir }) : `Remoção interrompida: ${asesDir} não é um diretório regular.` };
+    }
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      const payload = { status: "not-managed", root, removed: [], preserved: [], reason: "manifesto de propriedade ausente" };
+      return { exitCode: 0, output: json ? JSON.stringify(payload, null, 2) : `Nenhuma instalação ASES rastreada em ${root}; nada foi removido.` };
+    }
+    throw error;
+  }
+
+  let manifest: InstallManifest;
+  try {
+    const info = await lstat(manifestPath);
+    if (!info.isFile() || info.isSymbolicLink()) throw new Error("manifesto não é arquivo regular");
+    const parsed = JSON.parse(await readFile(manifestPath, "utf8")) as Partial<InstallManifest>;
+    if (parsed.format !== "eureka42-ases-install-manifest" || parsed.schemaVersion !== "1" || !Array.isArray(parsed.files) || parsed.files.length !== uninstallableFiles.size || typeof parsed.manifestSha256 !== "string" || !/^[a-f0-9]{64}$/.test(parsed.manifestSha256)) throw new Error("formato ou lista de arquivos não reconhecida");
+    const paths = new Set<string>();
+    for (const entry of parsed.files) {
+      if (!entry || typeof entry.path !== "string" || !uninstallableFiles.has(entry.path) || paths.has(entry.path) || typeof entry.sha256 !== "string" || !/^[a-f0-9]{64}$/.test(entry.sha256)) throw new Error("entrada de propriedade inválida");
+      paths.add(entry.path);
+    }
+    if (paths.size !== uninstallableFiles.size) throw new Error("manifesto não lista os arquivos esperados");
+    const manifestBase = { format: parsed.format, schemaVersion: parsed.schemaVersion, files: parsed.files };
+    if (createHash("sha256").update(JSON.stringify(manifestBase)).digest("hex") !== parsed.manifestSha256) throw new Error("hash de integridade do manifesto não confere");
+    manifest = parsed as InstallManifest;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      const payload = { status: "not-managed", root, removed: [], preserved: [], reason: "manifesto de propriedade ausente" };
+      return { exitCode: 0, output: json ? JSON.stringify(payload, null, 2) : `Nenhum manifesto de propriedade em ${root}; nada foi removido.` };
+    }
+    const message = error instanceof Error ? error.message : String(error);
+    const payload = { code: "ASES_UNINSTALL_MANIFEST_INVALID", root, error: message, removed: [], preserved: [manifestPath] };
+    return { exitCode: 3, output: json ? JSON.stringify(payload, null, 2) : `Remoção interrompida: manifesto inválido (${message}). Nenhum arquivo foi removido.` };
+  }
+
+  const inspected: Array<{ path: string; absolute: string; action: "remove" | "preserve" | "missing"; reason?: string }> = [];
+  for (const entry of manifest.files) {
+    const absolute = join(root, ...entry.path.split("/"));
+    try {
+      const info = await lstat(absolute);
+      if (!info.isFile() || info.isSymbolicLink()) inspected.push({ path: entry.path, absolute, action: "preserve", reason: "não é arquivo regular" });
+      else {
+        const hash = createHash("sha256").update(await readFile(absolute)).digest("hex");
+        inspected.push(hash === entry.sha256
+          ? { path: entry.path, absolute, action: "remove" }
+          : { path: entry.path, absolute, action: "preserve", reason: "conteúdo alterado desde a instalação" });
+      }
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") inspected.push({ path: entry.path, absolute, action: "missing" });
+      else throw error;
+    }
+  }
+
+  const removed: string[] = [];
+  const preserved = inspected.filter((item) => item.action === "preserve").map(({ path, reason }) => ({ path, reason }));
+  if (apply) {
+    for (const item of inspected) {
+      if (item.action !== "remove") continue;
+      await unlink(item.absolute);
+      removed.push(item.path);
+    }
+    if (preserved.length === 0) {
+      await unlink(manifestPath);
+      removed.push(".ases/install-manifest.json");
+      try {
+        await rmdir(asesDir);
+      } catch (error) {
+        if (!["ENOTEMPTY", "EEXIST"].includes((error as NodeJS.ErrnoException).code ?? "")) throw error;
+      }
+    } else preserved.push({ path: ".ases/install-manifest.json", reason: "mantido para registrar arquivos preservados" });
+  }
+  const status = !apply ? "planned" : preserved.length > 0 ? "partial" : "uninstalled";
+  const payload = { status, root, apply, removed, ...(apply ? {} : { wouldRemove: inspected.filter((item) => item.action === "remove").map((item) => item.path) }), preserved, missing: inspected.filter((item) => item.action === "missing").map((item) => item.path) };
+  return { exitCode: 0, output: json ? JSON.stringify(payload, null, 2) : [`${apply ? "Resultado" : "Plano (nenhuma alteração aplicada)"}: ${status}`, ...(apply ? removed.map((path) => `REMOVED ${path}`) : inspected.filter((item) => item.action === "remove").map((item) => `WOULD REMOVE ${item.path}`)), ...preserved.map((item) => `PRESERVED ${item.path}: ${item.reason}`), ...payload.missing.map((path) => `MISSING ${path}`)].join("\n") };
 }
 
 async function doctor(rootArg: string | undefined, json: boolean): Promise<CommandResult> {
@@ -231,6 +337,14 @@ export async function run(argv: string[]): Promise<CommandResult> {
   if (command === "help" || command === "--help") return { exitCode: 0, output: help };
   if (command === "welcome") return { exitCode: 0, output: renderLogo() };
   if (command === "init") return initProject(args[1], dryRun, json);
+  if (command === "uninstall") {
+    try {
+      return await uninstallProject(args[1], argv.includes("--apply") && !dryRun, json);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 3, output: json ? JSON.stringify({ code: "ASES_UNINSTALL_FAILED", error: message }, null, 2) : `Falha na desinstalação segura: ${message}` };
+    }
+  }
   if (command === "interview") {
     try {
       const answersIndex = argv.indexOf("--answers");
