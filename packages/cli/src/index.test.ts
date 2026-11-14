@@ -12,6 +12,7 @@ import { checkNodeVersion, run, validateConfig, VERSION } from "./index.js";
 import { collectInterviewAnswers, inspectWorkspaceContext, runInterview } from "./interview.js";
 import { assessInterview } from "./assessment.js";
 import { readCatalog } from "./catalog.js";
+import { applyHostIntegration } from "./host-install.js";
 
 test("reports version offline", async () => {
   assert.deepEqual(await run(["--version"]), { exitCode: 0, output: VERSION });
@@ -390,6 +391,163 @@ test("host plan renders create and replacement diffs without writing", async () 
   assert.equal(await readFile(join(root, "AGENTS.md"), "utf8"), "# Instruções locais do usuário\n");
 });
 
+test("Claude project plan prepares discoverable Skill and command paths, not a misplaced plugin manifest", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-claude-plan-"));
+  const plan = JSON.parse((await run(["host", "plan", "claude-code", root, "--json"])).output);
+  assert.deepEqual(plan.files.map((file: { target: string }) => file.target), [
+    ".claude/skills/ases-project-start/SKILL.md",
+    ".claude/commands/ases-start.md"
+  ]);
+  assert.ok(plan.files.every((file: { action: string }) => file.action === "CREATE"));
+  assert.equal(await readFile(join(root, ".claude-plugin/plugin.json"), "utf8").catch(() => undefined), undefined);
+});
+
+test("host apply is read-only by default and uninstalls only files it owns", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-host-apply-"));
+  const plan = JSON.parse((await run(["host", "apply", "claude-code", root, "--json"])).output);
+  assert.equal(plan.status, "planned");
+  assert.equal(await readFile(join(root, ".claude/skills/ases-project-start/SKILL.md"), "utf8").catch(() => undefined), undefined);
+
+  const installed = JSON.parse((await run(["host", "apply", "claude-code", root, "--apply", "--json"])).output);
+  assert.equal(installed.status, "installed");
+  assert.equal(installed.owned.length, 2);
+  assert.match(await readFile(join(root, ".claude/skills/ases-project-start/SKILL.md"), "utf8"), /EUREKA42 ASES/);
+
+  const uninstallPlan = JSON.parse((await run(["host", "uninstall", "claude-code", root, "--json"])).output);
+  assert.equal(uninstallPlan.status, "planned");
+  assert.equal(uninstallPlan.wouldRemove.length, 2);
+  assert.ok(await readFile(join(root, ".claude/commands/ases-start.md"), "utf8"));
+
+  const removed = JSON.parse((await run(["host", "uninstall", "claude-code", root, "--apply", "--json"])).output);
+  assert.equal(removed.status, "uninstalled");
+  assert.equal(removed.removed.length, 3);
+  assert.equal(await readFile(join(root, ".claude/skills/ases-project-start/SKILL.md"), "utf8").catch(() => undefined), undefined);
+  assert.equal(await readFile(join(root, ".ases/host-install-claude-code.json"), "utf8").catch(() => undefined), undefined);
+});
+
+test("host apply and uninstall complete an isolated lifecycle for each supported adapter", async () => {
+  for (const host of ["codex", "claude-code", "kimi-code", "gemini-cli"] as const) {
+    const root = await mkdtemp(join(tmpdir(), `ases-host-${host}-`));
+    const installed = JSON.parse((await run(["host", "apply", host, root, "--apply", "--json"])).output);
+    assert.equal(installed.status, "installed", host);
+    assert.ok(installed.owned.length > 0, host);
+    const manifest = JSON.parse(await readFile(join(root, ".ases", `host-install-${host}.json`), "utf8"));
+    assert.equal(manifest.host, host);
+    const removed = JSON.parse((await run(["host", "uninstall", host, root, "--apply", "--json"])).output);
+    assert.equal(removed.status, "uninstalled", host);
+    assert.equal(removed.removed.length, installed.owned.length + 1, host);
+  }
+});
+
+test("host uninstall leaves a pre-existing .ases directory in place", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-host-preexisting-metadata-"));
+  await mkdir(join(root, ".ases"));
+  await run(["host", "apply", "claude-code", root, "--apply"]);
+  const manifest = JSON.parse(await readFile(join(root, ".ases/host-install-claude-code.json"), "utf8"));
+  assert.equal(manifest.asesDirectoryCreated, false);
+  await run(["host", "uninstall", "claude-code", root, "--apply"]);
+  assert.deepEqual(await readdir(root), [".ases"]);
+  assert.deepEqual(await readdir(join(root, ".ases")), []);
+});
+
+test("shared Codex/Kimi Skill is preserved until both adapters are uninstalled", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-host-shared-skill-"));
+  const codex = JSON.parse((await run(["host", "apply", "codex", root, "--apply", "--json"])).output);
+  assert.equal(codex.status, "installed");
+  const kimi = JSON.parse((await run(["host", "apply", "kimi-code", root, "--apply", "--json"])).output);
+  assert.deepEqual(kimi.owned, []);
+  assert.deepEqual(kimi.borrowed, [".agents/skills/ases-project-start/SKILL.md"]);
+
+  const firstRemoval = JSON.parse((await run(["host", "uninstall", "codex", root, "--apply", "--json"])).output);
+  assert.equal(firstRemoval.status, "partial");
+  assert.match(firstRemoval.preserved.find((entry: { path: string }) => entry.path === kimi.borrowed[0])?.reason ?? "", /kimi-code/);
+  assert.ok(await readFile(join(root, kimi.borrowed[0]), "utf8"));
+
+  const kimiRemoval = JSON.parse((await run(["host", "uninstall", "kimi-code", root, "--apply", "--json"])).output);
+  assert.deepEqual(kimiRemoval.borrowed, kimi.borrowed);
+  assert.equal(kimiRemoval.status, "uninstalled");
+  assert.ok(await readFile(join(root, kimi.borrowed[0]), "utf8"));
+
+  const finalRemoval = JSON.parse((await run(["host", "uninstall", "codex", root, "--apply", "--json"])).output);
+  assert.equal(finalRemoval.status, "uninstalled");
+  assert.equal(await readFile(join(root, kimi.borrowed[0]), "utf8").catch(() => undefined), undefined);
+});
+
+test("host apply refuses conflicts before writing and respects dry-run precedence", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-host-conflict-"));
+  await mkdir(join(root, ".claude/skills/ases-project-start"), { recursive: true });
+  await writeFile(join(root, ".claude/skills/ases-project-start/SKILL.md"), "user-owned skill\n");
+  const conflict = JSON.parse((await run(["host", "apply", "claude-code", root, "--apply", "--json"])).output);
+  assert.equal(conflict.status, "conflict");
+  assert.equal(await readFile(join(root, ".claude/commands/ases-start.md"), "utf8").catch(() => undefined), undefined);
+  assert.equal(await readFile(join(root, ".claude/skills/ases-project-start/SKILL.md"), "utf8"), "user-owned skill\n");
+
+  const dryRunRoot = await mkdtemp(join(tmpdir(), "ases-host-dry-run-"));
+  const dryRun = JSON.parse((await run(["host", "apply", "codex", dryRunRoot, "--apply", "--dry-run", "--json"])).output);
+  assert.equal(dryRun.status, "planned");
+  assert.equal(await readFile(join(dryRunRoot, "AGENTS.md"), "utf8").catch(() => undefined), undefined);
+});
+
+test("host apply refuses an invalid ownership path without touching integration files", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-host-rollback-"));
+  await writeFile(join(root, ".ases"), "user file blocks metadata directory\n");
+  const result = await run(["host", "apply", "claude-code", root, "--apply", "--json"]);
+  assert.equal(result.exitCode, 5);
+  assert.equal(await readFile(join(root, ".claude/skills/ases-project-start/SKILL.md"), "utf8").catch(() => undefined), undefined);
+  assert.equal(await readFile(join(root, ".claude/commands/ases-start.md"), "utf8").catch(() => undefined), undefined);
+  assert.equal(await readFile(join(root, ".ases"), "utf8"), "user file blocks metadata directory\n");
+});
+
+test("host apply rolls back created files and directories after a partial failure", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-host-rollback-"));
+  await assert.rejects(
+    applyHostIntegration("claude-code", root, true, { afterFileCreated: () => { throw new Error("injected test failure"); } }),
+    /injected test failure/
+  );
+  assert.deepEqual(await readdir(root), []);
+});
+
+test("host uninstall preserves modified files and keeps the ownership manifest", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-host-preserve-"));
+  await run(["host", "apply", "kimi-code", root, "--apply"]);
+  const skillPath = join(root, ".agents/skills/ases-project-start/SKILL.md");
+  await writeFile(skillPath, "customized by user\n");
+  const result = JSON.parse((await run(["host", "uninstall", "kimi-code", root, "--apply", "--json"])).output);
+  assert.equal(result.status, "partial");
+  assert.ok(result.preserved.some((entry: { path: string }) => entry.path === ".agents/skills/ases-project-start/SKILL.md"));
+  assert.equal(await readFile(skillPath, "utf8"), "customized by user\n");
+  assert.ok(await readFile(join(root, ".ases/host-install-kimi-code.json"), "utf8"));
+});
+
+test("host uninstall aborts on a symlinked owned path without deleting other files", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-host-symlink-"));
+  const outside = await mkdtemp(join(tmpdir(), "ases-host-symlink-outside-"));
+  const sentinel = join(outside, "sentinel.txt");
+  await writeFile(sentinel, "outside data\n");
+  await run(["host", "apply", "codex", root, "--apply"]);
+  await unlink(join(root, "AGENTS.md"));
+  await symlink(sentinel, join(root, "AGENTS.md"));
+  const result = await run(["host", "uninstall", "codex", root, "--apply", "--json"]);
+  assert.equal(result.exitCode, 5);
+  assert.match(result.output, /symlink/);
+  assert.equal(await readFile(join(root, "AGENTS.md"), "utf8"), "outside data\n");
+  assert.ok(await readFile(join(root, ".agents/skills/ases-project-start/SKILL.md"), "utf8"));
+  assert.equal(await readFile(sentinel, "utf8"), "outside data\n");
+});
+
+test("host uninstall rejects a tampered ownership manifest without deleting files", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-host-tampered-"));
+  await run(["host", "apply", "codex", root, "--apply"]);
+  const manifestPath = join(root, ".ases/host-install-codex.json");
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  manifest.files[0].sha256 = "0".repeat(64);
+  await writeFile(manifestPath, JSON.stringify(manifest));
+  const result = await run(["host", "uninstall", "codex", root, "--apply", "--json"]);
+  assert.equal(result.exitCode, 5);
+  assert.match(result.output, /integridade do manifesto/);
+  assert.ok(await readFile(join(root, "AGENTS.md"), "utf8"));
+});
+
 test("Kimi project plan targets its auto-discovered shared Skill without copying the plugin manifest to the project root", async () => {
   const root = await mkdtemp(join(tmpdir(), "ases-kimi-plan-"));
   const plan = JSON.parse((await run(["host", "plan", "kimi-code", root, "--json"])).output);
@@ -410,6 +568,9 @@ test("host plan refuses workspace symlink escapes", async () => {
   const skill = plan.files.find((file: { target: string }) => file.target === ".agents/skills/ases-project-start/SKILL.md");
   assert.equal(skill.action, "CONFLICT");
   assert.match(skill.diff, /symlink/);
+  assert.deepEqual(await readdir(outside), []);
+  const apply = JSON.parse((await run(["host", "apply", "codex", root, "--apply", "--json"])).output);
+  assert.equal(apply.status, "conflict");
   assert.deepEqual(await readdir(outside), []);
 });
 

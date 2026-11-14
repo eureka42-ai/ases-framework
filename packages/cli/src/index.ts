@@ -10,6 +10,7 @@ import { runInterview } from "./interview.js";
 import { importAses300, importProductRequirements, readCatalog, updateDecision, updateRequirement } from "./catalog.js";
 import { resolveConfigLayers } from "./config-resolution.js";
 import { createHostPlan, HOSTS, type HostId } from "./host-plan.js";
+import { applyHostIntegration, uninstallHostIntegration } from "./host-install.js";
 
 export const VERSION = "0.0.0-dev";
 
@@ -40,6 +41,8 @@ Comandos disponíveis:
   welcome                 Exibe a identidade Eureka42 no terminal
   host list               Detecta CLIs compatíveis sem alterar configurações
   host plan <host> [dir]  Mostra o diff da integração sem escrever arquivos
+  host apply <host> [dir] Instala no workspace após plano; exige --apply
+  host uninstall <host> [dir] Remove somente arquivos intactos rastreados
   mcp [workspace]         Inicia servidor MCP somente leitura via stdio
   doctor [diretório]      Diagnostica o ambiente sem chamadas remotas
   config validate [path]  Valida a configuração JSON do projeto
@@ -54,7 +57,7 @@ Comandos disponíveis:
 Opções:
   --json                  Saída estruturada em JSON
   --dry-run               Mostra o plano sem escrever arquivos
-  --apply                 Executa ases uninstall após conferir os hashes
+  --apply                 Aplica instalação/desinstalação após conferir o plano
   --answers <arquivo>     Respostas JSON para entrevista não interativa
   --resume                Retoma a entrevista salva em .ases/interview.json
   --version               Exibe a versão
@@ -474,6 +477,22 @@ export async function run(argv: string[]): Promise<CommandResult> {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_HOST_PLAN_FAILED", error: message }, null, 2) : `Falha ao gerar plano do host: ${message}` };
+    }
+  }
+  if (command === "host" && (args[1] === "apply" || args[1] === "uninstall")) {
+    const action = args[1];
+    const host = args[2];
+    if (!HOSTS.includes(host as HostId)) return { exitCode: 2, output: json ? JSON.stringify({ code: "ASES_HOST_INVALID", allowed: HOSTS }, null, 2) : `Host inválido; use: ${HOSTS.join(", ")}` };
+    const apply = argv.includes("--apply") && !dryRun;
+    try {
+      const result = action === "apply"
+        ? await applyHostIntegration(host as HostId, args[3] ?? process.cwd(), apply)
+        : await uninstallHostIntegration(host as HostId, args[3] ?? process.cwd(), apply);
+      return { exitCode: result.status === "conflict" ? 3 : 0, output: json ? JSON.stringify(result, null, 2) : `${result.status.toUpperCase()} ${result.host} → ${result.workspace}${"apply" in result && result.apply ? " (aplicado)" : " (somente plano)"}\n${JSON.stringify(result, null, 2)}` };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      const code = action === "apply" ? "ASES_HOST_APPLY_FAILED" : "ASES_HOST_UNINSTALL_FAILED";
+      return { exitCode: 5, output: json ? JSON.stringify({ code, error: message }, null, 2) : `Falha na integração do host: ${message}` };
     }
   }
   if (command === "config" && args[1] === "validate") return validateConfigCommand(args[2], json);

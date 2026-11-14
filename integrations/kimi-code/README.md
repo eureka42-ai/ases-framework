@@ -8,9 +8,11 @@ O Kimi Code CLI observado suporta `--skills-dir` e a descoberta de Skills compar
 
 ```sh
 ases host plan kimi-code ./meu-projeto
+ases host apply kimi-code ./meu-projeto
+ases host apply kimi-code ./meu-projeto --apply
 ```
 
-Revise o diff e copie manualmente a Skill aprovada para `.agents/skills/ases-project-start/SKILL.md`. A partir dali ela é descoberta pelo Kimi e também por outros hosts que reconhecem o padrão Agent Skills. Consulte a [documentação de Agent Skills do Kimi](https://moonshotai.github.io/kimi-cli/en/customization/skills.html).
+`host apply` sem `--apply` continua sendo somente leitura. Com `--apply`, grava apenas a Skill de projeto em `.agents/skills/` e registra seu hash; nenhuma configuração global do Kimi é alterada. Para remover, revise `ases host uninstall kimi-code ./meu-projeto` e então use `--apply` para retirar somente a Skill inalterada. A partir dali ela é descoberta pelo Kimi e também por outros hosts que reconhecem o padrão Agent Skills. Consulte a [documentação de Agent Skills do Kimi](https://moonshotai.github.io/kimi-cli/en/customization/skills.html).
 
 ## Plugin experimental
 

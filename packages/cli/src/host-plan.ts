@@ -40,6 +40,18 @@ async function findIntegrationRoot(): Promise<string> {
   throw new Error("Diretório de integrações não encontrado; execute o plano a partir do checkout do ASES Framework.");
 }
 
+export async function readHostAsset(host: HostId, source: string): Promise<Buffer> {
+  const prefix = `${host}/`;
+  if (!source.startsWith(prefix) || source.split(/[\\/]/).some((part) => part === "..")) throw new Error(`Caminho de origem inválido: ${source}`);
+  const root = await findIntegrationRoot();
+  const path = resolve(root, source);
+  const rootRelative = relative(root, path);
+  if (!rootRelative || rootRelative.startsWith(`..${sep}`) || rootRelative === "..") throw new Error(`Origem fora das integrações: ${source}`);
+  const info = await lstat(path);
+  if (!info.isFile() || info.isSymbolicLink()) throw new Error(`Origem não é arquivo regular: ${source}`);
+  return readFile(path);
+}
+
 function diffText(target: string, before: string | undefined, after: string): string {
   if (before === undefined) {
     const lines = after.replace(/\r\n/g, "\n").replace(/\n$/, "").split("\n");
@@ -65,7 +77,10 @@ export async function createHostPlan(host: HostId, workspacePath: string): Promi
   const integrationRoot = await findIntegrationRoot();
   const hostSource = join(integrationRoot, host);
   const paths = host === "claude-code"
-    ? [".claude-plugin/plugin.json", "commands/ases-start.md", "skills/ases-project-start/SKILL.md", ".claude-plugin/icon.png"].map((path) => ({ source: path, target: path }))
+    ? [
+        { source: "skills/ases-project-start/SKILL.md", target: ".claude/skills/ases-project-start/SKILL.md" },
+        { source: "commands/ases-start.md", target: ".claude/commands/ases-start.md" }
+      ]
     : host === "codex"
       ? ["AGENTS.md", ".agents/skills/ases-project-start/SKILL.md"].map((path) => ({ source: path, target: path }))
       : host === "kimi-code"

@@ -5,19 +5,19 @@
 - M2 — IN_PROGRESS: importador e engine ASES-300 implementados. Revisão estrutural e amostra visual concluídas; homologação integral da conversão segue pendente.
 - M3 — IN_PROGRESS: entrevista inicial de perfil e stack implementada, com recomendações propostas e revisão de riscos; refinamento restante do backlog continua.
 - M4 — IMPLEMENTED_LOCALLY / HOST_VALIDATION_PENDING: MCP read-only, planos e adapters de hosts têm evidência local; sessões reais ainda não comprovam todos os hosts.
-- M5 — IN_PROGRESS: plugins/Skills experimentais e manifestos validados; descoberta/invocação em sessão real e decisões de distribuição permanecem pendentes.
+- M5 — IN_PROGRESS: plugins/Skills experimentais e manifestos validados; lifecycle local `host apply/uninstall` implementado com propriedade por hash; sessão real Claude/hosts e decisões de distribuição permanecem pendentes.
 - M6 — IN_PROGRESS: Provider SPI tipada e mock determinístico offline implementados (AFR-041/042); outros 8 de 10 requisitos M6 seguem pendentes.
 - M7–M13 — PLANNED: agents/workflows, RAG/memória, evals, segurança, observabilidade e hardening.
 - M14 — BLOCKED_ON_APPROVAL: release candidate e gate v1 dependem das decisões de licença, homologação e critérios de lançamento.
 
-Backlog estruturado atual: 34/140 requisitos `IMPLEMENTED`, 106/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
+Backlog estruturado atual: 37/140 requisitos `IMPLEMENTED`, 103/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
 
-Distribuição dos 106 pendentes no registro atual:
+Distribuição dos 103 pendentes no registro atual:
 
 | Marco | Pendentes | Observação |
 |---|---:|---|
 | M1 | 0 | AFR-028 passou no CI remoto Node.js 22/24 |
-| M5 | 8 | Claude, Codex, Kimi e Gemini, mais segurança de instalação/atualização |
+| M5 | 5 | Claude, Codex, Kimi e Gemini em sessões reais; atualização/migração com backup |
 | M6 | 8 | Providers reais opcionais, roteamento, orçamento e limites de modo |
 | M7 | 10 | Permissões, contexto, execução de agentes, Skills e tools |
 | M8 | 8 | DSL e execução de workflows |
@@ -28,5 +28,5 @@ Distribuição dos 106 pendentes no registro atual:
 | M13 | 10 | E2E, CI, release, documentação, TUI, backup e migrações |
 | M15+ | 30 | Capacidades avançadas opcionais; não fazem parte do primeiro gate v1 |
 
-O gate M14 não está representado por um requisito AFR separado; a autorização do release continua uma decisão humana conforme AFR-104. Portanto, “106 pendentes” é a contagem objetiva do backlog atual, não uma previsão exata de rodadas até DONE.
+O gate M14 não está representado por um requisito AFR separado; a autorização do release continua uma decisão humana conforme AFR-104. Portanto, “103 pendentes” é a contagem objetiva do backlog atual, não uma previsão exata de rodadas até DONE.
 

@@ -55,7 +55,7 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases doctor` | Implementado localmente | Node, plataforma, Git, npm, pnpm, workspace/config e ações corretivas |
 | `ases config validate` | Implementado no schema inicial | Configuração JSON bootstrap |
 | `ases config explain` | Implementado no schema inicial | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Em andamento | 34 implementados; 106 pendentes. Critérios de aceite ainda precisam ser refinados em parte do backlog |
+| Backlog AFR-001..140 | Em andamento | 37 implementados; 103 pendentes. Critérios de aceite ainda precisam ser refinados em parte do backlog |
 | Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |
@@ -199,6 +199,8 @@ ASES_PROJECT_MODE=offline ases config explain ./meu-projeto/.ases/config.json --
 | `ases config explain [path] [--set chave=valor]` | Resolve defaults e overrides seguros com suas origens | Nenhum |
 | `ases host list` | Detecta Codex, Claude, Kimi e Gemini instalados | Nenhum |
 | `ases host plan <host> [workspace]` | Mostra diffs de integração, conflitos e arquivos binários sem aplicar mudanças | Nenhum |
+| `ases host apply <host> [workspace]` | Mostra plano; `--apply` instala arquivos locais sem sobrescrever destinos | `.ases/host-install-<host>.json` |
+| `ases host uninstall <host> [workspace]` | Mostra plano; `--apply` remove somente arquivos intactos rastreados | Manifesto de propriedade da integração |
 | `ases mcp [workspace]` | Serve ferramentas MCP de requisitos por stdio (read-only) | Nenhum |
 | `ases catalog import-ases300 <md> [workspace]` | Valida 300 IDs e importa o catálogo geral | Grava `.ases/catalogs/ases-300.json` |
 | `ases catalog import-product <id> <md> [workspace]` | Importa REQ-301..500 para catálogo específico | Grava `.ases/catalogs/products/<id>.json` |
@@ -316,7 +318,7 @@ Todos permanecem `NOT_TESTED` para execução comportamental de sessão. Claude 
 
 O plugin Claude Code também possui marketplace publicado no próprio repositório: `claude plugin marketplace add eureka42-ai/ases-framework` e `claude plugin install eureka42-ases@eureka42-ases-plugins`. O manifesto e a instalação local foram validados; a invocação da Skill em conversa ainda não foi verificada. A submissão ao diretório Anthropic aguarda definição de licença.
 
-Para revisar o que seria preparado para um workspace sem modificar arquivos, execute `ases host plan codex ./meu-projeto` (ou `claude-code`, `kimi-code`, `gemini-cli`). O comando marca destinos divergentes como conflitos e não aplica o plano.
+Para revisar o que seria preparado para um workspace sem modificar arquivos, execute `ases host plan codex ./meu-projeto` (ou `claude-code`, `kimi-code`, `gemini-cli`). `ases host apply <host> ./meu-projeto` também é somente um plano; somente a opção explícita `--apply` grava arquivos dentro do workspace. Destinos divergentes interrompem toda a operação antes da escrita. `ases host uninstall <host> <workspace>` também é somente leitura por padrão; com `--apply`, remove arquivos regulares cujo SHA-256 ainda corresponde ao manifesto ASES e preserva os que foram alterados. Arquivos compartilhados entre adapters são protegidos enquanto houver referência ativa; após remover o último consumidor, repita o comando do host proprietário para retirar o arquivo. Nenhum dos comandos altera configuração global do host.
 
 O servidor MCP é iniciado por `ases mcp ./meu-projeto`. Ele fixa o processo ao workspace canonicalizado e oferece `requirements_list`, `requirements_show` e `requirements_trace`, todas somente leitura. Configure cada host para executar esse comando com o diretório do projeto; não passe credenciais por argumentos. O SDK oficial mantém compatibilidade com o protocolo MCP moderno e com o handshake legado; stdout é reservado aos frames JSON-RPC e logs de transporte vão para stderr.
 
@@ -438,7 +440,7 @@ Resultados reais e limitações ficam em [`evidence/`](evidence/). Uma funcional
 | M1 | CLI local, init, doctor, config e pacote | Vertical slice verificado localmente; publicação e suporte multi-host pendentes |
 | M2 | Catálogo ASES-300 e requirements engine | Engine local implementada; revisão estrutural e visual amostral concluídas, homologação integral pendente |
 | M3 | Entrevista ASES-500 e geração de spec | Fluxo inicial implementado; AFR-001..020 concluídos localmente |
-| M4–M5 | MCP e adapters de hosts | MCP stdio e plano/detecção implementados e testados; conexão em sessões reais dos hosts pendente |
+| M4–M5 | MCP e adapters de hosts | MCP stdio, plano e lifecycle local seguro implementados; conexão em sessões reais dos hosts pendente |
 | M6–M8 | Providers, agents, skills e workflows | M6 parcial: SPI tipada e mock offline implementados; 8/10 AFRs M6 pendentes; agents/workflows seguem planejados |
 | M9–M10 | RAG, memória e ContextBundle | Planejado |
 | M11–M13 | Evals, segurança, observabilidade e hardening | Planejado |
