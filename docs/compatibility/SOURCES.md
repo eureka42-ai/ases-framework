@@ -12,7 +12,7 @@ Verificadas em 2026-11-14:
 - Codex Skills: https://developers.openai.com/plugins/concepts/skills — Skill com `SKILL.md` e progressive disclosure.
 - Claude Code Plugins: https://code.claude.com/docs/en/plugins/create — layout, strict validation e carregamento local verificados; inventário no CLI confirmado e execução de Skill em conversa ainda pendente.
 - Claude Code Marketplaces: https://code.claude.com/docs/en/plugins/create-marketplace — marketplace no repositório e instalação local isolada verificados.
-- Codex Plugins: https://developers.openai.com/plugins/build/plugins — manifests, Skills, MCP e marketplaces locais documentados; adapter nativo Codex ainda em implementação.
+- Codex Plugins: https://developers.openai.com/plugins/build/plugins — manifest portátil `plugin.json`, onboarding Skill, assets de interface, marketplaces locais e comandos de instalação documentados; pacote do repositório estruturado, smoke isolado e sessão real pendentes.
 
 Nenhum host foi marcado `SUPPORTED`.
 

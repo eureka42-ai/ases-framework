@@ -1,0 +1,17 @@
+{
+  "name": "eureka42-codex-plugins",
+  "plugins": [
+    {
+      "name": "eureka42-ases",
+      "source": {
+        "source": "local",
+        "path": "./integrations/codex"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

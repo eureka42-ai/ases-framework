@@ -1,0 +1,29 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "eureka42-ases",
+  "version": "0.0.0-dev",
+  "description": "EUREKA42 ASES project discovery, stack assessment and verified software workflow",
+  "author": {
+    "name": "Eureka42"
+  },
+  "homepage": "https://github.com/eureka42-ai/ases-framework",
+  "repository": "https://github.com/eureka42-ai/ases-framework",
+  "keywords": ["software-engineering", "project-discovery", "requirements", "skills"],
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/ases-project-start/SKILL.md",
+      "interface": {
+        "displayName": "EUREKA42 ASES",
+        "shortDescription": "Discover project needs and assess a safe-fit stack",
+        "longDescription": "Guides project discovery, reviews existing technology choices, and keeps recommendations PROPOSED until a person confirms them.",
+        "developerName": "Eureka42",
+        "category": "Productivity",
+        "capabilities": ["Read", "Write"],
+        "websiteURL": "https://github.com/eureka42-ai/ases-framework",
+        "brandColor": "#00A982",
+        "composerIcon": "./assets/eureka42-mark.png",
+        "logo": "./assets/eureka42-logo.png"
+      }
+    }
+  }
+}

@@ -6,7 +6,7 @@ O EUREKA42 ASES possui um núcleo portátil e artefatos separados por host. Eles
 
 | Host | Artefato | Instalação de desenvolvimento | Estado |
 |---|---|---|---|
-| Codex | `AGENTS.md` + `.agents/skills/` | copiar/mesclar no projeto de destino após revisar o diff | MANIFEST/Skill local validado; sessão funcional pendente |
+| Codex | Plugin portátil `integrations/codex/` + marketplace `.agents/plugins/` | `codex plugin marketplace add eureka42-ai/ases-framework`; depois `codex plugin add eureka42-ases@eureka42-codex-plugins` | Manifesto, marketplace e onboarding Skill estruturados; instalação isolada passou; sessão funcional pendente |
 | Claude Code | Plugin em `.claude-plugin/`, duas Skills e marketplace do repositório | `claude plugin marketplace add eureka42-ai/ases-framework`; depois `claude plugin install eureka42-ases@eureka42-ases-plugins` | Strict validation e descoberta por instalação isolada passaram; invocação da Skill em conversa pendente |
 | Kimi Code CLI | Skill auto-descoberta em `.agents/skills/` e pacote Beta `kimi.plugin.json` | revisar `ases host plan kimi-code <workspace>` e aplicar a Skill; pacote Beta só em versão que exponha `/plugins` | `--skills-dir` presente; shell local não lista `plugin`; sessão pendente |
 | Gemini CLI | `gemini-extension.json`, contexto, Skill, command e tema | `gemini extensions link integrations/gemini-cli` em checkout de desenvolvimento | `gemini extensions validate` PASS; sessão funcional pendente |
@@ -17,14 +17,14 @@ Versões coletadas em 2026-11-14 com os comandos locais indicados. A coluna de c
 
 | Host | Versão observada | Interface de integração no repositório | Validação objetiva | Execução da Skill na sessão |
 |---|---:|---|---|---|
-| Codex CLI | 0.169.0 (`codex --version`) | `AGENTS.md`, Skill em `.agents/skills/` e servidor MCP stdio read-only | Executável detectado; arquivos locais inspecionados | `NOT_TESTED` |
+| Codex CLI | 0.169.0 (`codex --version`) | Plugin portátil com onboarding Skill, catálogo no marketplace do repositório, `AGENTS.md` e MCP stdio read-only opcional | Adicionado e instalado em `CODEX_HOME` temporário; `codex plugin list` mostrou `installed, enabled` | `NOT_TESTED` |
 | Claude Code | 2.1.323 (`claude --version`) | Plugin, command e Skill; carregamento via `--plugin-dir` ou marketplace do repositório | `claude plugin validate --strict` passou; instalado e inventariado em `CLAUDE_CONFIG_DIR` temporário isolado | Invocação da Skill em conversa `NOT_TESTED` |
 | Kimi Code CLI | 2.5.3 (`kimi --version`) | Skill via projeto `.agents/skills/` e pacote Beta `kimi.plugin.json` | `kimi --help` confirma `--skills-dir`; não lista subcomando `plugin`; manifest/Skill passam validação estrutural do repositório | `NOT_TESTED` |
 | Gemini CLI | 0.42.0 (`gemini --version`) | Extension com contexto, command, Skill e tema | `gemini extensions validate` passou; instalação foi recusada no prompt de confiança | `NOT_TESTED` |
 
 Para promover uma linha a `SUPPORTED`, registre instalação ou carregamento, descoberta e execução funcional da Skill na versão anotada. Recolha as versões novamente antes de publicar uma release, pois esta matriz é uma observação local datada.
 
-`ases host plan <host> <workspace>` apresenta o diff previsto para os artefatos locais, identifica conflitos e não escreve no workspace. Funciona no checkout ou pelo pacote CLI instalado. Revise todos os destinos antes de decidir qualquer instalação.
+`ases host plan <host> <workspace>` apresenta o diff previsto para os artefatos locais, identifica conflitos e não escreve no workspace. Funciona no checkout ou pelo pacote CLI instalado. Revise todos os destinos antes de decidir qualquer instalação. O Codex também tem um plugin instalável e documentado em [`codex/README.md`](codex/README.md); o uso do plugin não altera o `host plan` read-only.
 
 ## Experiência pretendida
 
@@ -39,7 +39,7 @@ O comando determinístico `ases interview` é a fonte operacional inicial. As Sk
 
 O MCP server também pode ser configurado como subprocesso com `ases mcp <workspace>`. Ele fixa um único workspace e expõe ferramentas de consulta de requisitos. O adapter de cada host ainda precisa de configuração e smoke test específico; o servidor não configura os hosts automaticamente. A implementação stdio usa o [SDK oficial MCP TypeScript](https://ts.sdk.modelcontextprotocol.io/v2/serving/stdio) e serve os protocolos [moderno e legado](https://ts.sdk.modelcontextprotocol.io/v2/protocol-versions).
 
-Validação local em 2026-11-14: `claude plugin validate integrations/claude-code --strict` passou e o plugin foi instalado de um marketplace local com configuração isolada; `claude plugin details` encontrou as duas Skills. O perfil de diretório da Anthropic ainda exige licença aprovada (`LICENSE_MISSING`). `gemini extensions validate integrations/gemini-cli` passou; Kimi 2.5.3 aceita `--skills-dir`, mas não lista comandos `plugin` em `kimi --help`; `codex --version` detectou 0.169.0. Estas verificações não executaram a Skill numa conversa real.
+Validação local em 2026-11-14: `claude plugin validate integrations/claude-code --strict` passou e o plugin foi instalado de um marketplace local com configuração isolada; `claude plugin details` encontrou as duas Skills. O perfil de diretório da Anthropic ainda exige licença aprovada (`LICENSE_MISSING`). `gemini extensions validate integrations/gemini-cli` passou; Kimi 2.5.3 aceita `--skills-dir`, mas não lista comandos `plugin` em `kimi --help`; Codex CLI 0.169.0 instalou o plugin deste marketplace em `CODEX_HOME` temporário e o inventariou como habilitado. Nenhuma dessas verificações executou a Skill numa conversa real.
 
 O perfil de publicação do diretório Anthropic exige uma licença aprovada; não inserimos um SPDX placeholder. O marketplace público próprio do repositório foi validado localmente. A instalação Gemini foi cancelada no aviso que descreve injeção de instruções, e `gemini extensions list` confirmou que nada foi instalado. Claude Code oferece `--plugin-dir` para carregamento local por execução; o inventário do plugin foi verificado fora de uma conversa com modelo.
 

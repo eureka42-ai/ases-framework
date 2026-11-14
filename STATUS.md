@@ -6,7 +6,7 @@ Atualizado em: 2026-11-14
 
 - M0: IMPLEMENTED / PARTIALLY_VERIFIED
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
-- Repositório Git: branch `main`; alterações de CI e proteção da entrevista nesta rodada, pendentes de commit/push
+- Repositório Git: branch `main`; etapa Codex implementada e verificada localmente, pendente de commit/push
 - Fonte diretora: presente e lida
 - ASES-300: DOCX e conversão Markdown presentes localmente; revisão estrutural preliminar confirmou 300 IDs/títulos e hashes íntegros; conferência visual/editorial ainda pendente.
 - ASES-500 separado: consolidação presente como reconstrução para validação; original independente ausente e homologação pendente.
@@ -27,6 +27,8 @@ Atualizado em: 2026-11-14
 - Recomendações ausentes ficam `PROPOSED`; escolhas existentes ficam `REVIEW_REQUIRED`.
 - AFR-018 avalia divergência entre respostas e manifestos, e registra riscos bloqueantes de dados sensíveis/escala alta no JSON e SPEC sem confirmar automaticamente.
 - Integrações experimentais criadas para Codex, Claude Code, Kimi Code CLI e Gemini CLI.
+- Plugin portátil nativo do Codex implementado em `integrations/codex/`: manifesto Agent Plugins, onboarding Skill compartilhada, ícones Eureka42 e marketplace de repositório em `.agents/plugins/marketplace.json`.
+- Instalação e inventário do plugin Codex passaram em `CODEX_HOME=/tmp/eureka42-codex-smoke` isolado; `codex plugin list` mostrou `installed, enabled`. Isso não comprova a execução do onboarding numa conversa.
 - `ases host plan <host> <workspace>` gera plano somente leitura com diffs, conflitos, hashes de assets binários e proteção contra symlink escape.
 - `ases mcp <workspace>` serve três ferramentas de consulta read-only sobre o workspace fixado via SDK MCP oficial; suporta protocolo moderno e handshake legado, com stdout reservado a JSON-RPC.
 - Leitura de catálogo agora rejeita arquivo catalog symlinkado ou cujo caminho canonicalizado saia do workspace.
@@ -35,7 +37,7 @@ Atualizado em: 2026-11-14
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
 - Testes unitários: PASS (35/35) em 2026-11-14; `pnpm test` também compila TypeScript e valida as integrações.
-- Manifests/Skills locais: PASS (3 manifests, 5 Skills).
+- Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 5 Skills sincronizadas).
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; instalação local do tarball + `ases --version` e `ases host plan` em workspace externo: PASS.
@@ -51,7 +53,7 @@ Atualizado em: 2026-11-14
 - `requirements show/list` recalculam integridade de evidências (`CURRENT`, `STALE`, `MISSING`, `OUTSIDE_WORKSPACE`, `UNVERIFIABLE`); README documenta limites da checagem semântica.
 - Testes: 30/30 PASS; incluem MCP stdio moderno/legado, isolamento de workspace, rejeição de symlinks e segredo em logs, plano host/diff e prevenção de symlink escape, análise de contradições e riscos, persistência de achados na SPEC, inspeção segura de manifestos e retomada de decisões na entrevista, separação de catálogos, estados de decisão independentes, rastreabilidade, bloqueios justificados, integridade, piso Node.js, identidade da entrevista e resolução segura de configuração.
 - Parser ASES-300: classificação e prioridade agora são extraídas separadamente quando aparecem na mesma linha; regressão automatizada PASS.
-- Validadores de integração: PASS (3 manifests, 5 Skills).
+- Validadores de integração: PASS (4 manifests, 2 marketplaces, 5 Skills).
 - Validação host estática nesta rodada: Claude schema PASS, profile de diretório bloqueado por licença; Gemini extension PASS; `kimi doctor` validou só os arquivos de configuração; Codex 0.169.0 detectado. Descoberta/execução em sessões de agente permanecem pendentes.
 - Validação continuada anterior: `git diff --check` PASS; `kimi doctor` PASS para configuração local (não é validação do plugin).
 - CI GitHub Actions configurado para Node.js 22/24 com instalação pnpm congelada; execução remota ainda precisa ser observada antes de concluir AFR-028.
@@ -60,6 +62,7 @@ Atualizado em: 2026-11-14
 - Claude Code: plugin validado com `claude plugin validate --strict`, marketplace do repositório validado, instalação isolada e inventário confirmaram duas Skills carregadas. A invocação em conversa permanece pendente; perfil de distribuição oficial Anthropic exige decisão de licença.
 - Configuração MCP de projeto Claude gerada e conferida em workspace temporário; `claude mcp list` marcou `Pending approval`, sem inicializar o servidor.
 - Kimi: `host plan` agora prepara a Skill em `.agents/skills/`, que é auto-descoberta pelo projeto; `kimi --skills-dir <path> --help` reconheceu a opção. O plugin Beta não foi instalado e a sessão segue `NOT_TESTED`.
+- Codex CLI 0.169.0: plugin nativo instalado e listado como habilitado em configuração temporária isolada; invocação da Skill em conversa permanece `NOT_TESTED`.
 - SPI de providers implementada com erros tipados, timeout, cancelamento e provider mock determinístico; sem provider remoto ou credenciais.
 - Gemini: usuário autorizou confiança no workspace; recusou o aviso subsequente de instalação/injeção de instruções. `gemini extensions list` confirmou que nada foi instalado.
 - Claude Code oferece `--plugin-dir` para carga local temporária; teste em sessão sem inferência ainda não concluído.
