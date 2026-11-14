@@ -7,7 +7,7 @@ O EUREKA42 ASES possui um núcleo portátil e artefatos separados por host. Eles
 | Host | Artefato | Instalação de desenvolvimento | Estado |
 |---|---|---|---|
 | Codex | Plugin portátil `integrations/codex/` + marketplace `.agents/plugins/` | `codex plugin marketplace add eureka42-ai/ases-framework`; depois `codex plugin add eureka42-ases@eureka42-codex-plugins` | Manifesto, marketplace e onboarding Skill estruturados; instalação isolada passou; sessão funcional pendente |
-| Claude Code | Plugin em `.claude-plugin/`, duas Skills e marketplace do repositório | `claude plugin marketplace add eureka42-ai/ases-framework`; depois `claude plugin install eureka42-ases@eureka42-ases-plugins` | Strict validation e descoberta por instalação isolada passaram; invocação da Skill em conversa pendente |
+| Claude Code | Plugin em `.claude-plugin/`, duas Skills e marketplace do repositório | `claude plugin marketplace add eureka42-ai/ases-framework --scope local`; depois `claude plugin install eureka42-ases@eureka42-ases-plugins --scope local` | Strict validation e descoberta por instalação isolada passaram; invocação da Skill em conversa pendente |
 | Kimi Code CLI | Skill auto-descoberta em `.agents/skills/` e pacote Beta `kimi.plugin.json` | revisar `ases host plan kimi-code <workspace>` e aplicar a Skill; pacote Beta só em versão que exponha `/plugins` | `--skills-dir` presente; shell local não lista `plugin`; sessão pendente |
 | Gemini CLI | `gemini-extension.json`, contexto, Skill, command e tema | `gemini extensions link integrations/gemini-cli` em checkout de desenvolvimento | `gemini extensions validate` PASS; sessão funcional pendente |
 
@@ -22,7 +22,7 @@ Versões coletadas em 2026-11-14 com os comandos locais indicados. A coluna de c
 | Kimi Code CLI | 2.5.3 (`kimi --version`) | Skill via projeto `.agents/skills/` e pacote Beta `kimi.plugin.json` | `kimi --help` confirma `--skills-dir`; não lista subcomando `plugin`; manifest/Skill passam validação estrutural do repositório | `NOT_TESTED` |
 | Gemini CLI | 0.42.0 (`gemini --version`) | Extension com contexto, command, Skill e tema | `gemini extensions validate` passou; instalação foi recusada no prompt de confiança | `NOT_TESTED` |
 
-Para promover uma linha a `SUPPORTED`, registre instalação ou carregamento, descoberta e execução funcional da Skill na versão anotada. Recolha as versões novamente antes de publicar uma release, pois esta matriz é uma observação local datada.
+Na instalação Claude documentada acima, `--scope local` limita a configuração ao checkout atual; consulte [`claude-code/README.md`](claude-code/README.md) para o ciclo de remoção com preservação de dados. Para promover uma linha a `SUPPORTED`, registre instalação ou carregamento, descoberta e execução funcional da Skill na versão anotada. Recolha as versões novamente antes de publicar uma release, pois esta matriz é uma observação local datada.
 
 `ases host plan <host> <workspace>` apresenta o diff previsto para os artefatos locais, identifica conflitos e não escreve no workspace. Funciona no checkout ou pelo pacote CLI instalado. Revise todos os destinos antes de decidir qualquer instalação. O Codex também tem um plugin instalável e documentado em [`codex/README.md`](codex/README.md); o uso do plugin não altera o `host plan` read-only.
 

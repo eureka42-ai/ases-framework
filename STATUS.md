@@ -71,6 +71,7 @@ Atualizado em: 2026-11-14
 - Gemini: usuário autorizou confiança no workspace; recusou o aviso subsequente de instalação/injeção de instruções. `gemini extensions list` confirmou que nada foi instalado.
 - Claude Code oferece `--plugin-dir` para carga local temporária; teste em sessão sem inferência ainda não concluído.
 - Claude `plugin test` não executou porque o adapter não está instalado; não houve instalação automática.
+- Guia geral Claude atualizado para recomendar `--scope local`; validação estrita do plugin e marketplace repetida com PASS e `pnpm integrations:validate` PASS. Ver `evidence/M5-2026-11-14-progress-6.md`.
 
 ## Próximas tarefas READY
 
@@ -99,6 +100,7 @@ Atualizado em: 2026-11-14
 - `evidence/M5-2026-11-14-progress-3.md`
 - `evidence/M5-2026-11-14-progress-4.md`
 - `evidence/M5-2026-11-14-progress-5.md`
+- `evidence/M5-2026-11-14-progress-6.md`
 - `evidence/M1-2026-11-14-progress-2.md`
 - `evidence/ASES-300-markdown-structure-review-2026-11-13.md`
 - `evidence/ASES-300-visual-review-2026-11-14.md`
