@@ -11,6 +11,19 @@ O EUREKA42 ASES possui um núcleo portátil e artefatos separados por host. Eles
 | Kimi Code CLI | `kimi.plugin.json` com `sessionStart.skill` | instalar o diretório/repositório e executar `/plugins reload` | Manifest/Skill local validado; recarga/sessão funcional pendente |
 | Gemini CLI | `gemini-extension.json`, contexto, Skill, command e tema | `gemini extensions link integrations/gemini-cli` em checkout de desenvolvimento | `gemini extensions validate` PASS; sessão funcional pendente |
 
+## Matriz de versões e capacidades observadas
+
+Versões coletadas em 2026-11-14 com os comandos locais indicados. A coluna de capacidade descreve o contrato de integração disponível no repositório; não atesta que a sessão do agente o carregou.
+
+| Host | Versão observada | Interface de integração no repositório | Validação objetiva | Execução da Skill na sessão |
+|---|---:|---|---|---|
+| Codex CLI | 0.169.0 (`codex --version`) | `AGENTS.md`, Skill em `.agents/skills/` e servidor MCP stdio read-only | Executável detectado; arquivos locais inspecionados | `NOT_TESTED` |
+| Claude Code | 2.1.323 (`claude --version`) | Plugin, command e Skill; carregamento local via `--plugin-dir` | Validação estrita do schema/commands passou; licença bloqueia perfil público | `NOT_TESTED` |
+| Kimi Code CLI | 2.5.3 (`kimi --version`) | Plugin com hook `sessionStart.skill` e Skill | Manifest local validado; `kimi doctor` só verificou configuração do cliente | `NOT_TESTED` |
+| Gemini CLI | 0.42.0 (`gemini --version`) | Extension com contexto, command, Skill e tema | `gemini extensions validate` passou; instalação foi recusada no prompt de confiança | `NOT_TESTED` |
+
+Para promover uma linha a `SUPPORTED`, registre instalação ou carregamento, descoberta e execução funcional da Skill na versão anotada. Recolha as versões novamente antes de publicar uma release, pois esta matriz é uma observação local datada.
+
 `ases host plan <host> <workspace>` apresenta o diff previsto para os artefatos locais, identifica conflitos e não escreve no workspace. Funciona no checkout ou pelo pacote CLI instalado. Revise todos os destinos antes de decidir qualquer instalação.
 
 ## Experiência pretendida
