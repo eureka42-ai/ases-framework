@@ -392,8 +392,8 @@ requirements:
       - id: AC-AFR-032-01
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Kimi Code receber plugin/Skill compatível e testado."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["integrations/kimi-code/kimi.plugin.json", "integrations/kimi-code/README.md", "packages/cli/src/host-plan.ts"]
+    tests: ["packages/cli/src/index.test.ts :: Kimi project plan targets its auto-discovered shared Skill without copying the plugin manifest to the project root; Kimi session/plugin invocation pending"]
   - id: AFR-033
     priority: P1
     milestone: "M5"

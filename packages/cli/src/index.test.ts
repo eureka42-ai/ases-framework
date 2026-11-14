@@ -322,6 +322,18 @@ test("host plan renders create and replacement diffs without writing", async () 
   assert.equal(await readFile(join(root, "AGENTS.md"), "utf8"), "# Instruções locais do usuário\n");
 });
 
+test("Kimi project plan targets its auto-discovered shared Skill without copying the plugin manifest to the project root", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-kimi-plan-"));
+  const plan = JSON.parse((await run(["host", "plan", "kimi-code", root, "--json"])).output);
+  assert.equal(plan.exitCode, undefined);
+  assert.equal(plan.mode, "PLAN_ONLY");
+  assert.equal(plan.files.length, 1);
+  assert.equal(plan.files[0].target, ".agents/skills/ases-project-start/SKILL.md");
+  assert.equal(plan.files[0].source, "kimi-code/skills/ases-project-start/SKILL.md");
+  assert.equal(await readFile(join(root, "kimi.plugin.json"), "utf8").catch(() => undefined), undefined);
+  assert.equal(await readFile(join(root, ".agents/skills/ases-project-start/SKILL.md"), "utf8").catch(() => undefined), undefined);
+});
+
 test("host plan refuses workspace symlink escapes", async () => {
   const root = await mkdtemp(join(tmpdir(), "ases-host-plan-link-"));
   const outside = await mkdtemp(join(tmpdir(), "ases-host-plan-outside-"));

@@ -34,7 +34,7 @@ Atualizado em: 2026-11-14
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (34/34) em 2026-11-14; `pnpm test` também compila TypeScript e valida as integrações.
+- Testes unitários: PASS (35/35) em 2026-11-14; `pnpm test` também compila TypeScript e valida as integrações.
 - Manifests/Skills locais: PASS (3 manifests, 5 Skills).
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
@@ -59,6 +59,7 @@ Atualizado em: 2026-11-14
 - Matriz local de versões e contratos de integração dos quatro hosts registrada; hosts sem prova de carga/execução da Skill continuam `NOT_TESTED`, como cobre o teste de `host list`.
 - Claude Code: plugin validado com `claude plugin validate --strict`, marketplace do repositório validado, instalação isolada e inventário confirmaram duas Skills carregadas. A invocação em conversa permanece pendente; perfil de distribuição oficial Anthropic exige decisão de licença.
 - Configuração MCP de projeto Claude gerada e conferida em workspace temporário; `claude mcp list` marcou `Pending approval`, sem inicializar o servidor.
+- Kimi: `host plan` agora prepara a Skill em `.agents/skills/`, que é auto-descoberta pelo projeto; `kimi --skills-dir <path> --help` reconheceu a opção. O plugin Beta não foi instalado e a sessão segue `NOT_TESTED`.
 - SPI de providers implementada com erros tipados, timeout, cancelamento e provider mock determinístico; sem provider remoto ou credenciais.
 - Gemini: usuário autorizou confiança no workspace; recusou o aviso subsequente de instalação/injeção de instruções. `gemini extensions list` confirmou que nada foi instalado.
 - Claude Code oferece `--plugin-dir` para carga local temporária; teste em sessão sem inferência ainda não concluído.
@@ -88,5 +89,6 @@ Atualizado em: 2026-11-14
 - `evidence/M5-2026-11-14-progress-1.md`
 - `evidence/M6-2026-11-14-progress-1.md`
 - `evidence/M5-2026-11-14-progress-2.md`
+- `evidence/M5-2026-11-14-progress-3.md`
 - `evidence/ASES-300-markdown-structure-review-2026-11-13.md`
 

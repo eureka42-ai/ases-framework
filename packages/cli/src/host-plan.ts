@@ -69,7 +69,7 @@ export async function createHostPlan(host: HostId, workspacePath: string): Promi
     : host === "codex"
       ? ["AGENTS.md", ".agents/skills/ases-project-start/SKILL.md"].map((path) => ({ source: path, target: path }))
       : host === "kimi-code"
-        ? ["kimi.plugin.json", "skills/ases-project-start/SKILL.md"].map((path) => ({ source: path, target: path }))
+        ? [{ source: "skills/ases-project-start/SKILL.md", target: ".agents/skills/ases-project-start/SKILL.md" }]
         : ["gemini-extension.json", "GEMINI.md", "commands/ases/start.toml", "skills/ases-project-start/SKILL.md"].map((path) => ({ source: path, target: join(".gemini", "extensions", "eureka42-ases", path) }));
   const files: HostPlanFile[] = [];
 
