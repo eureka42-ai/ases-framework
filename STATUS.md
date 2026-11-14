@@ -28,16 +28,18 @@ Atualizado em: 2026-11-14
 - AFR-018 avalia divergência entre respostas e manifestos, e registra riscos bloqueantes de dados sensíveis/escala alta no JSON e SPEC sem confirmar automaticamente.
 - Integrações experimentais criadas para Codex, Claude Code, Kimi Code CLI e Gemini CLI.
 - `ases host plan <host> <workspace>` gera plano somente leitura com diffs, conflitos, hashes de assets binários e proteção contra symlink escape.
+- `ases mcp <workspace>` serve três ferramentas de consulta read-only sobre o workspace fixado via SDK MCP oficial; suporta protocolo moderno e handshake legado, com stdout reservado a JSON-RPC.
+- Leitura de catálogo agora rejeita arquivo catalog symlinkado ou cujo caminho canonicalizado saia do workspace.
 - Hosts locais detectados nesta sessão: Codex 0.169.0, Claude Code 2.1.323, Kimi 2.5.3 e Gemini 0.42.0.
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (27/27) em 2026-11-14; `pnpm test` também compilou TypeScript e validou as integrações.
+- Testes unitários: PASS (30/30) em 2026-11-14; `pnpm test` também compilou TypeScript e validou as integrações.
 - Manifests/Skills locais: PASS (3 manifests, 5 Skills).
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; instalação local do tarball + `ases --version` e `ases host plan` em workspace externo: PASS.
-- Backlog AFR-001..140: 23 requisitos IMPLEMENTED e ligados a código/testes; 117 seguem PENDING, muitos ainda sem detalhamento suficiente para estimar rodadas com precisão.
+- Backlog AFR-001..140: 27 requisitos IMPLEMENTED e ligados a código/testes; 113 seguem PENDING, muitos ainda sem detalhamento suficiente para estimar rodadas com precisão.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -47,7 +49,7 @@ Atualizado em: 2026-11-14
 - Ciclo de estados ASES-300 implementado; `VERIFIED` exige arquivo local dentro do workspace, calcula SHA-256, e `N_A` exige justificativa; histórico de transições mantido.
 - Validação de evidências resolve caminhos reais e rejeita links simbólicos para fora do workspace; apenas arquivos regulares podem comprovar `VERIFIED`.
 - `requirements show/list` recalculam integridade de evidências (`CURRENT`, `STALE`, `MISSING`, `OUTSIDE_WORKSPACE`, `UNVERIFIABLE`); README documenta limites da checagem semântica.
-- Testes: 27/27 PASS; incluem plano host/diff e prevenção de symlink escape, análise de contradições e riscos, persistência de achados na SPEC, inspeção segura de manifestos e retomada de decisões na entrevista, separação de catálogos, estados de decisão independentes, rastreabilidade, bloqueios justificados, integridade, piso Node.js, identidade da entrevista e resolução segura de configuração.
+- Testes: 30/30 PASS; incluem MCP stdio moderno/legado, isolamento de workspace, rejeição de symlinks e segredo em logs, plano host/diff e prevenção de symlink escape, análise de contradições e riscos, persistência de achados na SPEC, inspeção segura de manifestos e retomada de decisões na entrevista, separação de catálogos, estados de decisão independentes, rastreabilidade, bloqueios justificados, integridade, piso Node.js, identidade da entrevista e resolução segura de configuração.
 - Parser ASES-300: classificação e prioridade agora são extraídas separadamente quando aparecem na mesma linha; regressão automatizada PASS.
 - Validadores de integração: PASS (3 manifests, 5 Skills).
 - Validação host estática nesta rodada: Claude schema PASS, profile de diretório bloqueado por licença; Gemini extension PASS; `kimi doctor` validou só os arquivos de configuração; Codex 0.169.0 detectado. Descoberta/execução em sessões de agente permanecem pendentes.
@@ -75,5 +77,6 @@ Atualizado em: 2026-11-14
 - `evidence/M0-M1-2026-11-13.md`
 - `evidence/M1-2026-11-13-progress-2.md`
 - `evidence/M4-2026-11-14-progress-1.md`
+- `evidence/M4-2026-11-14-progress-2.md`
 - `evidence/ASES-300-markdown-structure-review-2026-11-13.md`
 

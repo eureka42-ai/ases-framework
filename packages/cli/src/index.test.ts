@@ -4,10 +4,14 @@ import { writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { PassThrough } from "node:stream";
+import { spawn } from "node:child_process";
+import { createInterface } from "node:readline";
+import { once } from "node:events";
 import test from "node:test";
 import { checkNodeVersion, run, validateConfig, VERSION } from "./index.js";
 import { collectInterviewAnswers, inspectWorkspaceContext, runInterview } from "./interview.js";
 import { assessInterview } from "./assessment.js";
+import { readCatalog } from "./catalog.js";
 
 test("reports version offline", async () => {
   assert.deepEqual(await run(["--version"]), { exitCode: 0, output: VERSION });
@@ -312,6 +316,83 @@ test("host plan refuses workspace symlink escapes", async () => {
   assert.equal(skill.action, "CONFLICT");
   assert.match(skill.diff, /symlink/);
   assert.deepEqual(await readdir(outside), []);
+});
+
+test("MCP stdio negotiates modern protocol, lists real tools and reads only its workspace", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-mcp-workspace-"));
+  const catalogDir = join(root, ".ases", "catalogs");
+  await mkdir(catalogDir, { recursive: true });
+  const catalogPath = join(catalogDir, "ases-300.json");
+  const originalCatalog = JSON.stringify({ schemaVersion: "1", catalog: "ases-300", source: { path: "source.md", sha256: "a".repeat(64) }, status: "IMPORTED_NOT_HOMOLOGATED", requirements: [{ id: "REQ-001", title: "Test requirement", sourceText: "Source text", source: { path: "source.md", sha256: "a".repeat(64) }, status: "PENDING" }] });
+  await writeFile(catalogPath, originalCatalog);
+  const secretMarker = "MCP_PRIVATE_SECRET_SENTINEL";
+  await writeFile(join(root, ".env"), `TOKEN=${secretMarker}\n`);
+  const productDir = join(catalogDir, "products");
+  await mkdir(productDir);
+  const outsideCatalog = join(await mkdtemp(join(tmpdir(), "ases-mcp-outside-")), "private-catalog.json");
+  await writeFile(outsideCatalog, JSON.stringify({ secret: secretMarker }));
+  await symlink(outsideCatalog, join(productDir, "private-catalog.json"));
+
+  const child = spawn(process.execPath, [join(process.cwd(), "packages/cli/dist/bin.js"), "mcp", root], { stdio: "pipe" });
+  const lines = createInterface({ input: child.stdout });
+  const messages = lines[Symbol.asyncIterator]();
+  let stderrOutput = "";
+  child.stderr.on("data", (chunk: Buffer) => { stderrOutput += chunk.toString("utf8"); });
+  const send = async (message: Record<string, unknown>) => {
+    child.stdin.write(`${JSON.stringify(message)}\n`);
+    const next = await messages.next();
+    assert.equal(next.done, false);
+    return JSON.parse(next.value!);
+  };
+  const meta = { "io.modelcontextprotocol/protocolVersion": "2026-07-28", "io.modelcontextprotocol/clientCapabilities": {} };
+  const discovery = await send({ jsonrpc: "2.0", id: 1, method: "server/discover", params: { _meta: meta } });
+  assert.ok(discovery.result.supportedVersions.includes("2026-07-28"));
+  const listing = await send({ jsonrpc: "2.0", id: 2, method: "tools/list", params: { _meta: meta } });
+  assert.deepEqual(listing.result.tools.map((tool: { name: string }) => tool.name), ["requirements_list", "requirements_show", "requirements_trace"]);
+  const call = await send({ jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "requirements_show", arguments: { id: "REQ-001" }, _meta: meta } });
+  const payload = JSON.parse(call.result.content[0].text);
+  assert.equal(payload.requirement.title, "Test requirement");
+  const missingCatalog = await send({ jsonrpc: "2.0", id: 4, method: "tools/call", params: { name: "requirements_list", arguments: { productId: "private-catalog" }, _meta: meta } });
+  assert.equal(missingCatalog.result.isError, true);
+  assert.ok(!missingCatalog.result.content[0].text.includes(root));
+  assert.ok(!missingCatalog.result.content[0].text.includes(secretMarker));
+  child.stdin.end();
+  await once(child, "exit");
+  lines.close();
+  assert.doesNotMatch(stderrOutput, new RegExp(secretMarker));
+  assert.ok(!stderrOutput.includes(root));
+  assert.equal(await readFile(catalogPath, "utf8"), originalCatalog);
+});
+
+test("catalog reader refuses symlinks that point outside the workspace", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-catalog-link-"));
+  const outside = join(await mkdtemp(join(tmpdir(), "ases-catalog-outside-")), "catalog.json");
+  const catalogDir = join(root, ".ases", "catalogs");
+  await mkdir(catalogDir, { recursive: true });
+  await writeFile(outside, JSON.stringify({ schemaVersion: "1", catalog: "ases-300", source: {}, status: "IMPORTED_NOT_HOMOLOGATED", requirements: [] }));
+  await symlink(outside, join(catalogDir, "ases-300.json"));
+  await assert.rejects(readCatalog(root), /arquivo regular/);
+});
+
+test("MCP stdio supports legacy initialize clients", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-mcp-legacy-"));
+  const child = spawn(process.execPath, [join(process.cwd(), "packages/cli/dist/bin.js"), "mcp", root], { stdio: "pipe" });
+  const lines = createInterface({ input: child.stdout });
+  const messages = lines[Symbol.asyncIterator]();
+  const send = async (message: Record<string, unknown>) => {
+    child.stdin.write(`${JSON.stringify(message)}\n`);
+    const next = await messages.next();
+    assert.equal(next.done, false);
+    return JSON.parse(next.value!);
+  };
+  const initialized = await send({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2025-11-25", capabilities: {}, clientInfo: { name: "test-client", version: "1.0" } } });
+  assert.equal(initialized.result.protocolVersion, "2025-11-25");
+  child.stdin.write(`${JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized" })}\n`);
+  const listing = await send({ jsonrpc: "2.0", id: 2, method: "tools/list", params: {} });
+  assert.deepEqual(listing.result.tools.map((tool: { name: string }) => tool.name), ["requirements_list", "requirements_show", "requirements_trace"]);
+  child.stdin.end();
+  await once(child, "exit");
+  lines.close();
 });
 
 test("catalog status requires evidence for VERIFIED and rationale for N_A", async () => {

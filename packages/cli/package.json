@@ -23,6 +23,8 @@
     "dist/interview.d.ts",
     "dist/host-plan.js",
     "dist/host-plan.d.ts",
+    "dist/mcp-server.js",
+    "dist/mcp-server.d.ts",
     "dist/recommendations.js",
     "dist/recommendations.d.ts",
     "dist/integrations"
@@ -30,6 +32,9 @@
   "scripts": {
     "build": "tsc -b",
     "test": "node --test dist/**/*.test.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "2.4.0",
+    "zod": "^4.6.7"
   }
 }
-

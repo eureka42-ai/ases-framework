@@ -38,6 +38,7 @@ Comandos disponíveis:
   welcome                 Exibe a identidade Eureka42 no terminal
   host list               Detecta CLIs compatíveis sem alterar configurações
   host plan <host> [dir]  Mostra o diff da integração sem escrever arquivos
+  mcp [workspace]         Inicia servidor MCP somente leitura via stdio
   doctor [diretório]      Diagnostica o ambiente sem chamadas remotas
   config validate [path]  Valida a configuração JSON do projeto
   config explain [path]   Resolve defaults, ambiente e --set sem revelar secrets

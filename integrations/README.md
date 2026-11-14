@@ -24,6 +24,8 @@ O EUREKA42 ASES possui um núcleo portátil e artefatos separados por host. Eles
 
 O comando determinístico `ases interview` é a fonte operacional inicial. As Skills ensinam cada host a conduzir o mesmo fluxo quando o binário não estiver disponível. Versões observadas nesta sessão: Codex 0.169.0, Claude Code 2.1.323, Kimi Code 2.5.3 e Gemini CLI 0.42.0. Nenhum host foi promovido a `SUPPORTED`, pois ainda falta prova de descoberta e execução funcional dentro da sessão.
 
+O MCP server também pode ser configurado como subprocesso com `ases mcp <workspace>`. Ele fixa um único workspace e expõe ferramentas de consulta de requisitos. O adapter de cada host ainda precisa de configuração e smoke test específico; o servidor não configura os hosts automaticamente. A implementação stdio usa o [SDK oficial MCP TypeScript](https://ts.sdk.modelcontextprotocol.io/v2/serving/stdio) e serve os protocolos [moderno e legado](https://ts.sdk.modelcontextprotocol.io/v2/protocol-versions).
+
 Validação estática repetida em 2026-11-13: `claude plugin validate integrations/claude-code --strict` aceitou schema/commands, mas apontou `LICENSE_MISSING` no profile de diretório; `gemini extensions validate integrations/gemini-cli` passou; `kimi doctor` validou apenas `config.toml` e `tui.toml`; `codex --version` detectou 0.169.0. Estas verificações não carregam nem executam o fluxo da Skill em sessão real.
 
 O validador Claude exige uma licença aprovada para a distribuição pública; não inserimos um SPDX placeholder. A instalação Gemini foi cancelada no aviso que descreve injeção de instruções, e `gemini extensions list` confirmou que nada foi instalado. Claude Code oferece `--plugin-dir` para carregamento local por execução, ainda não exercitado numa sessão.

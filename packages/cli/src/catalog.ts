@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { readFile, mkdir, realpath, stat, writeFile } from "node:fs/promises";
+import { readFile, mkdir, realpath, stat, lstat, writeFile } from "node:fs/promises";
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 
 export interface GeneralRequirement {
@@ -85,8 +85,14 @@ export async function importProductRequirements(sourcePath: string, workspace: s
 }
 
 export async function readCatalog(workspace: string, productId?: string): Promise<CatalogFile> {
-  const catalog = JSON.parse(await readFile(catalogPath(workspace, productId), "utf8")) as CatalogFile;
   const workspaceRoot = await realpath(resolve(workspace));
+  const path = catalogPath(workspaceRoot, productId);
+  const pathInfo = await lstat(path);
+  if (!pathInfo.isFile() || pathInfo.isSymbolicLink()) throw new Error("O catálogo precisa ser um arquivo regular no workspace");
+  const canonicalCatalogPath = await realpath(path);
+  const catalogRelativePath = relative(workspaceRoot, canonicalCatalogPath);
+  if (!catalogRelativePath || catalogRelativePath === ".." || catalogRelativePath.startsWith(`..${sep}`) || isAbsolute(catalogRelativePath)) throw new Error("O catálogo precisa permanecer dentro do workspace");
+  const catalog = JSON.parse(await readFile(canonicalCatalogPath, "utf8")) as CatalogFile;
   for (const requirement of catalog.requirements) {
     for (const evidence of requirement.evidence ?? []) {
       if (!evidence.sha256 || evidence.kind !== "workspace-file") {
