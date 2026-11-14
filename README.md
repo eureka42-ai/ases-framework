@@ -293,11 +293,13 @@ Os adapters experimentais ficam em [`integrations/`](integrations/):
 | Host | Integração criada | Destaque |
 |---|---|---|
 | OpenAI Codex | `AGENTS.md` + Skill em `.agents/skills` | fluxo portátil de descoberta |
-| Claude Code | plugin, Skill e `/ases-start` | pacote local separado |
+| Claude Code | plugin, Skills `/eureka42-ases:ases-project-start` e `/eureka42-ases:ases-start` | marketplace do repositório Eureka42 |
 | Kimi Code CLI | `kimi.plugin.json` + `sessionStart.skill` | ativa o fluxo ao iniciar sessão |
 | Gemini CLI | extension, Skill, command e tema | tema `eureka42-teal` |
 
-Todos permanecem `NOT_TESTED` no host real. A validação atual confirma apenas a estrutura local dos manifests e Skills. Consulte [`integrations/README.md`](integrations/README.md) antes de instalar.
+Todos permanecem `NOT_TESTED` para execução comportamental de sessão. Claude Code também foi validado em instalação isolada: o marketplace foi aceito e o inventário confirmou duas Skills carregadas. Consulte [`integrations/README.md`](integrations/README.md) antes de instalar.
+
+O plugin Claude Code também possui marketplace publicado no próprio repositório: `claude plugin marketplace add eureka42-ai/ases-framework` e `claude plugin install eureka42-ases@eureka42-ases-plugins`. O manifesto e a instalação local foram validados; a invocação da Skill em conversa ainda não foi verificada. A submissão ao diretório Anthropic aguarda definição de licença.
 
 Para revisar o que seria preparado para um workspace sem modificar arquivos, execute `ases host plan codex ./meu-projeto` (ou `claude-code`, `kimi-code`, `gemini-cli`). O comando marca destinos divergentes como conflitos e não aplica o plano.
 

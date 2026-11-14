@@ -1,0 +1,14 @@
+{
+  "name": "eureka42-ases-plugins",
+  "description": "Plugins de engenharia de software da Eureka42",
+  "owner": {
+    "name": "Eureka42"
+  },
+  "plugins": [
+    {
+      "name": "eureka42-ases",
+      "source": "./integrations/claude-code",
+      "description": "Descoberta de projeto e workflow ASES com recomendações PROPOSED até confirmação humana"
+    }
+  ]
+}

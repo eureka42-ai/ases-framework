@@ -380,8 +380,8 @@ requirements:
       - id: AC-AFR-031-01
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Host Claude Code receber plugin/Skill compatível e testado."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["integrations/claude-code/.claude-plugin/plugin.json", "integrations/claude-code/README.md", ".claude-plugin/marketplace.json"]
+    tests: ["claude plugin validate integrations/claude-code --strict; marketplace validation; isolated marketplace install and plugin details discovered two Skills; conversational invocation remains pending"]
   - id: AFR-032
     priority: P1
     milestone: "M5"

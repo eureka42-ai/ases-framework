@@ -7,7 +7,7 @@ O EUREKA42 ASES possui um núcleo portátil e artefatos separados por host. Eles
 | Host | Artefato | Instalação de desenvolvimento | Estado |
 |---|---|---|---|
 | Codex | `AGENTS.md` + `.agents/skills/` | copiar/mesclar no projeto de destino após revisar o diff | MANIFEST/Skill local validado; sessão funcional pendente |
-| Claude Code | `.claude-plugin/plugin.json`, Skill e command | instalar como plugin local conforme a versão do host | `claude plugin validate --strict` sem erro de schema; diretório público exige licença |
+| Claude Code | Plugin em `.claude-plugin/`, duas Skills e marketplace do repositório | `claude plugin marketplace add eureka42-ai/ases-framework`; depois `claude plugin install eureka42-ases@eureka42-ases-plugins` | Strict validation e descoberta por instalação isolada passaram; invocação da Skill em conversa pendente |
 | Kimi Code CLI | `kimi.plugin.json` com `sessionStart.skill` | instalar o diretório/repositório e executar `/plugins reload` | Manifest/Skill local validado; recarga/sessão funcional pendente |
 | Gemini CLI | `gemini-extension.json`, contexto, Skill, command e tema | `gemini extensions link integrations/gemini-cli` em checkout de desenvolvimento | `gemini extensions validate` PASS; sessão funcional pendente |
 
@@ -18,7 +18,7 @@ Versões coletadas em 2026-11-14 com os comandos locais indicados. A coluna de c
 | Host | Versão observada | Interface de integração no repositório | Validação objetiva | Execução da Skill na sessão |
 |---|---:|---|---|---|
 | Codex CLI | 0.169.0 (`codex --version`) | `AGENTS.md`, Skill em `.agents/skills/` e servidor MCP stdio read-only | Executável detectado; arquivos locais inspecionados | `NOT_TESTED` |
-| Claude Code | 2.1.323 (`claude --version`) | Plugin, command e Skill; carregamento local via `--plugin-dir` | Validação estrita do schema/commands passou; licença bloqueia perfil público | `NOT_TESTED` |
+| Claude Code | 2.1.323 (`claude --version`) | Plugin, command e Skill; carregamento via `--plugin-dir` ou marketplace do repositório | `claude plugin validate --strict` passou; instalado e inventariado em `CLAUDE_CONFIG_DIR` temporário isolado | Invocação da Skill em conversa `NOT_TESTED` |
 | Kimi Code CLI | 2.5.3 (`kimi --version`) | Plugin com hook `sessionStart.skill` e Skill | Manifest local validado; `kimi doctor` só verificou configuração do cliente | `NOT_TESTED` |
 | Gemini CLI | 0.42.0 (`gemini --version`) | Extension com contexto, command, Skill e tema | `gemini extensions validate` passou; instalação foi recusada no prompt de confiança | `NOT_TESTED` |
 
@@ -39,9 +39,9 @@ O comando determinístico `ases interview` é a fonte operacional inicial. As Sk
 
 O MCP server também pode ser configurado como subprocesso com `ases mcp <workspace>`. Ele fixa um único workspace e expõe ferramentas de consulta de requisitos. O adapter de cada host ainda precisa de configuração e smoke test específico; o servidor não configura os hosts automaticamente. A implementação stdio usa o [SDK oficial MCP TypeScript](https://ts.sdk.modelcontextprotocol.io/v2/serving/stdio) e serve os protocolos [moderno e legado](https://ts.sdk.modelcontextprotocol.io/v2/protocol-versions).
 
-Validação estática repetida em 2026-11-13: `claude plugin validate integrations/claude-code --strict` aceitou schema/commands, mas apontou `LICENSE_MISSING` no profile de diretório; `gemini extensions validate integrations/gemini-cli` passou; `kimi doctor` validou apenas `config.toml` e `tui.toml`; `codex --version` detectou 0.169.0. Estas verificações não carregam nem executam o fluxo da Skill em sessão real.
+Validação local em 2026-11-14: `claude plugin validate integrations/claude-code --strict` passou e o plugin foi instalado de um marketplace local com configuração isolada; `claude plugin details` encontrou as duas Skills. O perfil de diretório da Anthropic ainda exige licença aprovada (`LICENSE_MISSING`). `gemini extensions validate integrations/gemini-cli` passou; `kimi doctor` validou apenas `config.toml` e `tui.toml`; `codex --version` detectou 0.169.0. Estas verificações não executaram a Skill numa conversa real.
 
-O validador Claude exige uma licença aprovada para a distribuição pública; não inserimos um SPDX placeholder. A instalação Gemini foi cancelada no aviso que descreve injeção de instruções, e `gemini extensions list` confirmou que nada foi instalado. Claude Code oferece `--plugin-dir` para carregamento local por execução, ainda não exercitado numa sessão.
+O perfil de publicação do diretório Anthropic exige uma licença aprovada; não inserimos um SPDX placeholder. O marketplace público próprio do repositório foi validado localmente. A instalação Gemini foi cancelada no aviso que descreve injeção de instruções, e `gemini extensions list` confirmou que nada foi instalado. Claude Code oferece `--plugin-dir` para carregamento local por execução; o inventário do plugin foi verificado fora de uma conversa com modelo.
 
 ## Segurança
 

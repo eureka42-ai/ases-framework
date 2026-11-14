@@ -2,6 +2,8 @@
   "name": "eureka42-ases",
   "version": "0.0.0-dev",
   "description": "EUREKA42 ASES project discovery and verified software workflow",
+  "homepage": "https://github.com/eureka42-ai/ases-framework",
+  "repository": "https://github.com/eureka42-ai/ases-framework",
   "icon": ".claude-plugin/icon.png",
   "author": {
     "name": "Eureka42"

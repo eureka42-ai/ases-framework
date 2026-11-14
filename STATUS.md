@@ -57,6 +57,8 @@ Atualizado em: 2026-11-14
 - CI GitHub Actions configurado para Node.js 22/24 com instalação pnpm congelada; execução remota ainda precisa ser observada antes de concluir AFR-028.
 - AFR-027 coberto por preservação idempotente no `init`, recusa de sobrescrita da entrevista sem `--resume` explícito e plano de instalação host somente leitura.
 - Matriz local de versões e contratos de integração dos quatro hosts registrada; hosts sem prova de carga/execução da Skill continuam `NOT_TESTED`, como cobre o teste de `host list`.
+- Claude Code: plugin validado com `claude plugin validate --strict`, marketplace do repositório validado, instalação isolada e inventário confirmaram duas Skills carregadas. A invocação em conversa permanece pendente; perfil de distribuição oficial Anthropic exige decisão de licença.
+- Configuração MCP de projeto Claude gerada e conferida em workspace temporário; `claude mcp list` marcou `Pending approval`, sem inicializar o servidor.
 - SPI de providers implementada com erros tipados, timeout, cancelamento e provider mock determinístico; sem provider remoto ou credenciais.
 - Gemini: usuário autorizou confiança no workspace; recusou o aviso subsequente de instalação/injeção de instruções. `gemini extensions list` confirmou que nada foi instalado.
 - Claude Code oferece `--plugin-dir` para carga local temporária; teste em sessão sem inferência ainda não concluído.
@@ -85,5 +87,6 @@ Atualizado em: 2026-11-14
 - `evidence/M1-M4-2026-11-14-progress-3.md`
 - `evidence/M5-2026-11-14-progress-1.md`
 - `evidence/M6-2026-11-14-progress-1.md`
+- `evidence/M5-2026-11-14-progress-2.md`
 - `evidence/ASES-300-markdown-structure-review-2026-11-13.md`
 
