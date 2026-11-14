@@ -6,7 +6,7 @@ Atualizado em: 2026-11-14
 
 - M0: IMPLEMENTED / PARTIALLY_VERIFIED
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
-- M5: IN_PROGRESS (5/10 AFRs implementados; lifecycle de adapters local possui apply/uninstall explícitos)
+- M5: IN_PROGRESS (6/10 AFRs implementados; lifecycle local possui apply/update/uninstall explícitos)
 - M6: IN_PROGRESS (AFR-041/042 implementados; 8/10 requisitos M6 pendentes)
 - Repositório Git: branch `main`; integrações Codex/Claude publicadas; AFR-030 implementado nesta rodada
 - Fonte diretora: presente e lida
@@ -39,12 +39,12 @@ Atualizado em: 2026-11-14
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (51/51) em 2026-11-14; `pnpm test` também compila TypeScript e valida as integrações. GitHub Actions para o commit `ae2bde0`: PASS nos jobs Node.js 22 e 24; ver [execução CI](https://github.com/eureka42-ai/ases-framework/actions/runs/43613309183).
+- Testes unitários: PASS (53/53) em 2026-11-14; `pnpm test` também compila TypeScript e valida as integrações. GitHub Actions para o commit `ae2bde0`: PASS nos jobs Node.js 22 e 24; ver [execução CI](https://github.com/eureka42-ai/ases-framework/actions/runs/43613309183).
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 5 Skills sincronizadas).
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; instalação local do tarball + `ases --version` e `ases host plan` em workspace externo: PASS.
-- Backlog AFR-001..140: 37 requisitos IMPLEMENTED e ligados a código/testes/evidência; 103 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 38 requisitos IMPLEMENTED e ligados a código/testes/evidência; 102 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -74,6 +74,7 @@ Atualizado em: 2026-11-14
 - Claude `plugin test` não executou porque o adapter não está instalado; não houve instalação automática.
 - Guia geral Claude atualizado para recomendar `--scope local`; validação estrita do plugin e marketplace repetida com PASS e `pnpm integrations:validate` PASS. Ver `evidence/M5-2026-11-14-progress-6.md`.
 - Ciclo `host apply/uninstall` implementado para Claude, Codex, Kimi e Gemini; `--apply` explícito, conflitos interrompem antes de escrita, rollback após falha e remoção conservadora por hashes. Ver testes `host apply ...` em `packages/cli/src/index.test.ts`.
+- `ases host update <host> [workspace]` implementado: plano read-only por padrão, `--apply` explícito, backup de cada arquivo antes da substituição, detecção de alterações locais pelo hash, manifesto atualizado atomicamente, tentativa de rollback e backups preservados mesmo após uninstall. Ver testes `host update ...` em `packages/cli/src/index.test.ts` e `evidence/M5-2026-11-14-progress-9.md`.
 
 ## Próximas tarefas READY
 

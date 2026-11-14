@@ -5,19 +5,19 @@
 - M2 — IN_PROGRESS: importador e engine ASES-300 implementados. Revisão estrutural e amostra visual concluídas; homologação integral da conversão segue pendente.
 - M3 — IN_PROGRESS: entrevista inicial de perfil e stack implementada, com recomendações propostas e revisão de riscos; refinamento restante do backlog continua.
 - M4 — IMPLEMENTED_LOCALLY / HOST_VALIDATION_PENDING: MCP read-only, planos e adapters de hosts têm evidência local; sessões reais ainda não comprovam todos os hosts.
-- M5 — IN_PROGRESS: plugins/Skills experimentais e manifestos validados; lifecycle local `host apply/uninstall` implementado com propriedade por hash; sessão real Claude/hosts e decisões de distribuição permanecem pendentes.
+- M5 — IN_PROGRESS: plugins/Skills experimentais e manifestos validados; lifecycle local `host apply/update/uninstall` implementado com propriedade por hash e backups; sessão real Claude/hosts e decisões de distribuição permanecem pendentes.
 - M6 — IN_PROGRESS: Provider SPI tipada e mock determinístico offline implementados (AFR-041/042); outros 8 de 10 requisitos M6 seguem pendentes.
 - M7–M13 — PLANNED: agents/workflows, RAG/memória, evals, segurança, observabilidade e hardening.
 - M14 — BLOCKED_ON_APPROVAL: release candidate e gate v1 dependem das decisões de licença, homologação e critérios de lançamento.
 
-Backlog estruturado atual: 37/140 requisitos `IMPLEMENTED`, 103/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
+Backlog estruturado atual: 38/140 requisitos `IMPLEMENTED`, 102/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
 
-Distribuição dos 103 pendentes no registro atual:
+Distribuição dos 102 pendentes no registro atual:
 
 | Marco | Pendentes | Observação |
 |---|---:|---|
 | M1 | 0 | AFR-028 passou no CI remoto Node.js 22/24 |
-| M5 | 5 | Claude, Codex, Kimi e Gemini em sessões reais; atualização/migração com backup |
+| M5 | 4 | Claude, Codex, Kimi e Gemini em sessões reais |
 | M6 | 8 | Providers reais opcionais, roteamento, orçamento e limites de modo |
 | M7 | 10 | Permissões, contexto, execução de agentes, Skills e tools |
 | M8 | 8 | DSL e execução de workflows |

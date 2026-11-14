@@ -1,5 +1,5 @@
-import { createHash } from "node:crypto";
-import { lstat, mkdir, readFile, realpath, rmdir, unlink, writeFile } from "node:fs/promises";
+import { createHash, randomUUID } from "node:crypto";
+import { lstat, mkdir, readFile, realpath, rename, rmdir, unlink, writeFile } from "node:fs/promises";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { createHostPlan, readHostAsset, type HostId } from "./host-plan.js";
 
@@ -90,6 +90,149 @@ async function readManifest(root: string, host: HostId): Promise<HostManifest> {
   const base = manifestBase(host, value.files, value.directories, value.asesDirectoryCreated);
   if (hash(JSON.stringify(base)) !== value.manifestSha256) throw new Error("Hash de integridade do manifesto não confere.");
   return value as HostManifest;
+}
+
+interface PendingHostUpdate {
+  path: string;
+  absolute: string;
+  previous: Buffer;
+  next: Buffer;
+  previousHash: string;
+  nextHash: string;
+}
+
+async function replaceRegularFile(root: string, target: string, expectedHash: string, next: Buffer): Promise<void> {
+  await assertNoSymlinkPath(root, target);
+  const info = await lstat(target);
+  if (!info.isFile() || info.isSymbolicLink()) throw new Error(`Destino não é arquivo regular: ${target}`);
+  if (hash(await readFile(target)) !== expectedHash) throw new Error(`Destino mudou durante a atualização: ${relative(root, target)}`);
+  const temporary = join(dirname(target), `.${randomUUID()}.ases-update.tmp`);
+  await writeFile(temporary, next, { flag: "wx" });
+  try {
+    await assertNoSymlinkPath(root, target);
+    const currentInfo = await lstat(target);
+    if (!currentInfo.isFile() || currentInfo.isSymbolicLink() || hash(await readFile(target)) !== expectedHash) throw new Error(`Destino mudou durante a atualização: ${relative(root, target)}`);
+    await rename(temporary, target);
+  } catch (error) {
+    try { await unlink(temporary); } catch { /* temporary file may already be gone */ }
+    throw error;
+  }
+}
+
+async function replaceManifest(root: string, host: HostId, current: HostManifest, next: HostManifest): Promise<void> {
+  const path = manifestPath(root, host);
+  const currentBytes = await readFile(path);
+  const currentHash = hash(currentBytes);
+  const disk = JSON.parse(currentBytes.toString("utf8")) as Partial<HostManifest>;
+  if (disk.manifestSha256 !== current.manifestSha256 || disk.format !== FORMAT || disk.schemaVersion !== "1" || disk.host !== host || !Array.isArray(disk.files) || !Array.isArray(disk.directories) || typeof disk.asesDirectoryCreated !== "boolean") throw new Error("Manifesto mudou durante a atualização.");
+  const diskBase = manifestBase(host, disk.files, disk.directories, disk.asesDirectoryCreated);
+  if (hash(JSON.stringify(diskBase)) !== disk.manifestSha256) throw new Error("Manifesto perdeu integridade durante a atualização.");
+  const temporary = `${path}.${randomUUID()}.tmp`;
+  await writeFile(temporary, `${JSON.stringify(next, null, 2)}\n`, { flag: "wx" });
+  try {
+    await assertNoSymlinkPath(root, path);
+    if (hash(await readFile(path)) !== currentHash) throw new Error("Manifesto mudou durante a atualização.");
+    await rename(temporary, path);
+  } catch (error) {
+    try { await unlink(temporary); } catch { /* temporary file may already be gone */ }
+    throw error;
+  }
+}
+
+export async function updateHostIntegration(host: HostId, workspacePath: string, apply: boolean) {
+  const root = await realpath(resolve(workspacePath));
+  const path = manifestPath(root, host);
+  let manifest: HostManifest;
+  try {
+    manifest = await readManifest(root, host);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return { status: "not-managed" as const, host, workspace: root, apply: false, updates: [] as string[] };
+    throw error;
+  }
+  const plan = await createHostPlan(host, root);
+  const sourceByTarget = new Map(plan.files.map((item) => [item.target, item]));
+  const updates: PendingHostUpdate[] = [];
+  const unchanged: string[] = [];
+  const missing: string[] = [];
+  const obsolete: string[] = [];
+  const conflicts: Array<{ path: string; reason: string }> = [];
+
+  for (const entry of manifest.files) {
+    if (!entry.owned) continue;
+    if (!isSafeRelative(entry.path)) throw new Error(`Caminho inválido no manifesto: ${entry.path}`);
+    const item = sourceByTarget.get(entry.path);
+    if (!item) {
+      obsolete.push(entry.path);
+      continue;
+    }
+    const absolute = resolve(root, entry.path);
+    await assertNoSymlinkPath(root, absolute);
+    let previous: Buffer;
+    try {
+      const info = await lstat(absolute);
+      if (!info.isFile() || info.isSymbolicLink()) {
+        conflicts.push({ path: entry.path, reason: "destino não é arquivo regular" });
+        continue;
+      }
+      previous = await readFile(absolute);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+        missing.push(entry.path);
+        continue;
+      }
+      throw error;
+    }
+    const previousHash = hash(previous);
+    if (previousHash !== entry.sha256) {
+      conflicts.push({ path: entry.path, reason: "arquivo alterado desde a instalação; atualização recusada" });
+      continue;
+    }
+    const next = await readHostAsset(host, item.source);
+    const nextHash = hash(next);
+    if (nextHash === previousHash) unchanged.push(entry.path);
+    else updates.push({ path: entry.path, absolute, previous, next, previousHash, nextHash });
+  }
+
+  if (conflicts.length) return { status: "conflict" as const, host, workspace: root, apply: false, conflicts, updates: updates.map((item) => item.path), unchanged, missing, obsolete };
+  if (!apply) return { status: updates.length ? "planned" as const : missing.length || obsolete.length ? "attention" as const : "current" as const, host, workspace: root, apply: false, wouldUpdate: updates.map((item) => item.path), unchanged, missing, obsolete, backupRoot: `.ases/backups/hosts/${host}/<timestamp-id>` };
+  if (!updates.length) return { status: missing.length || obsolete.length ? "attention" as const : "current" as const, host, workspace: root, apply: true, updated: [] as string[], unchanged, missing, obsolete };
+
+  const backupRootRelative = `.ases/backups/hosts/${host}/${new Date().toISOString().replace(/[:.]/g, "-")}-${randomUUID()}`;
+  const backupRoot = resolve(root, backupRootRelative);
+  if (!isSafeRelative(backupRootRelative)) throw new Error("Diretório de backup inválido.");
+  await ensureDirectories(root, backupRoot, []);
+  const backedUp: string[] = [];
+  const replaced: PendingHostUpdate[] = [];
+  try {
+    for (const item of updates) {
+      const backupRelative = join(backupRootRelative, item.path);
+      const backupAbsolute = resolve(root, backupRelative);
+      if (!isSafeRelative(backupRelative)) throw new Error(`Caminho de backup inválido: ${backupRelative}`);
+      await ensureDirectories(root, dirname(backupAbsolute), []);
+      await assertNoSymlinkPath(root, backupAbsolute);
+      await writeFile(backupAbsolute, item.previous, { flag: "wx" });
+      backedUp.push(backupRelative);
+      await replaceRegularFile(root, item.absolute, item.previousHash, item.next);
+      replaced.push(item);
+    }
+
+    const nextFiles = manifest.files.map((entry) => {
+      const changed = updates.find((item) => item.path === entry.path);
+      return changed ? { ...entry, sha256: changed.nextHash } : entry;
+    });
+    const base = manifestBase(host, nextFiles, manifest.directories, manifest.asesDirectoryCreated);
+    const nextManifest: HostManifest = { ...base, manifestSha256: hash(JSON.stringify(base)) };
+    await replaceManifest(root, host, manifest, nextManifest);
+    return { status: "updated" as const, host, workspace: root, apply: true, updated: updates.map((item) => item.path), backups: backedUp, backupRoot: backupRootRelative, unchanged, missing, obsolete };
+  } catch (error) {
+    const rollbackErrors: string[] = [];
+    for (const item of replaced.reverse()) {
+      try { await replaceRegularFile(root, item.absolute, item.nextHash, item.previous); }
+      catch { rollbackErrors.push(item.path); }
+    }
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Atualização interrompida: ${message}. Backups preservados em ${backupRootRelative}.${rollbackErrors.length ? ` Rollback incompleto para: ${rollbackErrors.join(", ")}.` : " Arquivos atualizados foram restaurados."}`);
+  }
 }
 
 export async function applyHostIntegration(host: HostId, workspacePath: string, apply: boolean, hooks: HostInstallHooks = {}) {

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { mkdir, mkdtemp, readFile, readdir, symlink, unlink } from "node:fs/promises";
 import { writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -13,6 +14,8 @@ import { collectInterviewAnswers, inspectWorkspaceContext, runInterview } from "
 import { assessInterview } from "./assessment.js";
 import { readCatalog } from "./catalog.js";
 import { applyHostIntegration } from "./host-install.js";
+
+const sha256 = (value: string | Buffer): string => createHash("sha256").update(value).digest("hex");
 
 test("reports version offline", async () => {
   assert.deepEqual(await run(["--version"]), { exitCode: 0, output: VERSION });
@@ -471,6 +474,55 @@ test("shared Codex/Kimi Skill is preserved until both adapters are uninstalled",
   const finalRemoval = JSON.parse((await run(["host", "uninstall", "codex", root, "--apply", "--json"])).output);
   assert.equal(finalRemoval.status, "uninstalled");
   assert.equal(await readFile(join(root, kimi.borrowed[0]), "utf8").catch(() => undefined), undefined);
+});
+
+test("host update is read-only by default, backs up owned files, and keeps backups after uninstall", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-host-update-"));
+  await run(["host", "apply", "claude-code", root, "--apply"]);
+  const manifestPath = join(root, ".ases/host-install-claude-code.json");
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  const entry = manifest.files.find((file: { owned: boolean }) => file.owned);
+  const previous = "EUREKA42 ASES — installed version 0\n";
+  const target = join(root, entry.path);
+  await writeFile(target, previous);
+  entry.sha256 = sha256(previous);
+  const base = { format: manifest.format, schemaVersion: manifest.schemaVersion, host: manifest.host, files: manifest.files, directories: manifest.directories, asesDirectoryCreated: manifest.asesDirectoryCreated };
+  manifest.manifestSha256 = sha256(JSON.stringify(base));
+  await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+
+  const plan = JSON.parse((await run(["host", "update", "claude-code", root, "--json"])).output);
+  assert.equal(plan.status, "planned");
+  assert.ok(plan.wouldUpdate.includes(entry.path));
+  assert.equal(await readFile(target, "utf8"), previous);
+  assert.deepEqual(await readdir(join(root, ".ases/backups")).catch(() => []), []);
+  const dryRun = JSON.parse((await run(["host", "update", "claude-code", root, "--apply", "--dry-run", "--json"])).output);
+  assert.equal(dryRun.status, "planned");
+  assert.equal(await readFile(target, "utf8"), previous);
+  assert.deepEqual(await readdir(join(root, ".ases/backups")).catch(() => []), []);
+
+  const updated = JSON.parse((await run(["host", "update", "claude-code", root, "--apply", "--json"])).output);
+  assert.equal(updated.status, "updated");
+  assert.ok(updated.backups.length > 0);
+  assert.equal(await readFile(join(root, updated.backups[0]), "utf8"), previous);
+  assert.match(await readFile(target, "utf8"), /EUREKA42 ASES/);
+  assert.equal(JSON.parse(await readFile(manifestPath, "utf8")).files.find((file: { path: string }) => file.path === entry.path).sha256, sha256(await readFile(target)));
+
+  const again = JSON.parse((await run(["host", "update", "claude-code", root, "--apply", "--json"])).output);
+  assert.equal(again.status, "current");
+  const removed = JSON.parse((await run(["host", "uninstall", "claude-code", root, "--apply", "--json"])).output);
+  assert.equal(removed.status, "uninstalled");
+  assert.equal(await readFile(join(root, updated.backups[0]), "utf8"), previous);
+});
+
+test("host update refuses locally modified files without creating backups", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-host-update-conflict-"));
+  await run(["host", "apply", "codex", root, "--apply"]);
+  const target = join(root, "AGENTS.md");
+  await writeFile(target, "custom project instructions\n");
+  const result = JSON.parse((await run(["host", "update", "codex", root, "--apply", "--json"])).output);
+  assert.equal(result.status, "conflict");
+  assert.equal(await readFile(target, "utf8"), "custom project instructions\n");
+  assert.deepEqual(await readdir(join(root, ".ases/backups")).catch(() => []), []);
 });
 
 test("host apply refuses conflicts before writing and respects dry-run precedence", async () => {
