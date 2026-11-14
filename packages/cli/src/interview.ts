@@ -4,6 +4,7 @@ import { join, resolve } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 import { renderLogo } from "./brand.js";
+import { assessInterview, type InterviewFinding } from "./assessment.js";
 import { APPLICATION_TYPES, buildRecommendations, parseApplicationType, type ApplicationType, type InterviewAnswers } from "./recommendations.js";
 
 export interface WorkspaceContext {
@@ -19,6 +20,7 @@ export interface WorkspaceContext {
 export interface InterviewResult {
   answers: InterviewAnswers;
   recommendations: ReturnType<typeof buildRecommendations>;
+  findings: InterviewFinding[];
   files?: string[];
 }
 
@@ -141,8 +143,9 @@ export async function promptAnswers(streams: { input?: NodeJS.ReadableStream; ou
 }
 
 function renderSpec(result: InterviewResult): string {
-  const { answers, recommendations } = result;
-  return `# ${answers.name}\n\nStatus: PROPOSED\n\n## Perfil\n\n- Tipo: ${answers.applicationType}\n- Escala: ${answers.expectedScale}\n- Dados sensíveis: ${answers.sensitiveData ? "sim — revisão obrigatória" : "não informado"}\n\n## Recomendações\n\n${recommendations.map((item) => `- **${item.field} — ${item.value}** (${item.status}): ${item.rationale}`).join("\n")}\n\n## Próximas decisões\n\n1. Confirmar ou substituir cada recomendação.\n2. Detalhar personas, jornadas, domínio e regras de negócio.\n3. Definir autenticação, autorização, privacidade, integrações e operação.\n4. Transformar decisões confirmadas em requisitos e critérios de aceite.\n`;
+  const { answers, recommendations, findings } = result;
+  const gates = findings.filter((finding) => finding.severity === "BLOCKS_CONFIRMATION");
+  return `# ${answers.name}\n\nStatus: PROPOSED${gates.length ? " — CONFIRMAÇÃO BLOQUEADA" : ""}\n\n## Perfil\n\n- Tipo: ${answers.applicationType}\n- Escala: ${answers.expectedScale}\n- Dados sensíveis: ${answers.sensitiveData ? "sim — revisão obrigatória" : "não informado"}\n\n## Recomendações\n\n${recommendations.map((item) => `- **${item.field} — ${item.value}** (${item.status}): ${item.rationale}`).join("\n")}\n\n## Contradições e riscos\n\n${findings.length ? findings.map((item) => `- **${item.severity} ${item.code}** (${item.field}): ${item.message}${item.evidence ? ` Evidência: ${item.evidence}.` : ""}`).join("\n") : "Nenhuma contradição ou risco bloqueante detectado pela avaliação local."}\n\n## Próximas decisões\n\n1. Resolver contradições e registrar evidências para liberar a confirmação.\n2. Confirmar ou substituir cada recomendação.\n3. Detalhar personas, jornadas, domínio e regras de negócio.\n4. Definir autenticação, autorização, privacidade, integrações e operação.\n5. Transformar decisões confirmadas em requisitos e critérios de aceite.\n`;
 }
 
 export async function runInterview(options: { root: string; answersPath?: string; resume?: boolean; dryRun: boolean; input?: NodeJS.ReadableStream; output?: NodeJS.WritableStream }): Promise<InterviewResult> {
@@ -160,7 +163,8 @@ export async function runInterview(options: { root: string; answersPath?: string
     }
   }
   const answers = options.answersPath ? await loadAnswers(options.answersPath) : await promptAnswers({ root, ...(previous ? { previous } : {}), ...(options.input ? { input: options.input } : {}), ...(options.output ? { output: options.output } : {}) });
-  const result: InterviewResult = { answers, recommendations: buildRecommendations(answers) };
+  const workspaceContext = await inspectWorkspaceContext(root);
+  const result: InterviewResult = { answers, recommendations: buildRecommendations(answers), findings: assessInterview(answers, workspaceContext) };
   const files = [join(root, ".ases", "interview.json"), join(root, ".ases", "SPEC.md")];
   result.files = files;
   if (!options.dryRun) {

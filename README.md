@@ -268,6 +268,8 @@ Perguntas iniciais:
 
 Quando a pessoa já possui uma escolha, o ASES a registra como `REVIEW_REQUIRED` e compara com uma referência apropriada. Quando não possui, gera uma recomendação `PROPOSED` com justificativa. Nada vira `CONFIRMED` automaticamente.
 
+A avaliação também cruza respostas com pistas dos manifestos locais. Divergências de tipo, linguagem ou banco são marcadas `CONTRADICTION` para revisão humana; o framework não assume que o manifesto está certo. Declarar dados sensíveis ou escala grande cria `BLOCKS_CONFIRMATION`: a SPEC continua como proposta, mas a confirmação da especificação/arquitetura depende de registrar a revisão de privacidade ou o baseline de carga e observabilidade. Os achados e suas fontes aparecem no resumo, em `.ases/interview.json` e em `.ases/SPEC.md`.
+
 Para automação ou CI, use um arquivo de respostas:
 
 ```bash
@@ -408,10 +410,10 @@ Resultados reais e limitações ficam em [`evidence/`](evidence/). Uma funcional
 
 | Marco | Objetivo | Estado |
 |---|---|---|
-| M0 | Bootstrap, fontes, ADRs, riscos e build | Parcialmente verificado |
-| M1 | CLI local, init, doctor, config e pacote | Em desenvolvimento |
-| M2 | Catálogo ASES-300 e requirements engine | Bloqueado pela fonte normativa para catálogo real |
-| M3 | Entrevista ASES-500 e geração de spec | Planejado |
+| M0 | Bootstrap, fontes, ADRs, riscos e build | Vertical slice implementado; homologação das fontes pendente |
+| M1 | CLI local, init, doctor, config e pacote | Vertical slice verificado localmente; publicação e suporte multi-host pendentes |
+| M2 | Catálogo ASES-300 e requirements engine | Engine local implementado; homologação normativa bloqueada pela revisão da fonte |
+| M3 | Entrevista ASES-500 e geração de spec | Fluxo inicial implementado; AFR-001..020 concluídos localmente |
 | M4–M5 | MCP e adapters de hosts | Planejado |
 | M6–M8 | Providers, agents, skills e workflows | Planejado |
 | M9–M10 | RAG, memória e ContextBundle | Planejado |

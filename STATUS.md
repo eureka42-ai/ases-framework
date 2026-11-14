@@ -1,6 +1,6 @@
 # STATUS
 
-Atualizado em: 2026-11-13
+Atualizado em: 2026-11-14
 
 ## Estado
 
@@ -21,21 +21,22 @@ Atualizado em: 2026-11-13
 - Schema inicial publicado localmente em `schemas/ases.config.schema.json`.
 - README completo e assets oficiais da marca organizados em `docs/assets/brand/`.
 - Identidade ANSI teal/verde disponível em `ases welcome` e na ajuda.
-- Entrevista inicial implementada com tipo de aplicativo, linguagem, hospedagem, banco, escala e dados sensíveis; AFR-016, AFR-017 e AFR-019 rastreados a código e teste.
+- Entrevista inicial implementada com tipo de aplicativo, linguagem, hospedagem, banco, escala e dados sensíveis; AFR-016..020 rastreados a código e testes.
 - O fluxo interativo apresenta a marca antes das perguntas; a saída `--json` exige arquivo `--answers` para preservar JSON válido.
 - Antes das perguntas, a entrevista consulta somente manifestos conhecidos, exibe arquivos e pistas de stack, deixa inferências editáveis e não lê `.env`/credenciais; destino Docker continua sem confirmação automática.
 - Recomendações ausentes ficam `PROPOSED`; escolhas existentes ficam `REVIEW_REQUIRED`.
+- AFR-018 avalia divergência entre respostas e manifestos, e registra riscos bloqueantes de dados sensíveis/escala alta no JSON e SPEC sem confirmar automaticamente.
 - Integrações experimentais criadas para Codex, Claude Code, Kimi Code CLI e Gemini CLI.
 - Hosts locais detectados nesta sessão: Codex 0.169.0, Claude Code 2.1.323, Kimi 2.5.3 e Gemini 0.42.0.
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (23/23) em 2026-11-13; `pnpm test` também compilou TypeScript e validou as integrações.
+- Testes unitários: PASS (25/25) em 2026-11-14; `pnpm test` também compilou TypeScript e validou as integrações.
 - Manifests/Skills locais: PASS (3 manifests, 5 Skills).
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
 - `npm pack` + instalação do tarball + execução de `ases --version` e `init --dry-run --json`: PASS.
-- Backlog AFR-001..140: IDs preservados; AFR-001..020 refinados e ligados a código/testes, com AFR-018 ainda pendente; demais critérios permanecem DRAFT.
+- Backlog AFR-001..140: 20 requisitos IMPLEMENTED e ligados a código/testes; 120 seguem PENDING em 12 grupos de marco, muitos ainda sem detalhamento suficiente para estimar rodadas com precisão.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -45,7 +46,7 @@ Atualizado em: 2026-11-13
 - Ciclo de estados ASES-300 implementado; `VERIFIED` exige arquivo local dentro do workspace, calcula SHA-256, e `N_A` exige justificativa; histórico de transições mantido.
 - Validação de evidências resolve caminhos reais e rejeita links simbólicos para fora do workspace; apenas arquivos regulares podem comprovar `VERIFIED`.
 - `requirements show/list` recalculam integridade de evidências (`CURRENT`, `STALE`, `MISSING`, `OUTSIDE_WORKSPACE`, `UNVERIFIABLE`); README documenta limites da checagem semântica.
-- Testes: 23/23 PASS; incluem inspeção segura de manifestos e retomada de decisões na entrevista, separação de catálogos, estados de decisão independentes, rastreabilidade, bloqueios justificados, integridade, piso Node.js, identidade da entrevista e resolução segura de configuração.
+- Testes: 25/25 PASS; incluem análise de contradições e riscos, persistência de achados na SPEC, inspeção segura de manifestos e retomada de decisões na entrevista, separação de catálogos, estados de decisão independentes, rastreabilidade, bloqueios justificados, integridade, piso Node.js, identidade da entrevista e resolução segura de configuração.
 - Parser ASES-300: classificação e prioridade agora são extraídas separadamente quando aparecem na mesma linha; regressão automatizada PASS.
 - Validadores de integração: PASS (3 manifests, 5 Skills).
 - Validação host estática nesta rodada: Claude schema PASS, profile de diretório bloqueado por licença; Gemini extension PASS; `kimi doctor` validou só os arquivos de configuração; Codex 0.169.0 detectado. Descoberta/execução em sessões de agente permanecem pendentes.

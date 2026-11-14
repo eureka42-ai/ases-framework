@@ -7,6 +7,7 @@ import { PassThrough } from "node:stream";
 import test from "node:test";
 import { checkNodeVersion, run, validateConfig, VERSION } from "./index.js";
 import { collectInterviewAnswers, inspectWorkspaceContext, runInterview } from "./interview.js";
+import { assessInterview } from "./assessment.js";
 
 test("reports version offline", async () => {
   assert.deepEqual(await run(["--version"]), { exitCode: 0, output: VERSION });
@@ -221,6 +222,34 @@ test("interview evaluates user choices instead of silently confirming", async ()
   const payload = JSON.parse(result.output);
   assert.equal(result.exitCode, 0);
   assert.ok(payload.recommendations.some((item: { status: string }) => item.status === "REVIEW_REQUIRED"));
+});
+
+test("interview flags workspace contradictions and blocks confirmation on explicit risks", () => {
+  const answers = { name: "Portal", applicationType: "api" as const, language: "Go", database: "SQLite", expectedScale: "large" as const, sensitiveData: true };
+  const context = { files: ["package.json", "tsconfig.json", "prisma/schema.prisma"], applicationType: "web" as const, language: "TypeScript", database: "PostgreSQL" };
+  const findings = assessInterview(answers, context);
+  assert.deepEqual(findings.filter((item) => item.kind === "CONTRADICTION").map((item) => item.field), ["applicationType", "language", "database"]);
+  assert.deepEqual(findings.filter((item) => item.severity === "BLOCKS_CONFIRMATION").map((item) => item.code), ["SENSITIVE_DATA_PRIVACY_REVIEW", "LARGE_SCALE_VALIDATION"]);
+  assert.ok(findings.every((item) => item.message.length > 0));
+  assert.deepEqual(assessInterview({ ...answers, applicationType: "web", language: "TypeScript", database: "PostgreSQL", expectedScale: "small", sensitiveData: false }, context), []);
+  assert.deepEqual(assessInterview({ ...answers, applicationType: "web", language: "TS", database: "Postgres", expectedScale: "small", sensitiveData: false }, context), []);
+});
+
+test("interview persists findings in JSON and SPEC without claiming confirmation", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-interview-findings-"));
+  const answersPath = join(root, "answers.json");
+  await writeFile(answersPath, JSON.stringify({ name: "Sensitive API", applicationType: "api", expectedScale: "large", sensitiveData: true }));
+  const result = await run(["interview", root, "--answers", answersPath, "--json"]);
+  const payload = JSON.parse(result.output);
+  assert.equal(result.exitCode, 0);
+  assert.ok(payload.recommendations.every((item: { status: string }) => item.status !== "CONFIRMED"));
+  assert.deepEqual(payload.findings.map((finding: { severity: string }) => finding.severity), ["BLOCKS_CONFIRMATION", "BLOCKS_CONFIRMATION"]);
+  const saved = JSON.parse(await readFile(join(root, ".ases", "interview.json"), "utf8"));
+  assert.equal(saved.findings.length, 2);
+  const spec = await readFile(join(root, ".ases", "SPEC.md"), "utf8");
+  assert.match(spec, /CONFIRMAÇÃO BLOQUEADA/);
+  assert.match(spec, /SENSITIVE_DATA_PRIVACY_REVIEW/);
+  assert.match(spec, /LARGE_SCALE_VALIDATION/);
 });
 
 test("interview resumes persisted decisions and updates only changed answers", async () => {
