@@ -27,6 +27,8 @@
     "dist/mcp-server.d.ts",
     "dist/recommendations.js",
     "dist/recommendations.d.ts",
+    "dist/providers.js",
+    "dist/providers.d.ts",
     "dist/integrations"
   ],
   "scripts": {

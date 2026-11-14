@@ -34,12 +34,12 @@ Atualizado em: 2026-11-14
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (31/31) em 2026-11-14; `pnpm test` também compila TypeScript e valida as integrações.
+- Testes unitários: PASS (34/34) em 2026-11-14; `pnpm test` também compila TypeScript e valida as integrações.
 - Manifests/Skills locais: PASS (3 manifests, 5 Skills).
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; instalação local do tarball + `ases --version` e `ases host plan` em workspace externo: PASS.
-- Backlog AFR-001..140: 30 requisitos IMPLEMENTED e ligados a código/testes/evidência; 110 seguem PENDING, muitos ainda sem detalhamento suficiente para estimar rodadas com precisão.
+- Backlog AFR-001..140: 32 requisitos IMPLEMENTED e ligados a código/testes/evidência; 108 seguem PENDING, muitos ainda sem detalhamento suficiente para estimar rodadas com precisão.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -57,6 +57,7 @@ Atualizado em: 2026-11-14
 - CI GitHub Actions configurado para Node.js 22/24 com instalação pnpm congelada; execução remota ainda precisa ser observada antes de concluir AFR-028.
 - AFR-027 coberto por preservação idempotente no `init`, recusa de sobrescrita da entrevista sem `--resume` explícito e plano de instalação host somente leitura.
 - Matriz local de versões e contratos de integração dos quatro hosts registrada; hosts sem prova de carga/execução da Skill continuam `NOT_TESTED`, como cobre o teste de `host list`.
+- SPI de providers implementada com erros tipados, timeout, cancelamento e provider mock determinístico; sem provider remoto ou credenciais.
 - Gemini: usuário autorizou confiança no workspace; recusou o aviso subsequente de instalação/injeção de instruções. `gemini extensions list` confirmou que nada foi instalado.
 - Claude Code oferece `--plugin-dir` para carga local temporária; teste em sessão sem inferência ainda não concluído.
 - Claude `plugin test` não executou porque o adapter não está instalado; não houve instalação automática.
@@ -83,5 +84,6 @@ Atualizado em: 2026-11-14
 - `evidence/M4-2026-11-14-progress-2.md`
 - `evidence/M1-M4-2026-11-14-progress-3.md`
 - `evidence/M5-2026-11-14-progress-1.md`
+- `evidence/M6-2026-11-14-progress-1.md`
 - `evidence/ASES-300-markdown-structure-review-2026-11-13.md`
 

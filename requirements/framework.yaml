@@ -494,26 +494,26 @@ requirements:
     priority: P1
     milestone: "M6"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Provider SPI tipada com erro, timeout e cancelamento."
     acceptanceCriteria:
       - id: AC-AFR-041-01
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Provider SPI tipada com erro, timeout e cancelamento."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/providers.ts"]
+    tests: ["packages/cli/src/providers.test.ts :: provider SPI rejects invalid input and normalizes failures", "packages/cli/src/providers.test.ts :: provider SPI applies timeout and caller cancellation"]
   - id: AFR-042
     priority: P1
     milestone: "M6"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Provider mock determinístico permitir CI offline."
     acceptanceCriteria:
       - id: AC-AFR-042-01
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Provider mock determinístico permitir CI offline."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/providers.ts"]
+    tests: ["packages/cli/src/providers.test.ts :: mock provider gives deterministic offline responses"]
   - id: AFR-043
     priority: P1
     milestone: "M6"
