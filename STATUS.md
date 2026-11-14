@@ -10,7 +10,7 @@ Atualizado em: 2026-11-14
 - Fonte diretora: presente e lida
 - ASES-300: DOCX e conversão Markdown presentes localmente; revisão estrutural preliminar confirmou 300 IDs/títulos e hashes íntegros; conferência visual/editorial ainda pendente.
 - ASES-500 separado: consolidação presente como reconstrução para validação; original independente ausente e homologação pendente.
-- Publicação: NOT_AUTHORIZED
+- Repositório GitHub público autorizado; publicação em diretórios oficiais de plugins e publicação de pacotes continuam pendentes de licença/aprovação específica.
 
 ## Implementação atual
 
@@ -70,7 +70,7 @@ Atualizado em: 2026-11-14
 
 ## Próximas tarefas READY
 
-1. Testar instalação, descoberta e execução das integrações em sessões reais dos quatro hosts.
+1. Prioridade Claude Code: observar descoberta e executar `/eureka42-ases:ases-start` em sessão real para completar a evidência de AFR-031; depois avançar Codex (AFR-033), Kimi (AFR-032) e Gemini (AFR-034) conforme permissões de instalação já registradas.
 2. Prosseguir a entrevista com personas, autenticação, integrações, observabilidade e critérios de aceite.
 
 ## Bloqueios de conclusão integral
