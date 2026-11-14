@@ -8,7 +8,7 @@ Atualizado em: 2026-11-14
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
 - Repositório Git: branch `main`; integrações Codex/Claude publicadas; AFR-030 implementado nesta rodada
 - Fonte diretora: presente e lida
-- ASES-300: DOCX e conversão Markdown presentes localmente; revisão estrutural preliminar confirmou 300 IDs/títulos e hashes íntegros; conferência visual/editorial ainda pendente.
+- ASES-300: DOCX e conversão Markdown presentes localmente; revisão estrutural confirmou 300 IDs/títulos e hashes íntegros; amostra visual de 14 páginas renderizadas conferida. Homologação editorial segue pendente: o DOCX renderizado mantém placeholder de sumário e a amostra não equivale a revisão integral.
 - ASES-500 separado: consolidação presente como reconstrução para validação; original independente ausente e homologação pendente.
 - Repositório GitHub público autorizado; publicação em diretórios oficiais de plugins e publicação de pacotes continuam pendentes de licença/aprovação específica.
 
@@ -100,4 +100,5 @@ Atualizado em: 2026-11-14
 - `evidence/M5-2026-11-14-progress-5.md`
 - `evidence/M1-2026-11-14-progress-2.md`
 - `evidence/ASES-300-markdown-structure-review-2026-11-13.md`
+- `evidence/ASES-300-visual-review-2026-11-14.md`
 
