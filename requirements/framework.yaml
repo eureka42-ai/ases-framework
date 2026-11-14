@@ -254,26 +254,26 @@ requirements:
     priority: P0
     milestone: "M4"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Produzir plano de instalação host com *diff* antes de aplicar."
     acceptanceCriteria:
       - id: AC-AFR-021-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Produzir plano de instalação host com *diff* antes de aplicar."
-        verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+        description: "ases host plan <host> <workspace> gera diff textual para criar/substituir artefatos allowlisted, identifica arquivos binários e conflitos, informa PLAN_ONLY e não grava arquivos. Caminhos com symlink são recusados para impedir escape do workspace."
+        verification: "automated"
+    artifacts: ["packages/cli/src/host-plan.ts", "packages/cli/src/index.ts"]
+    tests: ["packages/cli/src/index.test.ts :: host plan renders create and replacement diffs without writing", "packages/cli/src/index.test.ts :: host plan refuses workspace symlink escapes"]
   - id: AFR-022
     priority: P0
     milestone: "M4"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Detectar host e versão; não presumir capacidades."
     acceptanceCriteria:
       - id: AC-AFR-022-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Detectar host e versão; não presumir capacidades."
-        verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+        description: "ases host list executa somente <host> --version, registra disponibilidade e texto de versão quando encontrado, e mantém support=NOT_TESTED até haver validação funcional específica; erro/ausência do executável não implica capacidade presumida."
+        verification: "automated"
+    artifacts: ["packages/cli/src/index.ts"]
+    tests: ["packages/cli/src/index.test.ts :: host list reports adapters without claiming support"]
   - id: AFR-023
     priority: P0
     milestone: "M4"
@@ -350,14 +350,14 @@ requirements:
     priority: P0
     milestone: "M1"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "`npm pack` gerar pacote instalável e verificado."
     acceptanceCriteria:
       - id: AC-AFR-029-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: `npm pack` gerar pacote instalável e verificado."
+        description: "npm pack inclui todos os módulos runtime e os quatro adapters; tarball pode ser instalado localmente e executa ases --version e ases host plan fora do checkout do framework."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/package.json", "scripts/copy-host-integrations.mjs", "packages/cli/src/host-plan.ts"]
+    tests: ["npm pack --dry-run confirma os módulos e adapters; instalação local do tarball e smoke ases --version/host plan"]
   - id: AFR-030
     priority: P0
     milestone: "M1"

@@ -8,6 +8,7 @@ import { renderLogo } from "./brand.js";
 import { runInterview } from "./interview.js";
 import { importAses300, importProductRequirements, readCatalog, updateDecision, updateRequirement } from "./catalog.js";
 import { resolveConfigLayers } from "./config-resolution.js";
+import { createHostPlan, HOSTS, type HostId } from "./host-plan.js";
 
 export const VERSION = "0.0.0-dev";
 
@@ -36,6 +37,7 @@ Comandos disponíveis:
   interview [diretório]   Entrevista o projeto e propõe stack inicial
   welcome                 Exibe a identidade Eureka42 no terminal
   host list               Detecta CLIs compatíveis sem alterar configurações
+  host plan <host> [dir]  Mostra o diff da integração sem escrever arquivos
   doctor [diretório]      Diagnostica o ambiente sem chamadas remotas
   config validate [path]  Valida a configuração JSON do projeto
   config explain [path]   Resolve defaults, ambiente e --set sem revelar secrets
@@ -347,6 +349,17 @@ export async function run(argv: string[]): Promise<CommandResult> {
       return { ...host, detected: detected.available, version: detected.available ? detected.detail : undefined, support: "NOT_TESTED" };
     }));
     return { exitCode: 0, output: json ? JSON.stringify({ hosts }, null, 2) : hosts.map((host) => `${host.detected ? "DETECTED" : "NOT_FOUND"} ${host.id}${host.version ? `: ${host.version}` : ""} [${host.support}]`).join("\n") };
+  }
+  if (command === "host" && args[1] === "plan") {
+    const host = args[2];
+    if (!HOSTS.includes(host as HostId)) return { exitCode: 2, output: json ? JSON.stringify({ code: "ASES_HOST_INVALID", allowed: HOSTS }, null, 2) : `Host inválido; use: ${HOSTS.join(", ")}` };
+    try {
+      const plan = await createHostPlan(host as HostId, args[3] ?? process.cwd());
+      return { exitCode: 0, output: json ? JSON.stringify(plan, null, 2) : [`Plano somente leitura: ${plan.host} → ${plan.workspace}`, "Nenhuma alteração aplicada. Revise os diffs antes de qualquer instalação.", ...plan.files.map((file) => `\n[${file.action}] ${file.target}\n${file.diff}`)].join("\n") };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_HOST_PLAN_FAILED", error: message }, null, 2) : `Falha ao gerar plano do host: ${message}` };
+    }
   }
   if (command === "config" && args[1] === "validate") return validateConfigCommand(args[2], json);
   if (command === "config" && args[1] === "explain") {

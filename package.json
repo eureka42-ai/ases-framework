@@ -12,7 +12,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "tsc -b",
+    "build": "tsc -b && node scripts/copy-host-integrations.mjs",
     "check": "tsc -b --pretty false && node --test packages/cli/dist/**/*.test.js && pnpm run integrations:validate",
     "test": "pnpm run build && node --test packages/cli/dist/**/*.test.js && pnpm run integrations:validate",
     "integrations:validate": "node scripts/validate-integrations.mjs",

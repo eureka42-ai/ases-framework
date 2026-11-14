@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, symlink, unlink } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, symlink, unlink } from "node:fs/promises";
 import { writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -281,7 +281,37 @@ test("host list reports adapters without claiming support", async () => {
   const payload = JSON.parse(result.output);
   assert.equal(result.exitCode, 0);
   assert.deepEqual(payload.hosts.map((host: { id: string }) => host.id), ["codex", "claude-code", "kimi-code", "gemini-cli"]);
-  assert.ok(payload.hosts.every((host: { support: string }) => host.support === "NOT_TESTED"));
+  assert.ok(payload.hosts.every((host: { detected: boolean; support: string; version?: string }) => typeof host.detected === "boolean" && host.support === "NOT_TESTED" && (host.detected ? typeof host.version === "string" : host.version === undefined)));
+});
+
+test("host plan renders create and replacement diffs without writing", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-host-plan-"));
+  const first = await run(["host", "plan", "codex", root, "--json"]);
+  const plan = JSON.parse(first.output);
+  assert.equal(first.exitCode, 0);
+  assert.equal(plan.mode, "PLAN_ONLY");
+  assert.ok(plan.files.every((file: { action: string }) => file.action === "CREATE"));
+  assert.ok(plan.files[0].diff.includes("+++ b/AGENTS.md"));
+  assert.equal(await readFile(join(root, "AGENTS.md"), "utf8").catch(() => undefined), undefined);
+
+  await writeFile(join(root, "AGENTS.md"), "# Instruções locais do usuário\n");
+  const second = JSON.parse((await run(["host", "plan", "codex", root, "--json"])).output);
+  const conflicted = second.files.find((file: { target: string }) => file.target === "AGENTS.md");
+  assert.equal(conflicted.action, "CONFLICT");
+  assert.match(conflicted.diff, /-# Instruções locais do usuário/);
+  assert.match(conflicted.diff, /\+# EUREKA42/);
+  assert.equal(await readFile(join(root, "AGENTS.md"), "utf8"), "# Instruções locais do usuário\n");
+});
+
+test("host plan refuses workspace symlink escapes", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-host-plan-link-"));
+  const outside = await mkdtemp(join(tmpdir(), "ases-host-plan-outside-"));
+  await symlink(outside, join(root, ".agents"));
+  const plan = JSON.parse((await run(["host", "plan", "codex", root, "--json"])).output);
+  const skill = plan.files.find((file: { target: string }) => file.target === ".agents/skills/ases-project-start/SKILL.md");
+  assert.equal(skill.action, "CONFLICT");
+  assert.match(skill.diff, /symlink/);
+  assert.deepEqual(await readdir(outside), []);
 });
 
 test("catalog status requires evidence for VERIFIED and rationale for N_A", async () => {

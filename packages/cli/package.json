@@ -13,10 +13,19 @@
     "dist/index.d.ts",
     "dist/brand.js",
     "dist/brand.d.ts",
+    "dist/catalog.js",
+    "dist/catalog.d.ts",
+    "dist/config-resolution.js",
+    "dist/config-resolution.d.ts",
+    "dist/assessment.js",
+    "dist/assessment.d.ts",
     "dist/interview.js",
     "dist/interview.d.ts",
+    "dist/host-plan.js",
+    "dist/host-plan.d.ts",
     "dist/recommendations.js",
-    "dist/recommendations.d.ts"
+    "dist/recommendations.d.ts",
+    "dist/integrations"
   ],
   "scripts": {
     "build": "tsc -b",

@@ -183,6 +183,7 @@ ASES_PROJECT_MODE=offline ases config explain ./meu-projeto/.ases/config.json --
 | `ases config validate [path]` | Valida o contrato inicial da config | Nenhum |
 | `ases config explain [path] [--set chave=valor]` | Resolve defaults e overrides seguros com suas origens | Nenhum |
 | `ases host list` | Detecta Codex, Claude, Kimi e Gemini instalados | Nenhum |
+| `ases host plan <host> [workspace]` | Mostra diffs de integração, conflitos e arquivos binários sem aplicar mudanças | Nenhum |
 | `ases catalog import-ases300 <md> [workspace]` | Valida 300 IDs e importa o catálogo geral | Grava `.ases/catalogs/ases-300.json` |
 | `ases catalog import-product <id> <md> [workspace]` | Importa REQ-301..500 para catálogo específico | Grava `.ases/catalogs/products/<id>.json` |
 | `ases requirements list [workspace] [--product id]` | Lista requisitos gerais ou específicos | Nenhum |
@@ -296,6 +297,8 @@ Os adapters experimentais ficam em [`integrations/`](integrations/):
 | Gemini CLI | extension, Skill, command e tema | tema `eureka42-teal` |
 
 Todos permanecem `NOT_TESTED` no host real. A validação atual confirma apenas a estrutura local dos manifests e Skills. Consulte [`integrations/README.md`](integrations/README.md) antes de instalar.
+
+Para revisar o que seria preparado para um workspace sem modificar arquivos, execute `ases host plan codex ./meu-projeto` (ou `claude-code`, `kimi-code`, `gemini-cli`). O comando marca destinos divergentes como conflitos e não aplica o plano.
 
 ## Arquitetura pretendida
 
@@ -414,7 +417,7 @@ Resultados reais e limitações ficam em [`evidence/`](evidence/). Uma funcional
 | M1 | CLI local, init, doctor, config e pacote | Vertical slice verificado localmente; publicação e suporte multi-host pendentes |
 | M2 | Catálogo ASES-300 e requirements engine | Engine local implementado; homologação normativa bloqueada pela revisão da fonte |
 | M3 | Entrevista ASES-500 e geração de spec | Fluxo inicial implementado; AFR-001..020 concluídos localmente |
-| M4–M5 | MCP e adapters de hosts | Planejado |
+| M4–M5 | MCP e adapters de hosts | Plano/detecção de host implementados; servidor MCP e smoke funcional de sessão pendentes |
 | M6–M8 | Providers, agents, skills e workflows | Planejado |
 | M9–M10 | RAG, memória e ContextBundle | Planejado |
 | M11–M13 | Evals, segurança, observabilidade e hardening | Planejado |

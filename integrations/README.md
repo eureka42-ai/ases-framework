@@ -11,6 +11,8 @@ O EUREKA42 ASES possui um núcleo portátil e artefatos separados por host. Eles
 | Kimi Code CLI | `kimi.plugin.json` com `sessionStart.skill` | instalar o diretório/repositório e executar `/plugins reload` | Manifest/Skill local validado; recarga/sessão funcional pendente |
 | Gemini CLI | `gemini-extension.json`, contexto, Skill, command e tema | `gemini extensions link integrations/gemini-cli` em checkout de desenvolvimento | `gemini extensions validate` PASS; sessão funcional pendente |
 
+`ases host plan <host> <workspace>` apresenta o diff previsto para os artefatos locais, identifica conflitos e não escreve no workspace. Funciona no checkout ou pelo pacote CLI instalado. Revise todos os destinos antes de decidir qualquer instalação.
+
 ## Experiência pretendida
 
 1. A identidade EUREKA42 ASES aparece em teal/verde quando o terminal permite.
