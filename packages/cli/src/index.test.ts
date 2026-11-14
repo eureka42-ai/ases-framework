@@ -218,6 +218,21 @@ test("interview recommends missing stack and persists proposal", async () => {
   assert.match(await readFile(join(root, ".ases", "SPEC.md"), "utf8"), /Portal Demo/);
 });
 
+test("interview refuses to replace existing files without explicit resume", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-interview-protected-"));
+  const answersPath = join(root, "answers.json");
+  const interviewPath = join(root, ".ases", "interview.json");
+  const specPath = join(root, ".ases", "SPEC.md");
+  await mkdir(join(root, ".ases"), { recursive: true });
+  await writeFile(answersPath, JSON.stringify({ name: "New Project", applicationType: "web", expectedScale: "small", sensitiveData: false }));
+  await writeFile(interviewPath, "preserve interview\n");
+  await writeFile(specPath, "preserve spec\n");
+
+  await assert.rejects(runInterview({ root, answersPath, dryRun: false }), /Arquivo existente; preservado:/);
+  assert.equal(await readFile(interviewPath, "utf8"), "preserve interview\n");
+  assert.equal(await readFile(specPath, "utf8"), "preserve spec\n");
+});
+
 test("interview evaluates user choices instead of silently confirming", async () => {
   const root = await mkdtemp(join(tmpdir(), "ases-existing-"));
   const answersPath = join(root, "answers.json");

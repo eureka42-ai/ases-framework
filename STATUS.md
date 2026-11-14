@@ -6,7 +6,7 @@ Atualizado em: 2026-11-14
 
 - M0: IMPLEMENTED / PARTIALLY_VERIFIED
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
-- Repositório Git: branch `main`; entrevista com identidade e inspeção segura de manifestos antes das perguntas, pendente de commit/push
+- Repositório Git: branch `main`; alterações de CI e proteção da entrevista nesta rodada, pendentes de commit/push
 - Fonte diretora: presente e lida
 - ASES-300: DOCX e conversão Markdown presentes localmente; revisão estrutural preliminar confirmou 300 IDs/títulos e hashes íntegros; conferência visual/editorial ainda pendente.
 - ASES-500 separado: consolidação presente como reconstrução para validação; original independente ausente e homologação pendente.
@@ -34,12 +34,12 @@ Atualizado em: 2026-11-14
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (30/30) em 2026-11-14; `pnpm test` também compilou TypeScript e validou as integrações.
+- Testes unitários: PASS (31/31) em 2026-11-14; `pnpm test` também compila TypeScript e valida as integrações.
 - Manifests/Skills locais: PASS (3 manifests, 5 Skills).
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; instalação local do tarball + `ases --version` e `ases host plan` em workspace externo: PASS.
-- Backlog AFR-001..140: 27 requisitos IMPLEMENTED e ligados a código/testes; 113 seguem PENDING, muitos ainda sem detalhamento suficiente para estimar rodadas com precisão.
+- Backlog AFR-001..140: 28 requisitos IMPLEMENTED e ligados a código/testes; 112 seguem PENDING, muitos ainda sem detalhamento suficiente para estimar rodadas com precisão.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -54,6 +54,8 @@ Atualizado em: 2026-11-14
 - Validadores de integração: PASS (3 manifests, 5 Skills).
 - Validação host estática nesta rodada: Claude schema PASS, profile de diretório bloqueado por licença; Gemini extension PASS; `kimi doctor` validou só os arquivos de configuração; Codex 0.169.0 detectado. Descoberta/execução em sessões de agente permanecem pendentes.
 - Validação continuada anterior: `git diff --check` PASS; `kimi doctor` PASS para configuração local (não é validação do plugin).
+- CI GitHub Actions configurado para Node.js 22/24 com instalação pnpm congelada; execução remota ainda precisa ser observada antes de concluir AFR-028.
+- AFR-027 coberto por preservação idempotente no `init`, recusa de sobrescrita da entrevista sem `--resume` explícito e plano de instalação host somente leitura.
 - Gemini: usuário autorizou confiança no workspace; recusou o aviso subsequente de instalação/injeção de instruções. `gemini extensions list` confirmou que nada foi instalado.
 - Claude Code oferece `--plugin-dir` para carga local temporária; teste em sessão sem inferência ainda não concluído.
 - Claude `plugin test` não executou porque o adapter não está instalado; não houve instalação automática.
