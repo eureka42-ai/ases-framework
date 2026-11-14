@@ -55,7 +55,7 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases doctor` | Implementado localmente | Node, plataforma, Git, npm, pnpm, workspace/config e ações corretivas |
 | `ases config validate` | Implementado no schema inicial | Configuração JSON bootstrap |
 | `ases config explain` | Implementado no schema inicial | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Em andamento | 33 implementados; 107 pendentes. Critérios de aceite ainda precisam ser refinados em parte do backlog |
+| Backlog AFR-001..140 | Em andamento | 34 implementados; 106 pendentes. Critérios de aceite ainda precisam ser refinados em parte do backlog |
 | Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |

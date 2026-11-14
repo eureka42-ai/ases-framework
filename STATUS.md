@@ -43,7 +43,7 @@ Atualizado em: 2026-11-14
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; instalação local do tarball + `ases --version` e `ases host plan` em workspace externo: PASS.
-- Backlog AFR-001..140: 33 requisitos IMPLEMENTED e ligados a código/testes/evidência; 107 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 34 requisitos IMPLEMENTED e ligados a código/testes/evidência; 106 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -58,7 +58,7 @@ Atualizado em: 2026-11-14
 - Validadores de integração: PASS (4 manifests, 2 marketplaces, 5 Skills).
 - Validação host estática nesta rodada: Claude schema PASS, profile de diretório bloqueado por licença; Gemini extension PASS; `kimi doctor` validou só os arquivos de configuração; Codex 0.169.0 detectado. Descoberta/execução em sessões de agente permanecem pendentes.
 - Validação continuada anterior: `git diff --check` PASS; `kimi doctor` PASS para configuração local (não é validação do plugin).
-- CI GitHub Actions configurado para Node.js 22/24 com instalação pnpm congelada; execução remota ainda precisa ser observada antes de concluir AFR-028.
+- CI GitHub Actions observado em execução remota: PASS nos jobs Node.js 22 e 24, instalação congelada e `pnpm test`; AFR-028 atualizado para IMPLEMENTED. Ver `evidence/CI-2026-11-14.md`.
 - AFR-027 coberto por preservação idempotente no `init`, recusa de sobrescrita da entrevista sem `--resume` explícito e plano de instalação host somente leitura.
 - Matriz local de versões e contratos de integração dos quatro hosts registrada; hosts sem prova de carga/execução da Skill continuam `NOT_TESTED`, como cobre o teste de `host list`.
 - Claude Code: plugin validado com `claude plugin validate --strict`, marketplace do repositório validado, instalação isolada e inventário confirmaram duas Skills carregadas. A invocação em conversa permanece pendente; perfil de distribuição oficial Anthropic exige decisão de licença.
@@ -102,4 +102,5 @@ Atualizado em: 2026-11-14
 - `evidence/M1-2026-11-14-progress-2.md`
 - `evidence/ASES-300-markdown-structure-review-2026-11-13.md`
 - `evidence/ASES-300-visual-review-2026-11-14.md`
+- `evidence/CI-2026-11-14.md`
 
