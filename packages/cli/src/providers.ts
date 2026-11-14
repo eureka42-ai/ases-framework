@@ -35,6 +35,19 @@ export interface GenerateOptions {
   signal?: AbortSignal;
 }
 
+export type ExecutionMode = "host" | "standalone" | "headless" | "offline";
+
+/** Selects a provider without allowing an offline project to reach a remote adapter. */
+export async function generateForMode(
+  mode: ExecutionMode,
+  request: ProviderRequest,
+  options: GenerateOptions & { provider?: Provider } = {},
+): Promise<ProviderResponse> {
+  if (mode === "offline") return generate(new MockProvider(), request, options);
+  if (!options.provider) throw new ProviderError("UNAVAILABLE", `no provider configured for ${mode} mode`);
+  return generate(options.provider, request, options);
+}
+
 /** Calls a provider with bounded time and normalized errors. */
 export async function generate(provider: Provider, request: ProviderRequest, options: GenerateOptions = {}): Promise<ProviderResponse> {
   if (!request.prompt.trim()) throw new ProviderError("INVALID_REQUEST", "prompt must not be empty");

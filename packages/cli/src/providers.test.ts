@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { generate, MockProvider, ProviderError, type Provider } from "./providers.js";
+import { generate, generateForMode, MockProvider, ProviderError, type Provider } from "./providers.js";
 
 test("mock provider gives deterministic offline responses", async () => {
   const provider = new MockProvider();
@@ -9,6 +9,26 @@ test("mock provider gives deterministic offline responses", async () => {
   assert.deepEqual(first, second);
   assert.equal(first.text, "Mock response: explain ASES");
   assert.equal(first.provider, "mock");
+});
+
+test("offline mode never calls a configured remote provider", async () => {
+  let calls = 0;
+  const remote: Provider = {
+    id: "remote-test",
+    capabilities: ["text"],
+    async generate() {
+      calls += 1;
+      throw new Error("remote provider must not be called in offline mode");
+    },
+  };
+  const response = await generateForMode("offline", { prompt: "offline only" }, { provider: remote });
+  assert.equal(response.provider, "mock");
+  assert.equal(response.text, "Mock response: offline only");
+  assert.equal(calls, 0);
+});
+
+test("non-offline modes require an explicit provider", async () => {
+  await assert.rejects(generateForMode("standalone", { prompt: "hello" }), (error: unknown) => error instanceof ProviderError && error.code === "UNAVAILABLE");
 });
 
 test("provider SPI rejects invalid input and normalizes failures", async () => {
