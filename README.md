@@ -55,10 +55,12 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases doctor` | Implementado localmente | Node, plataforma, Git, npm, pnpm, workspace/config e ações corretivas |
 | `ases config validate` | Implementado no schema inicial | Configuração JSON bootstrap |
 | `ases config explain` | Implementado no schema inicial | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Estruturado | AFR-001..015 refinados e ligados a código/testes; demais critérios seguem em rascunho |
-| ASES-300 normativo | Bloqueado pela fonte | Nenhum REQ-001..300 foi inventado |
+| Backlog AFR-001..140 | Em andamento | 33 implementados; 107 pendentes. Critérios de aceite ainda precisam ser refinados em parte do backlog |
+| Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
-| MCP, hosts, providers e RAG | Planejado | Não declarar suporte antes dos testes |
+| MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |
+| Providers | SPI e mock local implementados | Sem provider remoto, credenciais ou inferência conectada |
+| Agents, RAG e ContextBundle | Planejado | Não declarar suporte antes de implementação e evidência |
 
 O estado operacional detalhado está em [`STATUS.md`](STATUS.md) e as evidências executadas ficam em [`evidence/`](evidence/).
 
@@ -434,10 +436,10 @@ Resultados reais e limitações ficam em [`evidence/`](evidence/). Uma funcional
 |---|---|---|
 | M0 | Bootstrap, fontes, ADRs, riscos e build | Vertical slice implementado; homologação das fontes pendente |
 | M1 | CLI local, init, doctor, config e pacote | Vertical slice verificado localmente; publicação e suporte multi-host pendentes |
-| M2 | Catálogo ASES-300 e requirements engine | Engine local implementado; homologação normativa bloqueada pela revisão da fonte |
+| M2 | Catálogo ASES-300 e requirements engine | Engine local implementada; revisão estrutural e visual amostral concluídas, homologação integral pendente |
 | M3 | Entrevista ASES-500 e geração de spec | Fluxo inicial implementado; AFR-001..020 concluídos localmente |
 | M4–M5 | MCP e adapters de hosts | MCP stdio e plano/detecção implementados e testados; conexão em sessões reais dos hosts pendente |
-| M6–M8 | Providers, agents, skills e workflows | Planejado |
+| M6–M8 | Providers, agents, skills e workflows | M6 parcial: SPI tipada e mock offline implementados; 8/10 AFRs M6 pendentes; agents/workflows seguem planejados |
 | M9–M10 | RAG, memória e ContextBundle | Planejado |
 | M11–M13 | Evals, segurança, observabilidade e hardening | Planejado |
 | M14 | Release candidate e gate de v1 | Não autorizado |
@@ -493,7 +495,7 @@ ases config validate ./.ases/config.json
 
 ### Posso usar providers de IA agora?
 
-Ainda não pelo runtime ASES. O modo inicial é determinístico e offline. Providers serão adicionados por adapters com autenticação, timeout, budgets, redaction e testes separados.
+A SPI tipada de providers e um mock determinístico offline já existem. Nenhum provider remoto está configurado; credenciais, orçamento, redaction e integração real continuam pendentes antes de habilitar chamadas a modelos.
 
 ## Contribuição
 

@@ -6,6 +6,7 @@ Atualizado em: 2026-11-14
 
 - M0: IMPLEMENTED / PARTIALLY_VERIFIED
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
+- M6: IN_PROGRESS (AFR-041/042 implementados; 8/10 requisitos M6 pendentes)
 - Repositório Git: branch `main`; integrações Codex/Claude publicadas; AFR-030 implementado nesta rodada
 - Fonte diretora: presente e lida
 - ASES-300: DOCX e conversão Markdown presentes localmente; revisão estrutural confirmou 300 IDs/títulos e hashes íntegros; amostra visual de 14 páginas renderizadas conferida. Homologação editorial segue pendente: o DOCX renderizado mantém placeholder de sumário e a amostra não equivale a revisão integral.
@@ -42,7 +43,7 @@ Atualizado em: 2026-11-14
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; instalação local do tarball + `ases --version` e `ases host plan` em workspace externo: PASS.
-- Backlog AFR-001..140: 33 requisitos IMPLEMENTED e ligados a código/testes/evidência; 107 seguem PENDING, muitos ainda sem detalhamento suficiente para estimar rodadas com precisão.
+- Backlog AFR-001..140: 33 requisitos IMPLEMENTED e ligados a código/testes/evidência; 107 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
