@@ -30,6 +30,16 @@ export interface Provider {
   generate(request: ProviderRequest, context: ProviderContext): Promise<ProviderResponse>;
 }
 
+export type ProviderCapability = "text" | "streaming" | "tools" | "vision";
+
+/** Returns the first provider that declares every required capability. */
+export function selectCapableProvider(providers: readonly Provider[], required: readonly ProviderCapability[]): Provider {
+  if (required.length === 0) throw new ProviderError("INVALID_REQUEST", "at least one capability is required");
+  const provider = providers.find((candidate) => required.every((capability) => candidate.capabilities.includes(capability)));
+  if (!provider) throw new ProviderError("UNAVAILABLE", `no configured provider supports required capabilities: ${required.join(", ")}`);
+  return provider;
+}
+
 export interface ProviderCatalogEntry {
   providerId: string;
   modelId: string;

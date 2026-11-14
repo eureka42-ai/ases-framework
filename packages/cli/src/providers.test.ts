@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createProviderCatalogEntry, generate, generateForMode, MockProvider, ProviderError, type Provider } from "./providers.js";
+import { createProviderCatalogEntry, generate, generateForMode, MockProvider, ProviderError, selectCapableProvider, type Provider } from "./providers.js";
 
 test("mock provider gives deterministic offline responses", async () => {
   const provider = new MockProvider();
@@ -45,6 +45,14 @@ test("provider capability catalog retains source and observation date", () => {
   assert.equal(entry.observedAt, "2026-11-14");
   assert.notEqual(entry.capabilities, capabilities);
   assert.throws(() => createProviderCatalogEntry({ ...entry, observedAt: "2026-02-30" }), (error: unknown) => error instanceof ProviderError && error.code === "INVALID_REQUEST");
+});
+
+test("capability router selects a compatible provider and rejects unsupported requirements", () => {
+  const textOnly = new MockProvider();
+  const withTools: Provider = { id: "tools", capabilities: ["text", "tools"], generate: textOnly.generate.bind(textOnly) };
+  assert.equal(selectCapableProvider([textOnly, withTools], ["text", "tools"]).id, "tools");
+  assert.throws(() => selectCapableProvider([textOnly], ["text", "vision"]), (error: unknown) => error instanceof ProviderError && error.code === "UNAVAILABLE");
+  assert.throws(() => selectCapableProvider([textOnly], []), (error: unknown) => error instanceof ProviderError && error.code === "INVALID_REQUEST");
 });
 
 test("provider SPI rejects invalid input and normalizes failures", async () => {
