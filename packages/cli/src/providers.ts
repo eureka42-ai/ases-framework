@@ -30,6 +30,30 @@ export interface Provider {
   generate(request: ProviderRequest, context: ProviderContext): Promise<ProviderResponse>;
 }
 
+export interface ProviderCatalogEntry {
+  providerId: string;
+  modelId: string;
+  capabilities: readonly ("text" | "streaming" | "tools" | "vision")[];
+  source: string;
+  observedAt: string;
+}
+
+/** Builds a provenance-bearing snapshot; it does not claim live verification. */
+export function createProviderCatalogEntry(entry: ProviderCatalogEntry): ProviderCatalogEntry {
+  if (!entry.providerId.trim() || !entry.modelId.trim() || !entry.source.trim()) {
+    throw new ProviderError("INVALID_REQUEST", "providerId, modelId and source must not be empty");
+  }
+  const observedTimestamp = Date.parse(`${entry.observedAt}T00:00:00Z`);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(entry.observedAt) || Number.isNaN(observedTimestamp) || new Date(observedTimestamp).toISOString().slice(0, 10) !== entry.observedAt) {
+    throw new ProviderError("INVALID_REQUEST", "observedAt must be a valid YYYY-MM-DD date");
+  }
+  const allowed = new Set(["text", "streaming", "tools", "vision"]);
+  if (entry.capabilities.length === 0 || entry.capabilities.some((capability) => !allowed.has(capability)) || new Set(entry.capabilities).size !== entry.capabilities.length) {
+    throw new ProviderError("INVALID_REQUEST", "capabilities must be non-empty, known and unique");
+  }
+  return { ...entry, capabilities: [...entry.capabilities] };
+}
+
 export interface GenerateOptions {
   timeoutMs?: number;
   signal?: AbortSignal;

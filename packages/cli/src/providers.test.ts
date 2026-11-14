@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { generate, generateForMode, MockProvider, ProviderError, type Provider } from "./providers.js";
+import { createProviderCatalogEntry, generate, generateForMode, MockProvider, ProviderError, type Provider } from "./providers.js";
 
 test("mock provider gives deterministic offline responses", async () => {
   const provider = new MockProvider();
@@ -29,6 +29,22 @@ test("offline mode never calls a configured remote provider", async () => {
 
 test("non-offline modes require an explicit provider", async () => {
   await assert.rejects(generateForMode("standalone", { prompt: "hello" }), (error: unknown) => error instanceof ProviderError && error.code === "UNAVAILABLE");
+});
+
+test("provider capability catalog retains source and observation date", () => {
+  const capabilities = ["text"] as const;
+  const entry = createProviderCatalogEntry({
+    providerId: "local",
+    modelId: "deterministic-v1",
+    capabilities,
+    source: "local adapter declaration",
+    observedAt: "2026-11-14",
+  });
+  assert.deepEqual(entry.capabilities, ["text"]);
+  assert.equal(entry.source, "local adapter declaration");
+  assert.equal(entry.observedAt, "2026-11-14");
+  assert.notEqual(entry.capabilities, capabilities);
+  assert.throws(() => createProviderCatalogEntry({ ...entry, observedAt: "2026-02-30" }), (error: unknown) => error instanceof ProviderError && error.code === "INVALID_REQUEST");
 });
 
 test("provider SPI rejects invalid input and normalizes failures", async () => {
