@@ -11,6 +11,8 @@ Verificadas em 2026-11-14:
 - Gemini CLI Extension Reference: https://geminicli.com/docs/extensions/reference/ — `gemini-extension.json`, Skills, commands e temas verificados documentalmente.
 - Codex Skills: https://developers.openai.com/plugins/concepts/skills — Skill com `SKILL.md` e progressive disclosure.
 - Claude Code Plugins: https://code.claude.com/docs/en/plugins/create — layout, strict validation e carregamento local verificados; inventário no CLI confirmado e execução de Skill em conversa ainda pendente.
+- Claude Code Hooks: https://code.claude.com/docs/en/hooks — eventos, stdout/systemMessage e limites de sequências ANSI/OSC consultados; não incluímos hook de startup com injeção de contexto.
+- Claude Code Plugin CLI: comandos `marketplace add --scope`, `install --scope`, `uninstall --scope --keep-data` e `marketplace remove --scope` verificados por `claude --help` na versão 2.1.323.
 - Claude Code Marketplaces: https://code.claude.com/docs/en/plugins/create-marketplace — marketplace no repositório e instalação local isolada verificados.
 - Codex Plugins: https://developers.openai.com/plugins/build/plugins — manifest portátil `plugin.json`, onboarding Skill, assets de interface, marketplaces locais e comandos de instalação documentados; pacote do repositório estruturado, smoke isolado e sessão real pendentes.
 

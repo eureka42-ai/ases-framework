@@ -6,7 +6,7 @@ Atualizado em: 2026-11-14
 
 - M0: IMPLEMENTED / PARTIALLY_VERIFIED
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
-- Repositório Git: branch `main`; etapa Codex implementada e verificada localmente, pendente de commit/push
+- Repositório Git: branch `main`; integração Codex publicada; ciclo local seguro do plugin Claude validado nesta rodada
 - Fonte diretora: presente e lida
 - ASES-300: DOCX e conversão Markdown presentes localmente; revisão estrutural preliminar confirmou 300 IDs/títulos e hashes íntegros; conferência visual/editorial ainda pendente.
 - ASES-500 separado: consolidação presente como reconstrução para validação; original independente ausente e homologação pendente.
@@ -60,6 +60,8 @@ Atualizado em: 2026-11-14
 - AFR-027 coberto por preservação idempotente no `init`, recusa de sobrescrita da entrevista sem `--resume` explícito e plano de instalação host somente leitura.
 - Matriz local de versões e contratos de integração dos quatro hosts registrada; hosts sem prova de carga/execução da Skill continuam `NOT_TESTED`, como cobre o teste de `host list`.
 - Claude Code: plugin validado com `claude plugin validate --strict`, marketplace do repositório validado, instalação isolada e inventário confirmaram duas Skills carregadas. A invocação em conversa permanece pendente; perfil de distribuição oficial Anthropic exige decisão de licença.
+- Guia Claude agora recomenda `--scope local`, explicita o padrão potencialmente global de `user` e usa `--keep-data` na desinstalação para preservar dados persistentes do plugin.
+- Instalação/listagem/desinstalação Claude repetidas em `CLAUDE_CONFIG_DIR` isolado com escopo `local`; marketplace removido no fim do ciclo. Ver `evidence/M5-2026-11-14-progress-5.md`.
 - Configuração MCP de projeto Claude gerada e conferida em workspace temporário; `claude mcp list` marcou `Pending approval`, sem inicializar o servidor.
 - Kimi: `host plan` agora prepara a Skill em `.agents/skills/`, que é auto-descoberta pelo projeto; `kimi --skills-dir <path> --help` reconheceu a opção. O plugin Beta não foi instalado e a sessão segue `NOT_TESTED`.
 - Codex CLI 0.169.0: plugin nativo instalado e listado como habilitado em configuração temporária isolada; invocação da Skill em conversa permanece `NOT_TESTED`.
@@ -93,5 +95,7 @@ Atualizado em: 2026-11-14
 - `evidence/M6-2026-11-14-progress-1.md`
 - `evidence/M5-2026-11-14-progress-2.md`
 - `evidence/M5-2026-11-14-progress-3.md`
+- `evidence/M5-2026-11-14-progress-4.md`
+- `evidence/M5-2026-11-14-progress-5.md`
 - `evidence/ASES-300-markdown-structure-review-2026-11-13.md`
 

@@ -15,19 +15,22 @@ Dentro do Claude Code, execute `/eureka42-ases:ases-project-start` ou `/eureka42
 
 ## Instalar pelo marketplace deste repositório
 
+Use `local` para manter a instalação restrita ao checkout atual. Os comandos abaixo não adicionam o marketplace nem o plugin às configurações globais do usuário:
+
 ```sh
-claude plugin marketplace add eureka42-ai/ases-framework
-claude plugin install eureka42-ases@eureka42-ases-plugins
+claude plugin marketplace add eureka42-ai/ases-framework --scope local
+claude plugin install eureka42-ases@eureka42-ases-plugins --scope local
+claude plugin list
 ```
 
 Para remover depois:
 
 ```sh
-claude plugin uninstall eureka42-ases@eureka42-ases-plugins
-claude plugin marketplace remove eureka42-ases-plugins
+claude plugin uninstall eureka42-ases@eureka42-ases-plugins --scope local --keep-data
+claude plugin marketplace remove eureka42-ases-plugins --scope local
 ```
 
-A instalação modifica as configurações locais do Claude Code. Revise as instruções do plugin antes de instalá-lo e escolha o escopo apropriado no assistente `/plugin` quando disponível.
+`--keep-data` preserva os dados persistentes do plugin. Para compartilhar a instalação com todas as pessoas deste repositório, escolha explicitamente `--scope project`; para instalar no perfil de todas as pastas, escolha explicitamente `--scope user`. Sem `--scope`, o CLI pode usar o escopo `user` como padrão.
 
 ## CLI opcional e MCP
 
