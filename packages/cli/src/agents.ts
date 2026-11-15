@@ -21,6 +21,13 @@ export class AgentDeclarationError extends Error {
   }
 }
 
+export class AgentWriteConflictError extends Error {
+  constructor(readonly path: string, readonly agents: readonly string[]) {
+    super(`agents ${agents.join(", ")} both claim write access to ${path}`);
+    this.name = "AgentWriteConflictError";
+  }
+}
+
 function isSafeRelativePath(path: string): boolean {
   return path.length > 0 && !path.startsWith("/") && !path.includes("\\") && path.split("/").every((part) => part !== "" && part !== "." && part !== "..");
 }
@@ -73,4 +80,27 @@ export function assertIndependentReviewer(authorId: string, reviewerId: string):
     throw new AgentDeclarationError("a change author cannot approve their own review");
   }
   return { authorId: author, reviewerId: reviewer };
+}
+
+export interface ClaimedAgentTask<T> {
+  id: string;
+  writes: readonly string[];
+  run: () => Promise<T>;
+}
+
+/** Validates all write claims before dispatching any agent task. */
+export async function runClaimedAgentTasks<T>(tasks: readonly ClaimedAgentTask<T>[], parallelismAvailable: boolean): Promise<T[]> {
+  const paths = new Map<string, string>();
+  const ids = new Set<string>();
+  for (const task of tasks) {
+    if (!task.id.trim() || ids.has(task.id)) throw new AgentDeclarationError("agent task IDs must be non-empty and unique");
+    ids.add(task.id);
+    for (const path of task.writes) {
+      if (!isSafeRelativePath(path)) throw new AgentDeclarationError("agent write claims must use safe relative paths");
+      const owner = paths.get(path);
+      if (owner && owner !== task.id) throw new AgentWriteConflictError(path, [owner, task.id]);
+      paths.set(path, task.id);
+    }
+  }
+  return runAgentTasks(tasks.map((task) => task.run), parallelismAvailable);
 }

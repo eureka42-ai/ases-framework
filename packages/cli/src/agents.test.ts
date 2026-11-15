@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { AgentDeclarationError, assertIndependentReviewer, createAgentDeclaration, runAgentTasks, selectAgentContext } from "./agents.js";
+import { AgentDeclarationError, AgentWriteConflictError, assertIndependentReviewer, createAgentDeclaration, runAgentTasks, runClaimedAgentTasks, selectAgentContext } from "./agents.js";
 
 test("agent declarations require explicit permissions and bounded budgets", () => {
   const declaration = createAgentDeclaration({
@@ -45,4 +45,19 @@ test("review approval requires an identity independent from the author", () => {
   assert.deepEqual(assertIndependentReviewer("agent-17", "reviewer-4"), { authorId: "agent-17", reviewerId: "reviewer-4" });
   assert.throws(() => assertIndependentReviewer("Alice", " alice "), AgentDeclarationError);
   assert.throws(() => assertIndependentReviewer("agent-17", " "), AgentDeclarationError);
+});
+
+test("parallel agent writes are rejected before any conflicting task starts", async () => {
+  let starts = 0;
+  const tasks = [
+    { id: "agent-a", writes: ["src/shared.ts"], run: async () => { starts += 1; return "a"; } },
+    { id: "agent-b", writes: ["src/shared.ts"], run: async () => { starts += 1; return "b"; } },
+  ];
+  await assert.rejects(runClaimedAgentTasks(tasks, true), (error: unknown) => error instanceof AgentWriteConflictError && error.path === "src/shared.ts");
+  assert.equal(starts, 0);
+  const results = await runClaimedAgentTasks([
+    { id: "agent-a", writes: ["src/a.ts"], run: async () => "a" },
+    { id: "agent-b", writes: ["src/b.ts"], run: async () => "b" },
+  ], true);
+  assert.deepEqual(results, ["a", "b"]);
 });
