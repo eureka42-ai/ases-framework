@@ -40,7 +40,7 @@ Atualizado em: 2026-11-14
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (82/82); `pnpm test` também compila TypeScript e valida as integrações. O commit `6b72281` passou nos jobs Node.js 22 e 24 do GitHub Actions; ver [execução CI](https://github.com/eureka42-ai/ases-framework/actions/runs/43663572532).
+- Testes unitários: PASS (82/82); `pnpm test` também compila TypeScript e valida as integrações. O commit `0d05395` passou nos jobs Node.js 22 e 24 do GitHub Actions; ver [execução CI](https://github.com/eureka42-ai/ases-framework/actions/runs/43667732926).
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 6 Skills sincronizadas).
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
@@ -163,6 +163,7 @@ Atualizado em: 2026-11-14
 - `evidence/M8-2026-11-14-progress-6.md`
 - `evidence/CI-2026-11-14-progress-7.md`
 - `evidence/CI-2026-11-14-progress-8.md`
+- `evidence/CI-2026-11-14-progress-9.md`
 - `evidence/LAUNCH-2026-11-14-progress-1.md`
 - `evidence/SOURCES-2026-11-14-review-1.md`
 - `evidence/M5-2026-11-14-progress-10.md`
