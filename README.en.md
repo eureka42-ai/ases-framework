@@ -96,6 +96,8 @@ The MCP server currently supports local stdio. Authenticated remote MCP is not i
 
 For structured failure codes and recovery steps, see the [CLI error reference](docs/cli/errors.md).
 
+The CI dependency audit, license allowlist, SPDX SBOM, and GitHub provenance workflow are described in the [supply-chain guide](docs/security/supply-chain.md).
+
 ## Data and privacy
 
 - Project config defaults to local-only privacy.

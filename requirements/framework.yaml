@@ -1238,14 +1238,14 @@ requirements:
     priority: P1
     milestone: "M13"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "CI verificar segurança, licença, provenance e SBOM."
     acceptanceCriteria:
       - id: AC-AFR-103-01
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: CI verificar segurança, licença, provenance e SBOM."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: [".github/workflows/ci.yml", "scripts/supply-chain.mjs", "docs/security/supply-chain.md"]
+    tests: ["pnpm audit --prod --audit-level high", "pnpm supply-chain :: license metadata check and SPDX SBOM generation"]
   - id: AFR-104
     priority: P1
     milestone: "M13"

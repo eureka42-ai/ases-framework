@@ -58,7 +58,7 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases doctor` | Implementado localmente | Node, plataforma, Git, npm, pnpm, workspace/config e ações corretivas |
 | `ases config validate` | Implementado no schema inicial | Configuração JSON bootstrap |
 | `ases config explain` | Implementado no schema inicial | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Em andamento | 103 implementados; 37 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
+| Backlog AFR-001..140 | Em andamento | 104 implementados; 36 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
 | Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |
@@ -68,6 +68,7 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 O estado operacional detalhado está em [`STATUS.md`](STATUS.md) e as evidências executadas ficam em [`evidence/`](evidence/).
 O plano e os gates da candidata npm estão em [`docs/RELEASE.md`](docs/RELEASE.md).
 O limite atual de persistência e a política para futuras migrações estão em [dados e migrações](docs/architecture/data-migrations.md).
+Os gates de auditoria de dependências, licenças, SBOM e provenance estão em [supply chain](docs/security/supply-chain.md).
 
 ## Requisitos para desenvolvimento
 
