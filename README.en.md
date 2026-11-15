@@ -91,6 +91,8 @@ Plans are read-only. Apply/update/uninstall require `--apply`; ownership manifes
 
 The MCP server currently supports local stdio. Authenticated remote MCP is not implemented. Providers are opt-in; offline mode never calls a remote model. See [security policy](docs/security/policy-engine.md), [safe logging](docs/security/safe-logging.md), and [telemetry/evaluation behavior](docs/security/observability.md).
 
+For structured failure codes and recovery steps, see the [CLI error reference](docs/cli/errors.md).
+
 ## Data and privacy
 
 - Project config defaults to local-only privacy.
