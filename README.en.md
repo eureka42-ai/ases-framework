@@ -86,6 +86,7 @@ The restore command also defaults to a read-only plan; add `--apply` to restore 
 | `ases init [workspace]` | Initialize ASES project metadata |
 | `ases interview [workspace]` | Propose an initial application profile and stack |
 | `ases config validate [file]` | Validate the bootstrap JSON configuration |
+| `ases config schema [--check file]` | Generate the config JSON Schema or verify a checked-in artifact without writing |
 | `ases config explain [file]` | Resolve config sources without revealing unrelated secrets |
 | `ases requirements list\|show\|trace\|graph` | Inspect requirements, evidence, or export a Mermaid traceability graph |
 | `ases dashboard [workspace] [--product id] [--json]` | Generate a local HTML snapshot of requirements, workflow checkpoints, evidence integrity and recorded costs |
@@ -103,6 +104,7 @@ The CI dependency audit, license allowlist, SPDX SBOM, and GitHub provenance wor
 ## Data and privacy
 
 - Project config defaults to local-only privacy.
+- `ases config schema` emits the Draft 2020-12 JSON Schema used by `config validate`; `--check <file>` detects drift without writing. See the [Portuguese configuration walkthrough](README.md#6-validar-e-explicar-a-configuração).
 - RAG indexes local Markdown/text with citations and source hashes.
 - Memory requires consent and supports inspection/deletion.
 - Remote telemetry is disabled by default and requires explicit, revocable HTTPS consent; nothing sends automatically.

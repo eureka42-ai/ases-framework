@@ -15,6 +15,7 @@ import { applyHostIntegration, restoreHostBackup, uninstallHostIntegration, upda
 import { removeInstalledPlugin } from "./plugin-lifecycle.js";
 import { renderTraceabilityGraph } from "./traceability-graph.js";
 import { readDashboardData, renderDashboardHtml } from "./dashboard.js";
+import { generateAsesConfigJsonSchema, validateAsesConfig } from "./config-schema.js";
 
 export { VERSION } from "./version.js";
 export { indexRagSources, RagAccessError, refreshRagIndex, retrieveRequirement, searchRag } from "./rag.js";
@@ -44,6 +45,8 @@ export { runModelBenchmark } from "./benchmark.js";
 export type { ModelBenchmarkFixture, ModelBenchmarkOptions, ModelBenchmarkReport, ModelBenchmarkSample, ModelBenchmarkStatus, ModelBenchmarkSummary } from "./benchmark.js";
 export { ProviderError } from "./providers.js";
 export type { GenerateOptions, Provider, ProviderCapability, ProviderContext, ProviderErrorCode, ProviderRequest, ProviderResponse } from "./providers.js";
+export { asesConfigSchema, generateAsesConfigJsonSchema, validateAsesConfig } from "./config-schema.js";
+export type { AsesConfig } from "./config-schema.js";
 
 export interface CommandResult {
   exitCode: number;
@@ -79,6 +82,7 @@ Comandos disponíveis:
   mcp [workspace]         Inicia servidor MCP read-only via stdio; --http habilita HTTP OAuth autenticado
   doctor [diretório]      Diagnostica o ambiente sem chamadas remotas
   config validate [path]  Valida a configuração JSON do projeto
+  config schema [--check path]  Gera schema JSON ou verifica um artefato
   config explain [path]   Resolve defaults, ambiente e --set sem revelar secrets
   catalog import-ases300 <md> Importa e valida a fonte ASES-300 local
   catalog import-product <id> <md> [workspace] Importa requisitos específicos separados
@@ -133,28 +137,13 @@ async function exists(path: string): Promise<boolean> {
 }
 
 export function validateConfig(value: unknown): string[] {
-  const errors: string[] = [];
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
-    return ["configuração deve ser um objeto JSON"];
-  }
-  const config = value as Record<string, unknown>;
-  for (const key of Object.keys(config)) if (key !== "schemaVersion" && key !== "project") errors.push(`propriedade não permitida: ${key}`);
-  if (config.schemaVersion !== "1") errors.push("schemaVersion deve ser '1'");
-  if (typeof config.project !== "object" || config.project === null || Array.isArray(config.project)) {
-    errors.push("project deve ser um objeto");
-    return errors;
-  }
-  const project = config.project as Record<string, unknown>;
-  const projectKeys = new Set(["id", "name", "locale", "mode", "privacy"]);
-  for (const key of Object.keys(project)) if (!projectKeys.has(key)) errors.push(`propriedade project não permitida: ${key}`);
-  if (typeof project.id !== "string" || !/^[a-z0-9][a-z0-9-]*$/.test(project.id)) {
-    errors.push("project.id deve usar letras minúsculas, números e hífens");
-  }
-  if (typeof project.name !== "string" || project.name.trim() === "") errors.push("project.name é obrigatório");
-  if (!new Set(["pt-BR", "en-US"]).has(String(project.locale))) errors.push("project.locale inválido");
-  if (!new Set(["host", "standalone", "headless", "offline"]).has(String(project.mode))) errors.push("project.mode inválido");
-  if (project.privacy !== "local-only") errors.push("project.privacy deve ser 'local-only' nesta versão");
-  return errors;
+  return validateAsesConfig(value);
+}
+
+function canonicalJson(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
+  if (value && typeof value === "object") return `{${Object.entries(value).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0).map(([key, item]) => `${JSON.stringify(key)}:${canonicalJson(item)}`).join(",")}}`;
+  return JSON.stringify(value) ?? "null";
 }
 
 export function checkNodeVersion(version: string): { status: "pass" | "warn"; remediation?: string } {
@@ -585,6 +574,20 @@ export async function run(argv: string[]): Promise<CommandResult> {
     }
   }
   if (command === "config" && args[1] === "validate") return validateConfigCommand(args[2], json);
+  if (command === "config" && args[1] === "schema") {
+    const schema = generateAsesConfigJsonSchema();
+    if (!argv.includes("--check")) return { exitCode: 0, output: JSON.stringify(schema, null, 2) };
+    const schemaPath = args[2] ?? resolve("schemas/ases.config.schema.json");
+    try {
+      const existing = JSON.parse(await readFile(schemaPath, "utf8")) as unknown;
+      const matches = canonicalJson(existing) === canonicalJson(schema);
+      if (json) return { exitCode: matches ? 0 : 1, output: JSON.stringify({ path: schemaPath, valid: matches, code: matches ? undefined : "ASES_SCHEMA_DRIFT" }, null, 2) };
+      return { exitCode: matches ? 0 : 1, output: matches ? `PASS schema sincronizado: ${schemaPath}` : `FAIL schema divergente: ${schemaPath}\nGere o artefato com: ases config schema > ${schemaPath}` };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 3, output: json ? JSON.stringify({ path: schemaPath, valid: false, code: "ASES_SCHEMA_READ", error: message }, null, 2) : `FAIL não foi possível verificar o schema ${schemaPath}: ${message}` };
+    }
+  }
   if (command === "config" && args[1] === "explain") {
     const flags: string[] = [];
     for (let index = 0; index < argv.length; index += 1) {

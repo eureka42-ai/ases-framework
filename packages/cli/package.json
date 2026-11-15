@@ -54,6 +54,8 @@
     "dist/dashboard.d.ts",
     "dist/benchmark.js",
     "dist/benchmark.d.ts",
+    "dist/config-schema.js",
+    "dist/config-schema.d.ts",
     "dist/rag.js",
     "dist/rag.d.ts",
     "dist/memory.js",
