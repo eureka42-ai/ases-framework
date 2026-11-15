@@ -3,7 +3,7 @@ import test from "node:test";
 import { mkdtemp } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createWorkflowCheckpoint, executeWorkflow, loadWorkflowCheckpoint, resumeWorkflow, runStepWithRetry, saveWorkflowCheckpoint, validateWorkflow, WorkflowDefinition, WorkflowExecutionError, WorkflowValidationError } from "./workflows.js";
+import { createWorkflowCheckpoint, executeWorkflow, isWorkflowApprovalSatisfied, loadWorkflowCheckpoint, resumeWorkflow, runStepWithRetry, saveWorkflowCheckpoint, validateWorkflow, WorkflowDefinition, WorkflowExecutionError, WorkflowValidationError } from "./workflows.js";
 
 test("workflow validator returns a deterministic dependency order", () => {
   assert.deepEqual(validateWorkflow({
@@ -77,4 +77,12 @@ test("workflow dry-run does not invoke steps; normal execution follows the graph
   const result = await executeWorkflow(workflow, handler, { dryRun: false });
   assert.equal(result.status, "COMPLETED");
   assert.deepEqual(executed, ["spec", "implement"]);
+});
+
+test("workflow approvals stay blocked until an independent reviewer explicitly approves", () => {
+  assert.equal(isWorkflowApprovalSatisfied({ status: "PENDING", authorId: "agent-a" }), false);
+  assert.equal(isWorkflowApprovalSatisfied({ status: "APPROVED", authorId: "agent-a" }), false);
+  assert.equal(isWorkflowApprovalSatisfied({ status: "APPROVED", authorId: "agent-a", reviewerId: " AGENT-A " }), false);
+  assert.equal(isWorkflowApprovalSatisfied({ status: "REJECTED", authorId: "agent-a", reviewerId: "reviewer-b" }), false);
+  assert.equal(isWorkflowApprovalSatisfied({ status: "APPROVED", authorId: "agent-a", reviewerId: "reviewer-b" }), true);
 });

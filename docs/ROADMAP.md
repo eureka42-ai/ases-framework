@@ -8,13 +8,13 @@
 - M5 — IN_PROGRESS: plugins/Skills experimentais e manifestos validados; lifecycle local `host apply/update/uninstall` implementado com propriedade por hash e backups; sessão real Claude/hosts e decisões de distribuição permanecem pendentes.
 - M6 — IMPLEMENTED: provider probe opt-in, SPI tipada, mock determinístico, catálogo com proveniência, roteamento por capacidade, fallback restrito, classificação de custo, budget concorrente, controle de modelo declarado e bloqueio remoto em `offline` concluídos localmente (AFR-041..050); o probe não foi executado contra serviço real.
 - M7 — IMPLEMENTED_LOCALLY: declarações, limites, seleção de contexto, execução serial, prevenção de conflitos de escrita, revisão independente, Skills e tools com policy/path guard; integração real com hosts segue pendente.
-- M8 — IN_PROGRESS: DSL valida grafo; checkpoints retomam com hash correspondente; etapas têm timeout/cancelamento/retry e dry-run não invoca handlers (AFR-061..064/068); side effects, approvals e teste/evidência do fluxo de feature seguem pendentes.
+- M8 — IN_PROGRESS: DSL valida grafo; checkpoints retomam com hash correspondente; etapas têm timeout/cancelamento/retry, dry-run puro e gate de aprovação independente (AFR-061..064/067/068); side effects e teste/evidência do fluxo de feature seguem pendentes.
 - M9–M13 — PLANNED: RAG/memória, evals, segurança, observabilidade e hardening.
 - M14 — BLOCKED_ON_APPROVAL: release candidate e gate v1 dependem das decisões de licença, homologação e critérios de lançamento.
 
-Backlog estruturado atual: 61/140 requisitos `IMPLEMENTED`, 79/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
+Backlog estruturado atual: 62/140 requisitos `IMPLEMENTED`, 78/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
 
-Distribuição dos 79 pendentes no registro atual:
+Distribuição dos 78 pendentes no registro atual:
 
 | Marco | Pendentes | Observação |
 |---|---:|---|
@@ -22,7 +22,7 @@ Distribuição dos 79 pendentes no registro atual:
 | M5 | 4 | Claude, Codex, Kimi e Gemini em sessões reais |
 | M6 | 0 | M6 concluído localmente; provider live opcional não foi testado |
 | M7 | 0 | M7 concluído localmente; integração com hosts reais ainda não foi homologada |
-| M8 | 3 | Side effects, approvals e feature flow real |
+| M8 | 2 | Side effects e feature flow real |
 | M9 | 8 | RAG offline, proveniência, ACL e integridade |
 | M10 | 7 | Memória e ContextBundle |
 | M11 | 12 | Evidências, segurança, MCP remoto, observabilidade e evals |

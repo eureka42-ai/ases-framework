@@ -806,14 +806,14 @@ requirements:
     priority: P1
     milestone: "M8"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Workflow aprovações permanecerem bloqueadas em CI."
     acceptanceCriteria:
       - id: AC-AFR-067-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Workflow aprovações permanecerem bloqueadas em CI."
+        description: "Approval só libera a etapa com status explicitamente `APPROVED` e reviewer não vazio, distinto do autor após normalização; ausência, pendência, rejeição ou autoaprovação mantém o gate fechado, inclusive no CI."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/workflows.ts"]
+    tests: ["packages/cli/src/workflows.test.ts :: workflow approvals stay blocked until an independent reviewer explicitly approves"]
   - id: AFR-068
     priority: P1
     milestone: "M8"

@@ -205,6 +205,18 @@ export type WorkflowRunResult =
   | { status: "DRY_RUN"; order: string[] }
   | { status: "COMPLETED"; order: string[] };
 
+export interface WorkflowApproval {
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  authorId: string;
+  reviewerId?: string;
+}
+
+/** Approval nodes remain closed until an explicit, independent reviewer decision exists. */
+export function isWorkflowApprovalSatisfied(approval: WorkflowApproval): boolean {
+  if (approval.status !== "APPROVED" || !approval.reviewerId?.trim() || !approval.authorId.trim()) return false;
+  return approval.authorId.trim().toLocaleLowerCase("en-US") !== approval.reviewerId.trim().toLocaleLowerCase("en-US");
+}
+
 /** Executes a validated graph serially, or returns a pure plan without invoking handlers in dry-run mode. */
 export async function executeWorkflow(
   workflow: WorkflowDefinition,
