@@ -54,7 +54,7 @@ Atualizado em: 2026-11-15
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes automatizados: PASS (141/141; inclui 4 testes de policy-as-code), schema sync, dashboard, benchmark, ranking de capabilities, HTTP local e E2E do CLI. Integrações, lint, supply chain e empacotamento: PASS. CI remoto do AFR-125 segue após o push.
+- Testes automatizados: PASS (141/141; inclui 4 testes de policy-as-code), schema sync, dashboard, benchmark, ranking de capabilities, HTTP local e E2E do CLI. Integrações, lint, supply chain e empacotamento: PASS. CI Node.js 22/24 e audit/licenças/SBOM/proveniência: PASS no run `43733195085`.
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 6 Skills sincronizadas).
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
