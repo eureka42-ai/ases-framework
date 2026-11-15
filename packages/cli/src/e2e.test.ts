@@ -29,6 +29,13 @@ test("CLI end-to-end initializes, executes, installs, updates and uninstalls a h
   assert.equal(version.code, 0);
   assert.match(version.stdout, /^0\.1\.0-rc\.1/);
 
+  const nonTtyInterview = await cli(["interview", workspace, "--json"]);
+  assert.equal(nonTtyInterview.code, 2);
+  assert.equal(JSON.parse(nonTtyInterview.stderr).code, "ASES_INTERVIEW_JSON_REQUIRES_ANSWERS");
+  const nonTtyPrompt = await cli(["interview", workspace]);
+  assert.equal(nonTtyPrompt.code, 2);
+  assert.match(nonTtyPrompt.stderr, /exige um terminal/);
+
   const init = await cli(["init", workspace, "--json"]);
   assert.equal(init.code, 0, init.stderr);
   assert.equal(JSON.parse(init.stdout).status, "initialized");

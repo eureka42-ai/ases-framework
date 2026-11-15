@@ -387,6 +387,7 @@ export async function run(argv: string[]): Promise<CommandResult> {
       const answersPath = answersIndex >= 0 ? argv[answersIndex + 1] : undefined;
       const resume = argv.includes("--resume");
       if (json && !answersPath) return { exitCode: 2, output: JSON.stringify({ code: "ASES_INTERVIEW_JSON_REQUIRES_ANSWERS", error: "Use --answers <arquivo.json> com --json para evitar misturar prompts e JSON na saída." }, null, 2) };
+      if (!answersPath && !process.stdin.isTTY) return { exitCode: 2, output: json ? JSON.stringify({ code: "ASES_INTERVIEW_TTY_REQUIRED", error: "Entrevista interativa exige terminal; forneça --answers <arquivo.json> em execução não interativa." }, null, 2) : "Entrevista interativa exige um terminal. Use --answers <arquivo.json> em automação ou redirecionamentos." };
       const result = await runInterview({ root: args[1] ?? process.cwd(), ...(answersPath ? { answersPath } : {}), resume, dryRun });
       const summary = [...(answersPath ? [renderLogo(), ""] : []), `Projeto: ${result.answers.name}`, `Tipo: ${result.answers.applicationType}`, "", ...result.recommendations.map((item) => `${item.status} ${item.field}: ${item.value}\n  ${item.rationale}`), ...(result.findings.length ? ["", "Contradições e riscos:", ...result.findings.map((finding) => `${finding.severity} ${finding.code}: ${finding.message}`)] : []), "", dryRun ? "Dry-run: nenhum arquivo escrito." : `Arquivos: ${result.files?.join(", ")}`].join("\n");
       return { exitCode: 0, output: json ? JSON.stringify(result, null, 2) : summary };

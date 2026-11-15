@@ -7,6 +7,7 @@ With `--json`, command failures return a stable `code` where the command defines
 | `ASES_COMMAND_UNKNOWN` | 1 | Unknown top-level command | Run `ases help`; verify spelling and CLI version. |
 | `ASES_INIT_EXISTS` | 0 | Workspace already has managed initialization files | Review listed conflicts; ASES does not overwrite them. |
 | `ASES_INTERVIEW_JSON_REQUIRES_ANSWERS` | 2 | JSON mode has no answer file | Provide `--answers <file.json>`, or use interactive mode without `--json`. |
+| `ASES_INTERVIEW_TTY_REQUIRED` | 2 | Interactive interview was started without a terminal | Provide `--answers <file.json>` for automation or attach an interactive TTY. |
 | `ASES_HOST_INVALID` | 2 | Unsupported host ID | Run `ases host list`; use a listed ID. |
 | `ASES_REQUIREMENT_NOT_FOUND` | 2 | Requirement ID is absent from selected catalog | Check the ID and catalog/product selection. |
 | `ASES_UNINSTALL_UNSAFE_PATH` | 3 | Managed directory is a symlink or unsafe filesystem object | Inspect `.ases` path and symlinks manually; rerun only after correcting the workspace. |
