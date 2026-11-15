@@ -73,6 +73,8 @@ export function validatePluginContract(plugin: PluginContract): string[] {
     if (names.has(tool.name)) errors.push(`duplicate tool name: ${tool.name}`);
     names.add(tool.name);
     if (tool.sideEffect && !permissions.has("workspace:write")) errors.push(`side-effect tool requires workspace:write: ${tool.name}`);
+    if (typeof tool.sideEffect !== "boolean") errors.push(`tool sideEffect must be declared: ${tool.name}`);
+    if (tool.capabilities !== undefined && (!Array.isArray(tool.capabilities) || tool.capabilities.some((capability) => typeof capability !== "string" || !/^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)*$/.test(capability)) || new Set(tool.capabilities).size !== tool.capabilities.length)) errors.push(`tool capabilities must be valid and unique: ${tool.name}`);
     if (typeof tool.parseInput !== "function" || typeof tool.run !== "function" || typeof tool.validateOutput !== "function") errors.push(`tool contract is incomplete: ${tool.name}`);
   }
   return errors;

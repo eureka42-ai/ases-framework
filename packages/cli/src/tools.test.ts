@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { SecurityPolicyEngine } from "./policy.js";
-import { executeTool, ToolExecutionError, type RuntimeTool } from "./tools.js";
+import { executeTool, rankToolsByCapabilities, ToolExecutionError, type RuntimeTool } from "./tools.js";
 
 test("runtime tools validate input and output", async () => {
   let calls = 0;
@@ -43,4 +43,37 @@ test("every tool requires an explicit policy decision before running", async () 
   const policy = new SecurityPolicyEngine([{ effect: "allow", action: "tool.execute", actorId: "writer", resource: "write-file" }]);
   assert.deepEqual(await executeTool(tool, { path: "out.txt" }, { policy, actorId: "writer" }), { ok: true });
   assert.equal(calls, 2);
+});
+
+test("tool discovery ranks capability coverage deterministically without executing tools", () => {
+  let calls = 0;
+  const makeTool = (name: string, capabilities: string[], sideEffect = false): RuntimeTool<null, null> => ({
+    name, capabilities, sideEffect,
+    parseInput: () => null,
+    async run() { calls++; return null; },
+    validateOutput(value): value is null { return value === null; },
+  });
+  const ranked = rankToolsByCapabilities([
+    makeTool("z_partial", ["repository.search"]),
+    makeTool("b_exact", ["repository.search", "file.read"]),
+    makeTool("a_overbroad", ["repository.search", "file.read", "network.request"], true),
+    makeTool("a_missing", ["file.read"]),
+  ], ["repository.search", "file.read"]);
+  assert.deepEqual(ranked.map(({ name, compatible }) => [name, compatible]), [
+    ["b_exact", true], ["a_overbroad", true], ["a_missing", false], ["z_partial", false],
+  ]);
+  assert.deepEqual(ranked[2]?.missingCapabilities, ["repository.search"]);
+  assert.equal(ranked[0]?.score, 100);
+  assert.equal(ranked[1]?.sideEffect, true);
+  assert.equal(calls, 0);
+});
+
+test("tool discovery rejects malformed capability declarations and duplicate tools", () => {
+  const tool = (name: string, capabilities?: string[]): RuntimeTool<null, null> => ({
+    name, ...(capabilities ? { capabilities } : {}), sideEffect: false,
+    parseInput: () => null, async run() { return null; }, validateOutput(value): value is null { return value === null; },
+  });
+  assert.throws(() => rankToolsByCapabilities([tool("one")], []), /non-empty/);
+  assert.throws(() => rankToolsByCapabilities([tool("one", ["../escape"])], ["file.read"]), /valid and unique/);
+  assert.throws(() => rankToolsByCapabilities([tool("one"), tool("one")], ["file.read"]), /duplicate tool name/);
 });

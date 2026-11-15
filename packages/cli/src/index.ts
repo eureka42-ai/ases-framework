@@ -38,6 +38,8 @@ export { restoreHostBackup } from "./host-install.js";
 export { renderTraceabilityGraph } from "./traceability-graph.js";
 export { readDashboardData, renderDashboardHtml } from "./dashboard.js";
 export type { DashboardData, DashboardTrace, DashboardWorkflow } from "./dashboard.js";
+export { rankToolsByCapabilities } from "./tools.js";
+export type { ToolCapabilityMatch } from "./tools.js";
 
 export interface CommandResult {
   exitCode: number;

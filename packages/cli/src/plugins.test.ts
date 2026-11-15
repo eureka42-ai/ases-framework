@@ -46,4 +46,5 @@ test("plugin SDK contract checks tool permissions and executes deterministic con
     { tool: "missing_tool", status: "FAIL", detail: "tool is not declared" },
   ]);
   assert.ok(validatePluginContract({ manifest: manifest(), tools: [{ ...tool, name: "write_file", sideEffect: true }] }).some((error) => error.includes("workspace:write")));
+  assert.ok(validatePluginContract({ manifest: manifest(), tools: [{ ...tool, capabilities: ["../escape"] }] }).some((error) => error.includes("capabilities must be valid and unique")));
 });
