@@ -90,6 +90,8 @@
     "dist/agents.d.ts",
     "dist/agent-protocol.js",
     "dist/agent-protocol.d.ts",
+    "dist/multi-repo.js",
+    "dist/multi-repo.d.ts",
     "dist/assessment.js",
     "dist/assessment.d.ts",
     "dist/interview.js",

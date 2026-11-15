@@ -16,9 +16,9 @@
 - M13 — IN_PROGRESS: E2E do CLI (AFR-101), CI (AFR-102), audit/license/SBOM/provenance (AFR-103), docs pt-BR/EN (AFR-105/106), saída/TTY (AFR-107), erros (AFR-108), restore hashado (AFR-109) e limites de migração (AFR-110) implementados; CI Node 22/24 e as duas atestações passaram no run 43728310089; autorização do release segue pendente.
 - M14 — BLOCKED_ON_APPROVAL: release candidate e gate v1 dependem das decisões de licença, homologação e critérios de lançamento.
 
-Backlog estruturado atual: 118/140 requisitos `IMPLEMENTED`, 22/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
+Backlog estruturado atual: 119/140 requisitos `IMPLEMENTED`, 21/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
 
-Distribuição dos 22 pendentes no registro atual:
+Distribuição dos 21 pendentes no registro atual:
 
 | Marco | Pendentes | Observação |
 |---|---:|---|
@@ -32,7 +32,7 @@ Distribuição dos 22 pendentes no registro atual:
 | M11 | 0 | MCP HTTP autenticado testado localmente; falta validação com um Authorization Server real |
 | M12 | 0 | SDK e lifecycle de plugins concluídos localmente |
 | M13 | 1 | Aprovação do release |
-| M15+ | 17 | Capacidades avançadas opcionais; não fazem parte do primeiro gate v1 |
+| M15+ | 16 | Capacidades avançadas opcionais; não fazem parte do primeiro gate v1 |
 
 AFR-126 (intercâmbio local de tarefas com trackers) foi implementado e validado em `evidence/M15-2026-11-15-progress-8.md`. O CLI exporta JSON neutro e importa com prévia, persistindo somente mediante `--apply`; sincronização com serviços remotos ainda não está incluída.
 
@@ -46,5 +46,7 @@ AFR-130 exporta spans no formato OTLP JSON, com sanitização e consentimento re
 
 AFR-131 adiciona mensageria A2A local em memória com identidade de agente por handle, ACL exata default-deny, escopo único de projeto e payload não executável. Ver `docs/security/agent-messaging.md` e `evidence/M15-2026-11-15-progress-13.md`.
 
-O gate M14 não está representado por um requisito AFR separado; a autorização do release continua uma decisão humana conforme AFR-104. Os 22 itens pendentes são a contagem do backlog AFR, não uma previsão exata de rodadas até DONE. Aprovação de licença, homologação de fontes, validação de hosts e autenticação OAuth em provedor real são gates separados.
+AFR-132 registra memberships por repo e organização, papéis e contenção de caminho local; não inclui SSO central nem execução remota. Ver `docs/security/multi-repo.md` e `evidence/M15-2026-11-15-progress-14.md`.
+
+O gate M14 não está representado por um requisito AFR separado; a autorização do release continua uma decisão humana conforme AFR-104. Os 21 itens pendentes são a contagem do backlog AFR, não uma previsão exata de rodadas até DONE. Aprovação de licença, homologação de fontes, validação de hosts e autenticação OAuth em provedor real são gates separados.
 

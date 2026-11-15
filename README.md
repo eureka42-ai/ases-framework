@@ -262,6 +262,8 @@ Observabilidade local, exportação OpenTelemetry/OTLP e consentimento revogáve
 
 Para colaboração entre agentes no mesmo processo e projeto, `createAgentMessageBus` fornece ACL default-deny, filas limitadas e mensagens não executáveis; veja [mensageria local A2A](docs/security/agent-messaging.md).
 
+Para autorizar operações locais em vários repositórios/organizações com membership por repositório, use `createRepositoryRegistry`; raízes são canonicalizadas, mantidas disjuntas e caminhos não podem escapar. Veja [isolamento multi-repo](docs/security/multi-repo.md).
+
 O SDK de plugins inclui template, validação de manifesto/integridade/fonte/compatibilidade, aprovação de permissões extras e contract tests. Consulte [SDK e contrato do registry](docs/plugins/sdk.md).
 
 Remova plugins instalados com `ases plugin remove <plugin-id> [workspace]`; o padrão gera plano sem escrever. Revise o resultado e passe `--apply` para executar. Arquivos editados, symlinks e dados fora do manifesto de propriedade são preservados. Consulte [lifecycle e remoção segura](docs/plugins/lifecycle.md).
