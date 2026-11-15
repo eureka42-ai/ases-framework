@@ -200,3 +200,19 @@ export function validateWorkflow(workflow: WorkflowDefinition): string[] {
   for (const step of workflow.steps) visit(step.id);
   return order;
 }
+
+export type WorkflowRunResult =
+  | { status: "DRY_RUN"; order: string[] }
+  | { status: "COMPLETED"; order: string[] };
+
+/** Executes a validated graph serially, or returns a pure plan without invoking handlers in dry-run mode. */
+export async function executeWorkflow(
+  workflow: WorkflowDefinition,
+  executeStep: (stepId: string) => Promise<void>,
+  options: { dryRun: boolean },
+): Promise<WorkflowRunResult> {
+  const order = validateWorkflow(workflow);
+  if (options.dryRun) return { status: "DRY_RUN", order };
+  for (const stepId of order) await executeStep(stepId);
+  return { status: "COMPLETED", order };
+}

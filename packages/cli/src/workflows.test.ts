@@ -3,7 +3,7 @@ import test from "node:test";
 import { mkdtemp } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createWorkflowCheckpoint, loadWorkflowCheckpoint, resumeWorkflow, runStepWithRetry, saveWorkflowCheckpoint, validateWorkflow, WorkflowExecutionError, WorkflowValidationError } from "./workflows.js";
+import { createWorkflowCheckpoint, executeWorkflow, loadWorkflowCheckpoint, resumeWorkflow, runStepWithRetry, saveWorkflowCheckpoint, validateWorkflow, WorkflowDefinition, WorkflowExecutionError, WorkflowValidationError } from "./workflows.js";
 
 test("workflow validator returns a deterministic dependency order", () => {
   assert.deepEqual(validateWorkflow({
@@ -30,7 +30,7 @@ test("workflow validator rejects cycles, unknown dependencies, and duplicate nod
 
 test("workflow checkpoints persist and resume only against the same definition", async () => {
   const workspace = await mkdtemp(join(tmpdir(), "ases-workflow-"));
-  const workflow = { id: "feature-build", steps: [
+  const workflow: WorkflowDefinition = { id: "feature-build", steps: [
     { id: "spec", kind: "agent" as const, dependsOn: [] },
     { id: "implement", kind: "agent" as const, dependsOn: ["spec"] },
   ] };
@@ -62,4 +62,19 @@ test("workflow retry obeys the attempt limit, timeout and cancellation", async (
   let cancelledAttempts = 0;
   await assert.rejects(runStepWithRetry(async () => { cancelledAttempts += 1; return "never"; }, { maxAttempts: 3, timeoutMs: 100, signal: controller.signal }), (error: unknown) => error instanceof WorkflowExecutionError && error.code === "CANCELLED");
   assert.equal(cancelledAttempts, 0);
+});
+
+test("workflow dry-run does not invoke steps; normal execution follows the graph", async () => {
+  const workflow: WorkflowDefinition = { id: "feature-build", steps: [
+    { id: "implement", kind: "agent" as const, dependsOn: ["spec"] },
+    { id: "spec", kind: "agent" as const, dependsOn: [] },
+  ] };
+  const executed: string[] = [];
+  const handler = async (id: string): Promise<void> => { executed.push(id); };
+  const dryRun = await executeWorkflow(workflow, handler, { dryRun: true });
+  assert.equal(dryRun.status, "DRY_RUN");
+  assert.deepEqual(executed, []);
+  const result = await executeWorkflow(workflow, handler, { dryRun: false });
+  assert.equal(result.status, "COMPLETED");
+  assert.deepEqual(executed, ["spec", "implement"]);
 });
