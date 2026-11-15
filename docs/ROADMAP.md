@@ -7,19 +7,20 @@
 - M4 — IMPLEMENTED_LOCALLY / HOST_VALIDATION_PENDING: MCP read-only, planos e adapters de hosts têm evidência local; sessões reais ainda não comprovam todos os hosts.
 - M5 — IN_PROGRESS: plugins/Skills experimentais e manifestos validados; lifecycle local `host apply/update/uninstall` implementado com propriedade por hash e backups; sessão real Claude/hosts e decisões de distribuição permanecem pendentes.
 - M6 — IMPLEMENTED: provider probe opt-in, SPI tipada, mock determinístico, catálogo com proveniência, roteamento por capacidade, fallback restrito, classificação de custo, budget concorrente, controle de modelo declarado e bloqueio remoto em `offline` concluídos localmente (AFR-041..050); o probe não foi executado contra serviço real.
-- M7–M13 — PLANNED: agents/workflows, RAG/memória, evals, segurança, observabilidade e hardening.
+- M7 — IMPLEMENTED_LOCALLY: declarações, limites, seleção de contexto, execução serial, prevenção de conflitos de escrita, revisão independente, Skills e tools com policy/path guard; integração real com hosts segue pendente.
+- M8–M13 — PLANNED: workflows, RAG/memória, evals, segurança, observabilidade e hardening.
 - M14 — BLOCKED_ON_APPROVAL: release candidate e gate v1 dependem das decisões de licença, homologação e critérios de lançamento.
 
-Backlog estruturado atual: 55/140 requisitos `IMPLEMENTED`, 85/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
+Backlog estruturado atual: 56/140 requisitos `IMPLEMENTED`, 84/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
 
-Distribuição dos 85 pendentes no registro atual:
+Distribuição dos 84 pendentes no registro atual:
 
 | Marco | Pendentes | Observação |
 |---|---:|---|
 | M1 | 0 | AFR-028 passou no CI remoto Node.js 22/24 |
 | M5 | 4 | Claude, Codex, Kimi e Gemini em sessões reais |
 | M6 | 0 | M6 concluído localmente; provider live opcional não foi testado |
-| M7 | 1 | Execução e avaliação de agentes |
+| M7 | 0 | M7 concluído localmente; integração com hosts reais ainda não foi homologada |
 | M8 | 8 | DSL e execução de workflows |
 | M9 | 8 | RAG offline, proveniência, ACL e integridade |
 | M10 | 7 | Memória e ContextBundle |
