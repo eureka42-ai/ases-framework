@@ -58,7 +58,7 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases doctor` | Implementado localmente | Node, plataforma, Git, npm, pnpm, workspace/config e ações corretivas |
 | `ases config validate` | Implementado no schema inicial | Configuração JSON bootstrap |
 | `ases config explain` | Implementado no schema inicial | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Em andamento | 106 implementados; 34 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
+| Backlog AFR-001..140 | Em andamento | 107 implementados; 33 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
 | Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |
@@ -223,6 +223,7 @@ ASES_PROJECT_MODE=offline ases config explain ./meu-projeto/.ases/config.json --
 | `ases requirements show [workspace] <REQ-ID> [--product id]` | Exibe origem, texto e critério de aceite | Nenhum |
 | `ases requirements trace [workspace] [REQ-ID] [--product id]` | Mostra decisão → requisito → testes → evidências e integridade | Nenhum |
 | `ases requirements graph [workspace] [--product id] [--json]` | Exporta grafo de rastreabilidade em Mermaid, sem dependência gráfica | stdout |
+| `ases dashboard [workspace] [--product id] [--json]` | Gera snapshot HTML local de requisitos, workflows, integridade e custos registrados | stdout |
 | `ases requirements set-status <workspace> <REQ-ID> <status> [--product id]` | Atualiza estado e rastreabilidade; `VERIFIED` exige evidência hashada e contexto | Grava catálogo local |
 | `ases requirements set-decision <workspace> <REQ-ID> <state> [--product id]` | Atualiza decisão sem alterar estado da implementação | Grava catálogo local |
 
@@ -288,7 +289,10 @@ ases requirements set-status ./meu-projeto REQ-003 BLOCKED --blocked-by "credenc
 ases requirements set-decision ./meu-projeto REQ-001 ACCEPTED --ref ADR-001 --reason "Alternativa aprovada pelo responsável técnico."
 ases requirements trace ./meu-projeto REQ-001 --json
 ases requirements graph ./meu-projeto > rastreabilidade.mmd
+ases dashboard ./meu-projeto > ./dashboard.html
 ```
+
+Abra `dashboard.html` no navegador. O comando não inicia servidor e lê somente o catálogo local, checkpoints em `.ases/workflows/` e traces opt-in em `.ases/observability/traces.jsonl`. Custos medidos e informados por providers ficam separados; valores não registrados não são estimados. `ases dashboard ./meu-projeto --json` exporta os mesmos agregados em JSON. Consulte [`docs/security/observability.md`](docs/security/observability.md) para configurar o arquivo local de traces.
 
 Para `VERIFIED`, `--evidence` deve apontar para um arquivo regular existente dentro do workspace. O CLI calcula SHA-256 e rejeita caminhos externos e links simbólicos que escapem do workspace. `requirements show` recalcula a integridade e marca a evidência como `CURRENT`, `STALE`, `MISSING`, `OUTSIDE_WORKSPACE` ou `UNVERIFIABLE`; isso identifica mudanças no arquivo, mas não avalia se o conteúdo comprova semanticamente o critério de aceite.
 

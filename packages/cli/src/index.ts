@@ -14,6 +14,7 @@ import { createHostPlan, HOSTS, type HostId } from "./host-plan.js";
 import { applyHostIntegration, restoreHostBackup, uninstallHostIntegration, updateHostIntegration } from "./host-install.js";
 import { removeInstalledPlugin } from "./plugin-lifecycle.js";
 import { renderTraceabilityGraph } from "./traceability-graph.js";
+import { readDashboardData, renderDashboardHtml } from "./dashboard.js";
 
 export { VERSION } from "./version.js";
 export { indexRagSources, RagAccessError, refreshRagIndex, retrieveRequirement, searchRag } from "./rag.js";
@@ -35,6 +36,8 @@ export { createPluginInstallManifest, removeInstalledPlugin } from "./plugin-lif
 export type { PluginInstallManifest, PluginRemovalResult } from "./plugin-lifecycle.js";
 export { restoreHostBackup } from "./host-install.js";
 export { renderTraceabilityGraph } from "./traceability-graph.js";
+export { readDashboardData, renderDashboardHtml } from "./dashboard.js";
+export type { DashboardData, DashboardTrace, DashboardWorkflow } from "./dashboard.js";
 
 export interface CommandResult {
   exitCode: number;
@@ -75,6 +78,7 @@ Comandos disponíveis:
   catalog import-product <id> <md> [workspace] Importa requisitos específicos separados
   requirements list|show|trace  Consulta catálogo e trilha de evidências [--product id]
   requirements graph [dir]  Exporta o grafo de decisões, testes e evidências em Mermaid
+  dashboard [workspace] [--product id] [--json]  Gera snapshot local de requisitos, workflows, evidências e custos
   requirements set-status <workspace> <REQ-ID> <status> [--product id|--evidence arquivo --execution-context texto [--evidence-expires-at ISO]|--decision DEC|--test ref|--na-reason texto|--blocked-by ref --reason texto]
   requirements set-decision <workspace> <REQ-ID> <state> [--product id|--ref ADR --reason texto]
   plugin remove <plugin-id> [workspace]  Remove arquivos ASES inalterados (--apply para executar)
@@ -365,6 +369,17 @@ export async function run(argv: string[]): Promise<CommandResult> {
   const command = args[0] ?? "help";
   if (command === "help" || command === "--help") return { exitCode: 0, output: help };
   if (command === "welcome") return { exitCode: 0, output: renderLogo(argv.includes("--no-color") ? false : argv.includes("--color") ? true : undefined) };
+  if (command === "dashboard") {
+    try {
+      const productId = optionValues(argv, "--product")[0];
+      const workspace = args.slice(1).filter((arg) => arg !== productId)[0] ?? process.cwd();
+      const data = await readDashboardData(workspace, productId);
+      return { exitCode: 0, output: json ? JSON.stringify(data, null, 2) : renderDashboardHtml(data) };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_DASHBOARD_FAILED", error: message }, null, 2) : `Não foi possível gerar o dashboard local: ${message}\nConfira se o workspace contém um catálogo importado.` };
+    }
+  }
   if (command === "init") return initProject(args[1], dryRun, json);
   if (command === "uninstall") {
     try {

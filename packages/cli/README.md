@@ -41,6 +41,7 @@ ases welcome --color
 ases doctor .
 ases interview .
 ases requirements graph . > traceability.mmd
+ases dashboard . > dashboard.html
 ```
 
 ## Optional authenticated HTTP MCP

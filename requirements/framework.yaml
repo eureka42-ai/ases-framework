@@ -1346,14 +1346,14 @@ requirements:
     priority: P2
     milestone: "M15+"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Dashboard local mostrar REQ/WORKFLOW/EVIDENCE/COST."
     acceptanceCriteria:
       - id: AC-AFR-112-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Dashboard local mostrar REQ/WORKFLOW/EVIDENCE/COST."
+        description: "`ases dashboard [workspace] [--product id]` gera HTML autocontido e offline; `--json` fornece os agregados. Mostra requisitos por status, integridade de evidências, progresso de checkpoints `.ases/workflows/*.json`, traces recentes de `.ases/observability/traces.jsonl` e custos agregados sem misturar valores medidos com os reportados pelo provider. Não inicia servidor, não grava arquivos, não faz chamadas de rede, não estima custos ausentes; limita snapshots a 100 workflows/64 KiB cada e traces a 5.000 linhas/4 MiB. Entradas textuais são escapadas no HTML e symlinks de diretórios/arquivos de leitura são ignorados ou reportados."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/dashboard.ts", "packages/cli/src/dashboard.test.ts", "packages/cli/src/index.ts", "docs/security/observability.md", "README.md"]
+    tests: ["packages/cli/src/dashboard.test.ts :: local dashboard summarizes requirement/evidence states, workflow checkpoints and explicit costs", "packages/cli/src/dashboard.test.ts :: dashboard HTML is self-contained, accessible and escapes untrusted trace labels", "packages/cli/src/dashboard.test.ts :: dashboard can export structured JSON and keeps missing local activity in an honest empty state", "packages/cli/src/dashboard.test.ts :: dashboard CLI returns HTML by default and JSON without creating output files"]
   - id: AFR-113
     priority: P2
     milestone: "M15+"
