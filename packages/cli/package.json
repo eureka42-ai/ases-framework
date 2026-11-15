@@ -54,6 +54,8 @@
     "dist/observability.d.ts",
     "dist/plugins.js",
     "dist/plugins.d.ts",
+    "dist/plugin-lifecycle.js",
+    "dist/plugin-lifecycle.d.ts",
     "dist/config-resolution.js",
     "dist/config-resolution.d.ts",
     "dist/agents.js",

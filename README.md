@@ -56,7 +56,7 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases doctor` | Implementado localmente | Node, plataforma, Git, npm, pnpm, workspace/config e ações corretivas |
 | `ases config validate` | Implementado no schema inicial | Configuração JSON bootstrap |
 | `ases config explain` | Implementado no schema inicial | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Em andamento | 98 implementados; 42 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
+| Backlog AFR-001..140 | Em andamento | 95 implementados; 45 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
 | Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |
@@ -222,6 +222,8 @@ O engine de políticas é default-deny; ferramentas e planos de comando exigem a
 Observabilidade local, consentimento revogável para telemetria remota e evals com fixtures versionadas estão documentados em [observabilidade e avaliações](docs/security/observability.md).
 
 O SDK de plugins inclui template, validação de manifesto/integridade/fonte/compatibilidade, aprovação de permissões extras e contract tests. Consulte [SDK e contrato do registry](docs/plugins/sdk.md).
+
+Remova plugins instalados com `ases plugin remove <plugin-id> [workspace]`; o padrão gera plano sem escrever. Revise o resultado e passe `--apply` para executar. Arquivos editados, symlinks e dados fora do manifesto de propriedade são preservados. Consulte [lifecycle e remoção segura](docs/plugins/lifecycle.md).
 
 ### Códigos de saída
 

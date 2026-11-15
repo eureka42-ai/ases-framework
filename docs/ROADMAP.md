@@ -12,13 +12,13 @@
 - M9 — IMPLEMENTED_LOCALLY: indexação local lexical de Markdown/texto, recuperação por ID com citações, hashes/proveniência, retorno vazio sem fonte, embeddings opcionais, filtros de licença/versão/ACL, atualização/remoção de fontes e bloqueio cross-project com permissão explícita (AFR-069..076).
 - M10 — IMPLEMENTED_LOCALLY: memória local consentida com escopo/TTL/origem/inspeção/exclusão, ContextBundle seletivo com hash/redaction e import ZIP com preview, conflitos, limites e contenção de caminhos (AFR-077..083).
 - M11 — IN_PROGRESS: evidência verificável, policy engine default-deny, comando/path guard, separação de dados contra prompt injection, logging seguro, observabilidade local, consentimento remoto revogável, métricas e evals versionados (AFR-084..087/089/090/096..100) concluídos; MCP remoto autenticado (AFR-088) segue pendente.
-- M12 — IN_PROGRESS: template de SDK, contratos, validação de manifesto/compatibilidade/integridade, fonte confiável e aprovação de expansão de permissões (AFR-091..094) implementados; remoção segura de plugins (AFR-095) pendente.
+- M12 — IMPLEMENTED_LOCALLY: template de SDK, contratos, validação de manifesto/compatibilidade/integridade, fonte confiável, aprovação de expansão de permissões e remoção segura por manifesto de propriedade (AFR-091..095).
 - M13 — PLANNED: E2E, CI, release, documentação, TUI, backup e migrações.
 - M14 — BLOCKED_ON_APPROVAL: release candidate e gate v1 dependem das decisões de licença, homologação e critérios de lançamento.
 
-Backlog estruturado atual: 98/140 requisitos `IMPLEMENTED`, 42/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
+Backlog estruturado atual: 95/140 requisitos `IMPLEMENTED`, 45/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
 
-Distribuição dos 42 pendentes no registro atual:
+Distribuição dos 45 pendentes no registro atual:
 
 | Marco | Pendentes | Observação |
 |---|---:|---|
@@ -30,9 +30,9 @@ Distribuição dos 42 pendentes no registro atual:
 | M9 | 0 | RAG offline implementado localmente; busca vetorial segue opcional |
 | M10 | 0 | Memória, ContextBundle e importação segura implementados localmente |
 | M11 | 1 | MCP remoto autenticado |
-| M12 | 1 | Remoção segura de plugins |
+| M12 | 0 | SDK e lifecycle de plugins concluídos localmente |
 | M13 | 10 | E2E, CI, release, documentação, TUI, backup e migrações |
 | M15+ | 30 | Capacidades avançadas opcionais; não fazem parte do primeiro gate v1 |
 
-O gate M14 não está representado por um requisito AFR separado; a autorização do release continua uma decisão humana conforme AFR-104. Os 42 itens pendentes são a contagem do backlog AFR, não uma previsão exata de rodadas até DONE. Aprovação de licença, homologação de fontes e validação de hosts são gates separados.
+O gate M14 não está representado por um requisito AFR separado; a autorização do release continua uma decisão humana conforme AFR-104. Os 45 itens pendentes são a contagem do backlog AFR, não uma previsão exata de rodadas até DONE. Aprovação de licença, homologação de fontes e validação de hosts são gates separados.
 

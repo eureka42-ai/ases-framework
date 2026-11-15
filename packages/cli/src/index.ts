@@ -12,6 +12,7 @@ import { importAses300, importProductRequirements, readCatalog, updateDecision, 
 import { resolveConfigLayers } from "./config-resolution.js";
 import { createHostPlan, HOSTS, type HostId } from "./host-plan.js";
 import { applyHostIntegration, uninstallHostIntegration, updateHostIntegration } from "./host-install.js";
+import { removeInstalledPlugin } from "./plugin-lifecycle.js";
 
 export { VERSION } from "./version.js";
 export { indexRagSources, RagAccessError, refreshRagIndex, retrieveRequirement, searchRag } from "./rag.js";
@@ -29,6 +30,8 @@ export { appendLocalTrace, createTraceEvent, readLocalTraces, readTelemetryConse
 export type { AgentMetric, EvaluationCase, EvaluationResult, EvaluationStatus, TelemetryConsent, TraceEvent } from "./observability.js";
 export { runPluginContractCases, validatePluginContract, validatePluginManifest } from "./plugins.js";
 export type { PluginContract, PluginContractCase, PluginManifest, PluginValidationOptions } from "./plugins.js";
+export { createPluginInstallManifest, removeInstalledPlugin } from "./plugin-lifecycle.js";
+export type { PluginInstallManifest, PluginRemovalResult } from "./plugin-lifecycle.js";
 
 export interface CommandResult {
   exitCode: number;
@@ -69,6 +72,7 @@ Comandos disponíveis:
   requirements list|show|trace  Consulta catálogo e trilha de evidências [--product id]
   requirements set-status <workspace> <REQ-ID> <status> [--product id|--evidence arquivo --execution-context texto [--evidence-expires-at ISO]|--decision DEC|--test ref|--na-reason texto|--blocked-by ref --reason texto]
   requirements set-decision <workspace> <REQ-ID> <state> [--product id|--ref ADR --reason texto]
+  plugin remove <plugin-id> [workspace]  Remove arquivos ASES inalterados (--apply para executar)
   help                    Exibe esta ajuda
 
 Opções:
@@ -363,6 +367,16 @@ export async function run(argv: string[]): Promise<CommandResult> {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       return { exitCode: 3, output: json ? JSON.stringify({ code: "ASES_UNINSTALL_FAILED", error: message }, null, 2) : `Falha na desinstalação segura: ${message}` };
+    }
+  }
+  if (command === "plugin" && args[1] === "remove") {
+    if (!args[2]) return { exitCode: 2, output: "Uso: ases plugin remove <plugin-id> [workspace] [--apply]" };
+    try {
+      const result = await removeInstalledPlugin(args[3] ?? process.cwd(), args[2], argv.includes("--apply") && !dryRun);
+      return { exitCode: result.status === "partial" ? 3 : 0, output: json ? JSON.stringify(result, null, 2) : `${result.status.toUpperCase()} plugin ${result.pluginId}\n${JSON.stringify(result, null, 2)}` };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 3, output: json ? JSON.stringify({ code: "ASES_PLUGIN_REMOVE_FAILED", error: message }) : `Falha na remoção segura do plugin: ${message}` };
     }
   }
   if (command === "interview") {
