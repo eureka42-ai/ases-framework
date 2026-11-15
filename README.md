@@ -59,7 +59,7 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases config validate` | Implementado | Valida config pela mesma definição Zod que gera o JSON Schema |
 | `ases config schema [--check path]` | Implementado | Gera o JSON Schema no stdout ou verifica o artefato sem escrever |
 | `ases config explain` | Implementado | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Em andamento | 111 implementados; 29 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
+| Backlog AFR-001..140 | Em andamento | 112 implementados; 28 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
 | Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |
@@ -221,6 +221,7 @@ ases config schema --check schemas/ases.config.schema.json
 | `ases config validate [path]` | Valida o contrato inicial da config | Nenhum |
 | `ases config schema [--check path]` | Gera o contrato JSON Schema ou confere se o arquivo está sincronizado | stdout; modo `--check` é somente leitura |
 | `ases architecture check [workspace] [--contracts path] [--json]` | Confere contratos técnicos ligados a ADRs sem executar código | Nenhum; drift de ADR aceita resulta em código 1 |
+| `ases policy template\|validate\|evaluate` | Gera template, valida regras versionadas ou simula uma decisão sem executar a ação | Nenhum |
 | `ases config explain [path] [--set chave=valor]` | Resolve defaults e overrides seguros com suas origens | Nenhum |
 | `ases host list` | Detecta Codex, Claude, Kimi e Gemini instalados | Nenhum |
 | `ases host plan <host> [workspace]` | Mostra diffs de integração, conflitos e arquivos binários sem aplicar mudanças | Nenhum |

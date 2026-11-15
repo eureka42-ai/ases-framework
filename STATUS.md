@@ -48,17 +48,18 @@ Atualizado em: 2026-11-15
 - `runModelBenchmark` compara providers em fixtures versionadas, sequencialmente e com limites. Requer `enabled: true`; o relatório mantém hash de prompts/settings sem conteúdo, latência/tokens reportados e erros sanitizados; não calcula custo nem inclui prompt/resposta. Ver `docs/benchmarking.md` e evidência M15 progress 4.
 - `ases config schema` gera JSON Schema Draft 2020-12 da mesma definição Zod usada por `config validate`; `--check` detecta drift sem escrever e CI executa essa checagem. Ver `evidence/M15-2026-11-15-progress-5.md`.
 - `ases architecture check` avalia contratos declarativos ligados ao status nos ADRs. ADRs propostos ficam em modo observacional; somente decisões `ACCEPTED` tornam drift bloqueante. Caminhos escapando do workspace e symlinks não são seguidos. Ver `docs/architecture/drift-checks.md` e `evidence/M15-2026-11-15-progress-6.md`.
+- `ases policy template|validate|evaluate` adiciona policy-as-code versionada, default-deny, limites para allow scopes, IDs/racionais e simulação de decisões sem executar ações. Ver `docs/security/team-policy.md` e `evidence/M15-2026-11-15-progress-7.md`.
 - Leitura de catálogo agora rejeita arquivo catalog symlinkado ou cujo caminho canonicalizado saia do workspace.
 - Hosts locais detectados nesta sessão: Codex 0.169.0, Claude Code 2.1.323, Kimi 2.5.3 e Gemini 0.42.0.
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes automatizados: PASS (137/137; inclui 4 testes do detector de arquitetura), schema sync, dashboard, benchmark, ranking de capabilities, HTTP local e E2E do CLI. Integrações, lint, supply chain, arquitetura local e empacotamento: PASS. CI Node.js 22/24 e audit/licenças/SBOM/proveniência: PASS no run `43732721744`.
+- Testes automatizados: PASS (141/141; inclui 4 testes de policy-as-code), schema sync, dashboard, benchmark, ranking de capabilities, HTTP local e E2E do CLI. Integrações, lint, supply chain e empacotamento: PASS. CI remoto do AFR-125 segue após o push.
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 6 Skills sincronizadas).
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; tarball RC1 instalado em workspace temporário; `ases --version` e `ases welcome --color`: PASS. A primeira instalação revelou módulos ausentes e foi corrigida antes do segundo empacotamento.
-- Backlog AFR-001..140: 111 requisitos IMPLEMENTED e ligados a código/testes/evidência; 29 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 112 requisitos IMPLEMENTED e ligados a código/testes/evidência; 28 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -198,6 +199,7 @@ Atualizado em: 2026-11-15
 - `evidence/M15-2026-11-15-progress-4.md`
 - `evidence/M15-2026-11-15-progress-5.md`
 - `evidence/M15-2026-11-15-progress-6.md`
+- `evidence/M15-2026-11-15-progress-7.md`
 - `evidence/M12-2026-11-15-progress-1.md`
 - `evidence/M12-2026-11-15-progress-2.md`
 - `evidence/M13-2026-11-15-progress-1.md`

@@ -58,6 +58,8 @@
     "dist/config-schema.d.ts",
     "dist/architecture-contracts.js",
     "dist/architecture-contracts.d.ts",
+    "dist/team-policy.js",
+    "dist/team-policy.d.ts",
     "dist/rag.js",
     "dist/rag.d.ts",
     "dist/memory.js",

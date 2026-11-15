@@ -17,6 +17,7 @@ import { renderTraceabilityGraph } from "./traceability-graph.js";
 import { readDashboardData, renderDashboardHtml } from "./dashboard.js";
 import { generateAsesConfigJsonSchema, validateAsesConfig } from "./config-schema.js";
 import { checkArchitectureContracts } from "./architecture-contracts.js";
+import { createTeamPolicyEngine, isSecurityAction, readTeamPolicyFile, teamPolicyTemplate, validateTeamPolicy } from "./team-policy.js";
 
 export { VERSION } from "./version.js";
 export { indexRagSources, RagAccessError, refreshRagIndex, retrieveRequirement, searchRag } from "./rag.js";
@@ -50,6 +51,8 @@ export { asesConfigSchema, generateAsesConfigJsonSchema, validateAsesConfig } fr
 export type { AsesConfig } from "./config-schema.js";
 export { checkArchitectureContracts } from "./architecture-contracts.js";
 export type { ArchitectureAssertion, ArchitectureAssertionStatus, ArchitectureContractReport, ArchitectureContractResult } from "./architecture-contracts.js";
+export { createTeamPolicyEngine, isSecurityAction, readTeamPolicyFile, teamPolicyTemplate, validateTeamPolicy } from "./team-policy.js";
+export type { TeamPolicyDocument, TeamPolicyRule, TeamPolicyValidation } from "./team-policy.js";
 
 export interface CommandResult {
   exitCode: number;
@@ -93,6 +96,9 @@ Comandos disponíveis:
   requirements graph [dir]  Exporta o grafo de decisões, testes e evidências em Mermaid
   dashboard [workspace] [--product id] [--json]  Gera snapshot local de requisitos, workflows, evidências e custos
   architecture check [workspace] [--contracts path] [--json]  Detecta drift contra contratos ligados a ADRs
+  policy template          Exibe template de policy default-deny
+  policy validate <file>   Valida policy-as-code local sem aplicar regras
+  policy evaluate <file> --actor id --action ação --resource ref  Simula decisão sem executar ação
   requirements set-status <workspace> <REQ-ID> <status> [--product id|--evidence arquivo --execution-context texto [--evidence-expires-at ISO]|--decision DEC|--test ref|--na-reason texto|--blocked-by ref --reason texto]
   requirements set-decision <workspace> <REQ-ID> <state> [--product id|--ref ADR --reason texto]
   plugin remove <plugin-id> [workspace]  Remove arquivos ASES inalterados (--apply para executar)
@@ -578,6 +584,26 @@ export async function run(argv: string[]): Promise<CommandResult> {
     }
   }
   if (command === "config" && args[1] === "validate") return validateConfigCommand(args[2], json);
+  if (command === "policy" && args[1] === "template") return { exitCode: 0, output: JSON.stringify(teamPolicyTemplate, null, 2) };
+  if (command === "policy" && (args[1] === "validate" || args[1] === "evaluate")) {
+    const policyPath = args[2];
+    if (!policyPath) return { exitCode: 2, output: json ? JSON.stringify({ code: "ASES_POLICY_PATH_REQUIRED", error: "Provide a policy JSON file." }, null, 2) : "Uso: ases policy validate <file> | ases policy evaluate <file> --actor <id> --action <action> --resource <ref>" };
+    try {
+      const document = await readTeamPolicyFile(policyPath);
+      const validation = validateTeamPolicy(document);
+      if (!validation.valid || !validation.policy) return { exitCode: 1, output: json ? JSON.stringify({ path: policyPath, valid: false, errors: validation.errors, warnings: validation.warnings }, null, 2) : `FAIL policy inválida:\n${validation.errors.map((error) => `- ${error}`).join("\n")}` };
+      if (args[1] === "validate") return { exitCode: 0, output: json ? JSON.stringify({ path: policyPath, valid: true, ruleCount: validation.policy.rules.length, warnings: validation.warnings }, null, 2) : `PASS policy válida (${validation.policy.rules.length} regra(s))${validation.warnings.length ? `\nAvisos: ${validation.warnings.join("; ")}` : ""}` };
+      const actorId = optionValues(argv, "--actor")[0];
+      const action = optionValues(argv, "--action")[0];
+      const resource = optionValues(argv, "--resource")[0];
+      if (!actorId || !isSecurityAction(action) || !resource) return { exitCode: 2, output: json ? JSON.stringify({ code: "ASES_POLICY_REQUEST_INVALID", error: "Provide --actor, a known --action and --resource." }, null, 2) : "Uso: ases policy evaluate <file> --actor <id> --action <action> --resource <ref>" };
+      const decision = createTeamPolicyEngine(validation.policy).evaluate({ actorId, action, resource });
+      return { exitCode: 0, output: json ? JSON.stringify({ allowed: decision.allowed, decision }, null, 2) : `${decision.allowed ? "ALLOW" : "DENY"}: ${decision.reason}` };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 3, output: json ? JSON.stringify({ code: "ASES_POLICY_READ_FAILED", error: message }, null, 2) : `Não foi possível ler a policy: ${message}` };
+    }
+  }
   if (command === "config" && args[1] === "schema") {
     const schema = generateAsesConfigJsonSchema();
     if (!argv.includes("--check")) return { exitCode: 0, output: JSON.stringify(schema, null, 2) };
