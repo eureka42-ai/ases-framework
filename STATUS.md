@@ -12,7 +12,7 @@ Atualizado em: 2026-11-15
 - M10: IMPLEMENTED_LOCALLY (memória local com consentimento/escopo/TTL/origem/inspect/delete, ContextBundle com integridade/redaction e import ZIP seguro com preview e contenção de caminhos)
 - M11: IMPLEMENTED_LOCALLY (AFR-084..100; MCP HTTP OAuth Resource Server e testes de rota local; Authorization Server real ainda não exercitado)
 - M12: IMPLEMENTED_LOCALLY (SDK, contrato, integridade, compatibilidade, aprovação de permissões e remoção segura AFR-091..095)
-- M13: IN_PROGRESS (CI Node 22/24 e supply-chain passaram no run 43728768348; provenance SLSA e SBOM SPDX do pacote baixado foram verificadas contra o workflow `ci.yml`; resta autorização da release AFR-104)
+- M13: IN_PROGRESS (CI Node 22/24 e supply-chain passaram no run 43729149666; SLSA e SPDX verificadas diretamente no pacote do run 43728310089; resta autorização da release AFR-104)
 - M6: IMPLEMENTED (AFR-041..050 concluídos localmente; probe real é opt-in e ainda não executado contra serviço externo)
 - Repositório Git: branch `main`; plugins Codex/Claude disponíveis no repositório público; AFR-030 implementado nesta rodada
 - Fonte diretora: presente e lida
@@ -48,7 +48,7 @@ Atualizado em: 2026-11-15
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (122/122 na última execução local); `pnpm test` também compila TypeScript e valida as integrações. CI remoto do código antes desta alteração passou em Node.js 22/24 e supply-chain.
+- Testes unitários: PASS (122/122 localmente e no CI `43729149666`); `pnpm test` também compila TypeScript e valida as integrações.
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 6 Skills sincronizadas).
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
