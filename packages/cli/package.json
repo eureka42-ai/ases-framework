@@ -64,6 +64,8 @@
     "dist/i18n.d.ts",
     "dist/templates.js",
     "dist/templates.d.ts",
+    "dist/knowledge.js",
+    "dist/knowledge.d.ts",
     "dist/tracker-exchange.js",
     "dist/tracker-exchange.d.ts",
     "dist/rag.js",

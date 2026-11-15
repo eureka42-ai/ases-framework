@@ -24,7 +24,13 @@ export function resolveLocale(argv: string[] = [], env: NodeJS.ProcessEnv = proc
 }
 
 export function renderHelp(locale: Locale): string {
-  const t = translations[locale];
+  const knowledgeHelp: Record<Locale, string> = {
+    "pt-BR": "Valida e instala pack de conhecimento local",
+    "en-US": "Validate and install a local knowledge pack",
+    "es-ES": "Valida e instala un paquete local de conocimiento",
+    "it-IT": "Convalida e installa un pacchetto locale di conoscenza"
+  };
+  const t = { ...translations[locale], plugin: `${translations[locale].plugin}\n  knowledge list|validate|install  ${knowledgeHelp[locale]}` };
   return `EUREKA42 ASES Framework\n\n${t.usage}: ases <command> [options]\n\n${t.commands}:\n  init [directory]           ${t.init}\n  uninstall [directory]      ${t.uninstall} (--apply)\n  interview [directory]      ${t.interview}\n  welcome [--color|--no-color] ${t.welcome}\n  host list|plan|apply|update|restore|uninstall  ${t.hosts}\n  mcp [workspace] [--http]   ${t.mcp}\n  doctor [directory]         ${t.doctor}\n  config validate|schema|explain  ${t.config}\n  catalog import-ases300|import-product  ${t.catalog}\n  requirements list|show|trace|graph|set-status|set-decision  ${t.requirements}\n  dashboard [workspace]      ${t.dashboard}\n  architecture check         ${t.architecture}\n  policy template|validate|evaluate  ${t.policy}\n  tracker export|import      ${t.tracker}\n  plugin remove              ${t.plugin}\n  help                       ${t.help}\n\n${t.options}:\n  --locale <${SUPPORTED_LOCALES.join("|")}>  Set the CLI language\n  --json                     ${t.json}\n  --dry-run                  ${t.dryRun}\n  --apply                    ${t.apply}\n  --answers <file>           ${t.answers}\n  --resume                   ${t.resume}\n  --version                  ${t.version}\n`;
 }
 

@@ -15,6 +15,7 @@ import { assessInterview } from "./assessment.js";
 import { readCatalog } from "./catalog.js";
 import { applyHostIntegration } from "./host-install.js";
 import { renderLogo, supportsColor } from "./brand.js";
+import { searchRag } from "./rag.js";
 
 const sha256 = (value: string | Buffer): string => createHash("sha256").update(value).digest("hex");
 
@@ -55,6 +56,37 @@ test("project templates preview cleanly and create three language/stack starters
   const reactTarget = join(root, "react-app");
   assert.equal(JSON.parse((await run(["template", "apply", "react-vite-ts", reactTarget, "React App", "--apply", "--json"])).output).status, "created");
   assert.ok(await readFile(join(reactTarget, "src/main.tsx"), "utf8"));
+});
+
+test("curated knowledge library declares its license and installs with RAG provenance only after apply", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-knowledge-pack-"));
+  const libraries = JSON.parse((await run(["knowledge", "list"])).output);
+  assert.equal(libraries[0].license, "Apache-2.0");
+  const validation = await run(["knowledge", "validate", "eureka42-ases-foundations", "--json"]);
+  assert.equal(JSON.parse(validation.output).valid, true);
+  const preview = JSON.parse((await run(["knowledge", "install", "eureka42-ases-foundations", root, "--json"])).output);
+  assert.equal(preview.status, "planned");
+  await assert.rejects(readFile(join(root, ".ases", "knowledge", "eureka42-ases-foundations", "manifest.json"), "utf8"));
+  const installed = JSON.parse((await run(["knowledge", "install", "eureka42-ases-foundations", root, "--project-id", "knowledge-demo", "--apply", "--json"])).output);
+  assert.equal(installed.status, "installed");
+  assert.equal(installed.indexedSources, 2);
+  const manifest = JSON.parse(await readFile(join(root, ".ases/knowledge/eureka42-ases-foundations/manifest.json"), "utf8"));
+  assert.equal(manifest.license, "Apache-2.0");
+  assert.equal(manifest.sources.length, 2);
+  assert.match(manifest.sources[0].sha256, /^[a-f0-9]{64}$/);
+  const index = JSON.parse(await readFile(installed.indexPath, "utf8"));
+  assert.ok(index.chunks.every((chunk: { source: { license: string; version: string } }) => chunk.source.license === "Apache-2.0" && chunk.source.version === "1.0.0"));
+  assert.ok(searchRag(index, "least privilege explicit policy").length > 0);
+  assert.equal((await run(["knowledge", "install", "eureka42-ases-foundations", root, "--apply", "--json"])).exitCode, 5);
+});
+
+test("knowledge installation refuses a symlinked ASES directory without writing outside", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-knowledge-symlink-"));
+  const outside = await mkdtemp(join(tmpdir(), "ases-knowledge-outside-"));
+  await symlink(outside, join(root, ".ases"));
+  const result = await run(["knowledge", "install", "eureka42-ases-foundations", root, "--apply", "--json"]);
+  assert.equal(result.exitCode, 5);
+  assert.deepEqual(await readdir(outside), []);
 });
 
 test("init dry-run does not write", async () => {

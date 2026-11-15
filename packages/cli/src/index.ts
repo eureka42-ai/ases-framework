@@ -20,6 +20,7 @@ import { checkArchitectureContracts } from "./architecture-contracts.js";
 import { createTeamPolicyEngine, isSecurityAction, readTeamPolicyFile, teamPolicyTemplate, validateTeamPolicy } from "./team-policy.js";
 import { exportTrackerTasks, importTrackerTasks } from "./tracker-exchange.js";
 import { applyProjectTemplate, getProjectTemplate, listProjectTemplates } from "./templates.js";
+import { installKnowledgeLibrary, knowledgeLibraryManifest, listKnowledgeLibraries, validateKnowledgeLibrary } from "./knowledge.js";
 import { renderHelp, resolveLocale, welcomeTagline } from "./i18n.js";
 
 export { VERSION } from "./version.js";
@@ -62,6 +63,8 @@ export { renderHelp, resolveLocale } from "./i18n.js";
 export type { Locale } from "./i18n.js";
 export { applyProjectTemplate, getProjectTemplate, listProjectTemplates } from "./templates.js";
 export type { ProjectTemplate } from "./templates.js";
+export { installKnowledgeLibrary, knowledgeLibraryManifest, listKnowledgeLibraries, validateKnowledgeLibrary } from "./knowledge.js";
+export type { KnowledgeLibraryValidation } from "./knowledge.js";
 
 export interface CommandResult {
   exitCode: number;
@@ -452,6 +455,25 @@ export async function run(argv: string[]): Promise<CommandResult> {
       const result = await applyProjectTemplate(templateId, target, projectName, argv.includes("--apply") && !dryRun);
       return { exitCode: 0, output: json ? JSON.stringify(result, null, 2) : `${result.status === "planned" ? "PLANO (nenhum arquivo escrito)" : "CRIADO"}: ${result.template} em ${result.root}\n${result.files.map((path) => `  ${path}`).join("\n")}` };
     } catch (error) { const message = error instanceof Error ? error.message : String(error); return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_TEMPLATE_APPLY", error: message }) : `Falha ao aplicar template: ${message}` }; }
+  }
+  if (command === "knowledge" && args[1] === "list") return { exitCode: 0, output: JSON.stringify(listKnowledgeLibraries(), null, 2) };
+  if (command === "knowledge" && args[1] === "validate") {
+    const result = validateKnowledgeLibrary(args[2] ?? "");
+    return { exitCode: result.valid ? 0 : 2, output: json ? JSON.stringify(result, null, 2) : `${result.valid ? "PASS" : "FAIL"} ${result.id} ${result.version} (${result.license})\n${result.errors.join("\n")}` };
+  }
+  if (command === "knowledge" && args[1] === "install") {
+    try {
+      const id = args[2] ?? "";
+      const workspace = args[3] ?? process.cwd();
+      const inferredProjectId = slugify(basename(resolve(workspace)));
+      const projectId = optionValues(argv, "--project-id")[0] ?? (inferredProjectId.length >= 2 ? inferredProjectId : `p-${inferredProjectId}`);
+      const result = await installKnowledgeLibrary(id, workspace, projectId, argv.includes("--apply") && !dryRun);
+      const { index, ...summary } = result;
+      return { exitCode: 0, output: json ? JSON.stringify({ ...summary, ...(index ? { indexedSources: index.sources.length, chunks: index.chunks.length } : {}) }, null, 2) : `${result.status.toUpperCase()} ${result.id} ${result.version} (${result.license})\n${result.files.join("\n")}` };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_KNOWLEDGE_INSTALL_FAILED", error: message }) : `Falha ao instalar biblioteca: ${message}` };
+    }
   }
   if (command === "requirements" && args[1] === "graph") {
     try {

@@ -241,7 +241,8 @@ ases config schema --check schemas/ases.config.schema.json
 | `ases requirements set-decision <workspace> <REQ-ID> <state> [--product id]` | Atualiza decisão sem alterar estado da implementação | Grava catálogo local |
 | `ases tracker export [workspace] [--product id]` | Exporta tarefas em JSON neutro para importação em trackers | stdout |
 | `ases tracker import <bundle.json> [workspace] [--apply]` | Valida e pré-visualiza; com `--apply`, arquiva bundle local sem sobrescrever | `.ases/tracker-imports/` |
-| `ases template list|show|apply` | Lista, inspeciona ou provisiona templates Node/TypeScript, FastAPI/Python e React/Vite | Novo diretório, somente com `--apply` |
+| `ases template list\|show\|apply` | Lista, inspeciona ou provisiona templates Node/TypeScript, FastAPI/Python e React/Vite | Novo diretório, somente com `--apply` |
+| `ases knowledge list\|validate\|install` | Inspeciona biblioteca licenciada ou cria índice RAG local com proveniência | `.ases/knowledge/` e `.ases/rag/` com `--apply` |
 
 Os demais comandos do documento-mestre são contratos planejados, não funcionalidades existentes. Eles somente serão documentados como disponíveis depois de implementados e testados.
 
@@ -250,6 +251,8 @@ Para intercâmbio local de tarefas com trackers, consulte [exportação e import
 A ajuda e a identidade do CLI estão disponíveis em pt-BR, en-US, es-ES e it-IT com `ases help --locale es-ES`, `ASES_LOCALE=it-IT ases help` ou equivalente. Guias de instalação traduzidos: [español](docs/i18n/es-ES.md) e [italiano](docs/i18n/it-IT.md).
 
 Templates iniciais de API e frontend podem ser listados e provisionados em um diretório novo com `ases template list` e `ases template apply <id> <diretório> [nome] --apply`; consulte [provisionamento de templates](docs/templates.md).
+
+O pack de conhecimento ASES mantém licença, autoria, versão, SHA-256 por fonte e citações no índice RAG. Veja [bibliotecas curadas](docs/knowledge-libraries.md).
 
 Para marcar um requisito como `VERIFIED`, associe uma evidência local e registre como foi produzida com `--execution-context`; veja [vínculo de evidências e validade](docs/requirements/evidence-linking.md).
 
