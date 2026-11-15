@@ -7,7 +7,7 @@ Atualizado em: 2026-11-14
 - M0: IMPLEMENTED / PARTIALLY_VERIFIED
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
 - M5: IN_PROGRESS (6/10 AFRs implementados; lifecycle local possui apply/update/uninstall explícitos)
-- M6: IN_PROGRESS (AFR-041/042/044/045/046/047/049/050 implementados; 2/10 requisitos M6 pendentes)
+- M6: IN_PROGRESS (AFR-041/042/044/045/046/047/048/049/050 implementados; 1/10 requisito M6 pendente)
 - Repositório Git: branch `main`; integrações Codex/Claude publicadas; AFR-030 implementado nesta rodada
 - Fonte diretora: presente e lida
 - ASES-300: DOCX e conversão Markdown presentes localmente; revisão estrutural confirmou 300 IDs/títulos e hashes íntegros; amostra visual de 14 páginas renderizadas conferida. Homologação editorial segue pendente: o DOCX renderizado mantém placeholder de sumário e a amostra não equivale a revisão integral.
@@ -39,12 +39,12 @@ Atualizado em: 2026-11-14
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (60/60) em 2026-11-14; `pnpm test` também compila TypeScript e valida as integrações. O commit `2fbc2c9` passou nos jobs Node.js 22 e 24 do GitHub Actions; ver [execução CI](https://github.com/eureka42-ai/ases-framework/actions/runs/43659869818). AFR-047 aguarda CI remoto.
+- Testes unitários: PASS (61/61); `pnpm test` também compila TypeScript e valida as integrações. O commit `2fbc2c9` passou nos jobs Node.js 22 e 24 do GitHub Actions; ver [execução CI](https://github.com/eureka42-ai/ases-framework/actions/runs/43659869818). AFR-048 aguarda CI remoto.
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 5 Skills sincronizadas).
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; instalação local do tarball + `ases --version` e `ases host plan` em workspace externo: PASS.
-- Backlog AFR-001..140: 44 requisitos IMPLEMENTED e ligados a código/testes/evidência; 96 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 45 requisitos IMPLEMENTED e ligados a código/testes/evidência; 95 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -81,6 +81,7 @@ Atualizado em: 2026-11-14
 - AFR-049 implementado: API reporta seleção `host-managed` no modo host e deixa claro que o ASES não escolhe o modelo do CLI hospedeiro.
 - AFR-046 implementado: fallback exclui provider primário e só aceita alternativa que mantenha classificação de dados e teto de custo.
 - AFR-047 implementado: custo tem estados `estimated`, `reported` e `unknown`, com fonte/justificativa obrigatórias e valores validados.
+- AFR-048 implementado: `CallBudget` reserva estimativas antes do dispatch e bloqueia excedentes inclusive sob concorrência.
 
 ## Próximas tarefas READY
 
@@ -126,5 +127,6 @@ Atualizado em: 2026-11-14
 - `evidence/M6-2026-11-14-progress-5.md`
 - `evidence/M6-2026-11-14-progress-6.md`
 - `evidence/M6-2026-11-14-progress-7.md`
+- `evidence/M6-2026-11-14-progress-8.md`
 - `evidence/CI-2026-11-14-progress-5.md`
 

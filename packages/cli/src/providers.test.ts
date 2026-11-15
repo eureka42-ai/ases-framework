@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createCostRecord, createProviderCatalogEntry, generate, generateForMode, getModelControl, MockProvider, ProviderError, selectCapableProvider, selectSafeFallback, type Provider } from "./providers.js";
+import { CallBudget, createCostRecord, createProviderCatalogEntry, generate, generateForMode, getModelControl, MockProvider, ProviderError, selectCapableProvider, selectSafeFallback, type Provider } from "./providers.js";
 
 test("mock provider gives deterministic offline responses", async () => {
   const provider = new MockProvider();
@@ -82,6 +82,27 @@ test("cost records distinguish estimated, provider-reported and unknown amounts"
   assert.deepEqual(createCostRecord({ status: "unknown", reason: "provider omitted usage cost" }), { status: "unknown", reason: "provider omitted usage cost" });
   assert.throws(() => createCostRecord({ status: "estimated", amountUsd: -1, source: "rate table" }), (error: unknown) => error instanceof ProviderError && error.code === "INVALID_REQUEST");
   assert.throws(() => createCostRecord({ status: "unknown", reason: " " }), (error: unknown) => error instanceof ProviderError && error.code === "INVALID_REQUEST");
+});
+
+test("call budget blocks over-limit and concurrent reservations before provider dispatch", async () => {
+  let calls = 0;
+  const slow: Provider = {
+    id: "metered",
+    capabilities: ["text"],
+    async generate(request) {
+      calls += 1;
+      await new Promise((resolve) => setTimeout(resolve, 5));
+      return { text: request.prompt, provider: this.id, model: "test", usage: {} };
+    },
+  };
+  const budget = new CallBudget(1);
+  const first = budget.generate(slow, { prompt: "first" }, 0.7);
+  await assert.rejects(budget.generate(slow, { prompt: "second" }, 0.4), (error: unknown) => error instanceof ProviderError && error.code === "BUDGET_EXCEEDED");
+  await first;
+  assert.equal(calls, 1);
+  assert.equal(budget.reservedUsd, 0.7);
+  await assert.rejects(new CallBudget(0).generate(slow, { prompt: "blocked" }, 0.01), (error: unknown) => error instanceof ProviderError && error.code === "BUDGET_EXCEEDED");
+  assert.equal(calls, 1);
 });
 
 test("provider SPI rejects invalid input and normalizes failures", async () => {

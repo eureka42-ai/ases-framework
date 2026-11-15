@@ -1,4 +1,4 @@
-export type ProviderErrorCode = "INVALID_REQUEST" | "TIMEOUT" | "CANCELLED" | "UNAVAILABLE" | "PROVIDER_FAILURE";
+export type ProviderErrorCode = "INVALID_REQUEST" | "TIMEOUT" | "CANCELLED" | "UNAVAILABLE" | "PROVIDER_FAILURE" | "BUDGET_EXCEEDED";
 
 export class ProviderError extends Error {
   constructor(readonly code: ProviderErrorCode, message: string, options?: ErrorOptions) {
@@ -34,6 +34,25 @@ export function createCostRecord(record: CostRecord): CostRecord {
     throw new ProviderError("INVALID_REQUEST", "known cost requires a non-negative amount and source");
   }
   return { ...record, source: record.source.trim() };
+}
+
+/** Reserves estimated cost before dispatch, including concurrent calls. */
+export class CallBudget {
+  #reservedUsd = 0;
+
+  constructor(readonly limitUsd: number) {
+    if (!Number.isFinite(limitUsd) || limitUsd < 0) throw new ProviderError("INVALID_REQUEST", "budget limit must be a non-negative finite amount");
+  }
+
+  get reservedUsd(): number { return this.#reservedUsd; }
+  get remainingUsd(): number { return Math.max(0, this.limitUsd - this.#reservedUsd); }
+
+  async generate(provider: Provider, request: ProviderRequest, estimatedCostUsd: number, options: GenerateOptions = {}): Promise<ProviderResponse> {
+    if (!Number.isFinite(estimatedCostUsd) || estimatedCostUsd < 0) throw new ProviderError("INVALID_REQUEST", "estimated call cost must be a non-negative finite amount");
+    if (this.#reservedUsd + estimatedCostUsd > this.limitUsd) throw new ProviderError("BUDGET_EXCEEDED", "call blocked because it would exceed the configured budget");
+    this.#reservedUsd += estimatedCostUsd;
+    return generate(provider, request, options);
+  }
 }
 
 export interface ProviderContext {
