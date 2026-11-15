@@ -42,7 +42,8 @@ export class SecurityPolicyEngine {
       if (rule.actorId !== undefined && !rule.actorId.trim()) throw new PolicyAccessError("policy actor IDs must not be empty");
       if (rule.resource !== undefined && !rule.resource.trim()) throw new PolicyAccessError("policy resources must not be empty");
     }
-    this.rules = rules.map((rule) => ({ ...rule }));
+    this.rules = Object.freeze(rules.map((rule) => Object.freeze({ ...rule })));
+    Object.freeze(this);
   }
 
   evaluate(request: SecurityPolicyRequest): PolicyDecision {

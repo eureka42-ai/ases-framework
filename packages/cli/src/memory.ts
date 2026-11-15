@@ -136,6 +136,8 @@ export async function forgetMemory(workspaceRoot: string, scope: MemoryScope, id
 }
 
 const secretPatterns = [
+  /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi,
+  /\b\d{3}-\d{2}-\d{4}\b/g,
   /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----[\s\S]*?-----END (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/g,
   /\b(password|passwd|secret|api[\s_-]*key|token|aws[\s_-]*secret[\s_-]*access[\s_-]*key)\s*[:=]\s*["']?[^\s"',;]+/gi,
   /\b[a-z][a-z0-9+.-]*:\/\/[^/\s:@]+:[^@\s/]+@[^\s]+/gi,
@@ -148,11 +150,14 @@ const secretPatterns = [
   /\bBearer\s+[A-Za-z0-9._~+/-]+=*/gi,
 ];
 
-function redact(value: string): { value: string; count: number } {
+export function redactSensitiveText(value: string): { text: string; count: number } {
   let output = value;
   let count = 0;
-  for (const pattern of secretPatterns) output = output.replace(pattern, () => { count += 1; return "[REDACTED]"; });
-  return { value: output, count };
+  for (const pattern of secretPatterns) {
+    pattern.lastIndex = 0;
+    output = output.replace(pattern, () => { count += 1; return "[REDACTED]"; });
+  }
+  return { text: output, count };
 }
 
 function canonicalBundleContent(bundle: Omit<ContextBundle, "integrity">): string {
@@ -167,11 +172,11 @@ export function createContextBundle(input: ContextBundleInput): ContextBundle {
     validSlug(item.id, `${category} item ID`);
     if (!item.title.trim() || !item.content.trim() || !item.source.path.trim()) throw new Error(`context bundle ${category} item is incomplete`);
     if (!/^[a-f0-9]{64}$/i.test(item.source.sha256) || sha256(item.content) !== item.source.sha256.toLowerCase()) throw new Error(`context bundle source hash mismatch: ${item.id}`);
-    const title = redact(item.title);
-    const content = redact(item.content);
-    const path = redact(item.source.path);
+    const title = redactSensitiveText(item.title);
+    const content = redactSensitiveText(item.content);
+    const path = redactSensitiveText(item.source.path);
     redactions += title.count + content.count + path.count;
-    return { id: item.id, title: title.value, content: content.value, source: { path: path.value, sha256: item.source.sha256.toLowerCase() } };
+    return { id: item.id, title: title.text, content: content.text, source: { path: path.text, sha256: item.source.sha256.toLowerCase() } };
   });
   const payload = {
     schemaVersion: "1" as const,

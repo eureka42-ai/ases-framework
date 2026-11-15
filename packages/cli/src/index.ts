@@ -22,6 +22,9 @@ export { BundleArchiveError, importBundleArchive, previewBundleArchive } from ".
 export type { BundleArchivePreview } from "./bundle-archive.js";
 export { authorizeCommand, commandPolicyResource, PolicyAccessError, SecurityPolicyEngine } from "./policy.js";
 export type { AuthorizedCommandPlan, CommandRequest, PolicyDecision, PolicyEffect, SecurityAction, SecurityPolicyRequest, SecurityPolicyRule } from "./policy.js";
+export { createSafeLogRecord, writeSafeLog } from "./logging.js";
+export type { SafeLogRecord, SafeLogResult } from "./logging.js";
+export { redactSensitiveText } from "./memory.js";
 
 export interface CommandResult {
   exitCode: number;

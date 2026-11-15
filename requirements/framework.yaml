@@ -1070,26 +1070,26 @@ requirements:
     priority: P1
     milestone: "M11"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Prompt injection em RAG/tool não alterar políticas."
     acceptanceCriteria:
       - id: AC-AFR-089-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Prompt injection em RAG/tool não alterar políticas."
+        description: "Policy rules são snapshot imutável; tool/RAG output não é entrada do evaluator e não pode adicionar permissões. Texto de instruções retornado permanece dado sem mutação do policy engine."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/policy.ts", "packages/cli/src/policy.test.ts"]
+    tests: ["packages/cli/src/policy.test.ts :: instruction-like RAG/tool output remains data and cannot mutate policy decisions"]
   - id: AFR-090
     priority: P1
     milestone: "M11"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Logs redigirem secrets e dados sensíveis."
     acceptanceCriteria:
       - id: AC-AFR-090-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Logs redigirem secrets e dados sensíveis."
+        description: "createSafeLogRecord/writeSafeLog redigem campos sensíveis, padrões de segredo/PII, removem stack de Error, detectam ciclos, limitam profundidade/tamanho e nunca passam payload bruto ao sink."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/logging.ts", "packages/cli/src/memory.ts"]
+    tests: ["packages/cli/src/logging.test.ts :: safe logs redact credential and personal-data fields and secret-like text", "packages/cli/src/logging.test.ts :: safe logs omit error stacks, bound cycles/depth, and keep oversized records valid JSON"]
   - id: AFR-091
     priority: P1
     milestone: "M12"
