@@ -1598,14 +1598,14 @@ requirements:
     priority: P3
     milestone: "M15+"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Console web multiusuário com autenticação/roles."
     acceptanceCriteria:
       - id: AC-AFR-133-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Console web multiusuário com autenticação/roles."
+        description: "startLocalConsole serve dashboard web multiusuário somente em 127.0.0.1, autentica contas locais com scrypt, cria sessões HttpOnly/expiráveis/revogáveis, limita tentativas e aplica memberships reader/contributor/admin por organização/repositório em cada autorização; a ausência de membership falha fechado."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/console-auth.ts", "docs/security/multi-user-console.md"]
+    tests: ["packages/cli/src/console-auth.test.ts :: console authentication isolates sessions and enforces exact repository roles", "packages/cli/src/console-auth.test.ts :: local console serves authenticated dashboard only on loopback and revokes its cookie at logout", "packages/cli/src/console-auth.test.ts :: local console rejects cross-origin login and throttles repeated failures"]
   - id: AFR-134
     priority: P3
     milestone: "M15+"

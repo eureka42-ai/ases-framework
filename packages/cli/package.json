@@ -96,6 +96,8 @@
     "dist/community-agents.d.ts",
     "dist/support-ledger.js",
     "dist/support-ledger.d.ts",
+    "dist/console-auth.js",
+    "dist/console-auth.d.ts",
     "dist/assessment.js",
     "dist/assessment.d.ts",
     "dist/interview.js",

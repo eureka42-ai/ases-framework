@@ -40,6 +40,8 @@ export { createCommunityAgentCatalog } from "./community-agents.js";
 export type { CommunityAgentCatalogOptions, CommunityAgentQuery, CommunityAgentRelease, DiscoveredCommunityAgent } from "./community-agents.js";
 export { createSupportLedger } from "./support-ledger.js";
 export type { IncidentSeverity, IncidentStatus, SlaPolicy, SlaTarget, SupportIncident, SupportIncidentEvent, SupportIncidentView } from "./support-ledger.js";
+export { createConsoleAuth, createLocalConsoleApp, hashConsolePassword, startLocalConsole } from "./console-auth.js";
+export type { ConsoleAction, ConsoleAuthOptions, ConsoleMembership, ConsoleRole, ConsoleSession, ConsoleUserRecord, LocalConsoleOptions } from "./console-auth.js";
 export { createSafeLogRecord, writeSafeLog } from "./logging.js";
 export type { SafeLogRecord, SafeLogResult } from "./logging.js";
 export { redactSensitiveText } from "./memory.js";

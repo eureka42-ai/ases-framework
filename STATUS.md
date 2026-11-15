@@ -101,6 +101,7 @@ Atualizado em: 2026-11-15
 - AFR-140 implementado localmente: benchmark acumula custos em USD somente quando informados pelo adapter, compara sucesso/latência por fronteira de Pareto e desativa a dimensão custo se houver observações incompletas. Não estima preços. Evidência: `evidence/M15-2026-11-15-progress-15.md`.
 - AFR-135 implementado localmente: catálogo de releases comunitárias com busca, filtros, ordenação SemVer, compatibilidade e marcação de fonte confiável. Descoberta não instala nem executa código. Ver `docs/security/community-agents.md`.
 - AFR-139 implementado localmente: ledger em memória com metas por severidade, prazos de resposta/resolução, eventos de transição e medição de violações. Persistência, alertas e operação gerenciada não estão incluídos. Ver `docs/security/support-ledger.md`.
+- AFR-133 implementado localmente: console web multiusuário com login scrypt, sessões em memória HttpOnly, RBAC por organização/repo, rate limit e bind obrigatório em loopback. SSO e hospedagem pública não estão incluídos. Ver `docs/security/multi-user-console.md`.
 - AFR-044 implementado: catálogo de provider/modelo valida capacidades e guarda a fonte e a data de observação sem alegar verificação live.
 - AFR-045 implementado: roteador escolhe provider que declara todas as capabilities exigidas e rejeita seleção impossível.
 - AFR-049 implementado: API reporta seleção `host-managed` no modo host e deixa claro que o ASES não escolhe o modelo do CLI hospedeiro.
