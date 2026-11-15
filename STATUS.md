@@ -12,7 +12,7 @@ Atualizado em: 2026-11-15
 - M10: IMPLEMENTED_LOCALLY (memória local com consentimento/escopo/TTL/origem/inspect/delete, ContextBundle com integridade/redaction e import ZIP seguro com preview e contenção de caminhos)
 - M11: IMPLEMENTED_LOCALLY (AFR-084..100; MCP HTTP OAuth Resource Server e testes de rota local; Authorization Server real ainda não exercitado)
 - M12: IMPLEMENTED_LOCALLY (SDK, contrato, integridade, compatibilidade, aprovação de permissões e remoção segura AFR-091..095)
-- M13: IN_PROGRESS (CI Node 22/24 e supply-chain passaram no run 43728310089; provenance SLSA e SBOM SPDX do pacote baixado foram verificadas contra o workflow `ci.yml`; resta autorização da release AFR-104)
+- M13: IN_PROGRESS (CI Node 22/24 e supply-chain passaram no run 43728768348; provenance SLSA e SBOM SPDX do pacote baixado foram verificadas contra o workflow `ci.yml`; resta autorização da release AFR-104)
 - M6: IMPLEMENTED (AFR-041..050 concluídos localmente; probe real é opt-in e ainda não executado contra serviço externo)
 - Repositório Git: branch `main`; plugins Codex/Claude disponíveis no repositório público; AFR-030 implementado nesta rodada
 - Fonte diretora: presente e lida
@@ -42,17 +42,18 @@ Atualizado em: 2026-11-15
 - `ases host plan` mostra diffs; `ases host apply` e `ases host uninstall` são somente leitura por padrão e só alteram o workspace com `--apply`. Manifestos por host guardam hashes, arquivos modificados são preservados e falhas parciais tentam rollback de arquivos/diretórios recém-criados. Testes exercitam os quatro adapters em workspaces temporários.
 - `ases mcp <workspace>` serve três ferramentas de consulta read-only sobre o workspace fixado via SDK MCP oficial; suporta protocolo moderno e handshake legado, com stdout reservado a JSON-RPC.
 - `ases mcp <workspace> --http` opta por Streamable HTTP via SDK MCP oficial como OAuth Resource Server: introspecção RFC 7662, checagem de active/exp/audience/scopes, metadados RFC 9728/8414 e fail-closed. Listener padrão é loopback; bind remoto exige URL HTTPS atrás de proxy TLS confiável. Testes locais cobrem metadata, 401, 403 e discovery autenticado; Authorization Server real ainda não foi conectado.
+- `ases requirements graph [workspace] [--product id] [--json]` exporta Mermaid determinístico para requisitos, decisões, testes, evidências e bloqueios; labels são escapadas, IDs são hashados e não há dependência gráfica no CLI. Ver `evidence/M15-2026-11-15-progress-1.md`.
 - Leitura de catálogo agora rejeita arquivo catalog symlinkado ou cujo caminho canonicalizado saia do workspace.
 - Hosts locais detectados nesta sessão: Codex 0.169.0, Claude Code 2.1.323, Kimi 2.5.3 e Gemini 0.42.0.
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (119/119 na última execução local); `pnpm test` também compila TypeScript e valida as integrações. CI remoto mais recente antes desta alteração passou em Node.js 22/24 e supply-chain; novo CI será iniciado após o push.
+- Testes unitários: PASS (122/122 na última execução local); `pnpm test` também compila TypeScript e valida as integrações. CI remoto do código antes desta alteração passou em Node.js 22/24 e supply-chain.
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 6 Skills sincronizadas).
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; tarball RC1 instalado em workspace temporário; `ases --version` e `ases welcome --color`: PASS. A primeira instalação revelou módulos ausentes e foi corrigida antes do segundo empacotamento.
-- Backlog AFR-001..140: 105 requisitos IMPLEMENTED e ligados a código/testes/evidência; 35 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 106 requisitos IMPLEMENTED e ligados a código/testes/evidência; 34 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -186,6 +187,7 @@ Atualizado em: 2026-11-15
 - `evidence/M11-2026-11-15-progress-2.md`
 - `evidence/M11-2026-11-15-progress-3.md`
 - `evidence/M11-2026-11-15-progress-4.md`
+- `evidence/M15-2026-11-15-progress-1.md`
 - `evidence/M12-2026-11-15-progress-1.md`
 - `evidence/M12-2026-11-15-progress-2.md`
 - `evidence/M13-2026-11-15-progress-1.md`

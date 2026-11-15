@@ -13,6 +13,7 @@ import { resolveConfigLayers } from "./config-resolution.js";
 import { createHostPlan, HOSTS, type HostId } from "./host-plan.js";
 import { applyHostIntegration, restoreHostBackup, uninstallHostIntegration, updateHostIntegration } from "./host-install.js";
 import { removeInstalledPlugin } from "./plugin-lifecycle.js";
+import { renderTraceabilityGraph } from "./traceability-graph.js";
 
 export { VERSION } from "./version.js";
 export { indexRagSources, RagAccessError, refreshRagIndex, retrieveRequirement, searchRag } from "./rag.js";
@@ -33,6 +34,7 @@ export type { PluginContract, PluginContractCase, PluginManifest, PluginValidati
 export { createPluginInstallManifest, removeInstalledPlugin } from "./plugin-lifecycle.js";
 export type { PluginInstallManifest, PluginRemovalResult } from "./plugin-lifecycle.js";
 export { restoreHostBackup } from "./host-install.js";
+export { renderTraceabilityGraph } from "./traceability-graph.js";
 
 export interface CommandResult {
   exitCode: number;
@@ -72,6 +74,7 @@ Comandos disponíveis:
   catalog import-ases300 <md> Importa e valida a fonte ASES-300 local
   catalog import-product <id> <md> [workspace] Importa requisitos específicos separados
   requirements list|show|trace  Consulta catálogo e trilha de evidências [--product id]
+  requirements graph [dir]  Exporta o grafo de decisões, testes e evidências em Mermaid
   requirements set-status <workspace> <REQ-ID> <status> [--product id|--evidence arquivo --execution-context texto [--evidence-expires-at ISO]|--decision DEC|--test ref|--na-reason texto|--blocked-by ref --reason texto]
   requirements set-decision <workspace> <REQ-ID> <state> [--product id|--ref ADR --reason texto]
   plugin remove <plugin-id> [workspace]  Remove arquivos ASES inalterados (--apply para executar)
@@ -415,6 +418,18 @@ export async function run(argv: string[]): Promise<CommandResult> {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_PRODUCT_CATALOG_IMPORT", error: message }, null, 2) : `Falha ao importar catálogo do produto: ${message}` };
+    }
+  }
+  if (command === "requirements" && args[1] === "graph") {
+    try {
+      const productId = optionValues(argv, "--product")[0];
+      const workspace = args.slice(2).filter((arg) => arg !== productId && arg !== "--json")[0] ?? process.cwd();
+      const catalog = await readCatalog(workspace, productId);
+      const graph = renderTraceabilityGraph(catalog);
+      return { exitCode: 0, output: json ? JSON.stringify({ format: "mermaid", catalog: catalog.catalog, ...(catalog.productId ? { productId: catalog.productId } : {}), graph }, null, 2) : graph };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_CATALOG_UNAVAILABLE", error: message }, null, 2) : `Não foi possível gerar o grafo: ${message}\nImporte a fonte de requisitos localmente primeiro.` };
     }
   }
   if (command === "requirements" && ["list", "show", "trace"].includes(args[1] ?? "")) {

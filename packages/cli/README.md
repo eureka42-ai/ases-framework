@@ -40,6 +40,7 @@ ases help
 ases welcome --color
 ases doctor .
 ases interview .
+ases requirements graph . > traceability.mmd
 ```
 
 ## Optional authenticated HTTP MCP

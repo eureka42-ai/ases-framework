@@ -26,7 +26,7 @@ export interface GeneralRequirement {
   history?: Array<{ from: string; to: string; at: string }>;
 }
 
-type CatalogFile = { schemaVersion: "1"; catalog: string; productId?: string; source: { path: string; sha256: string }; status: string; requirements: GeneralRequirement[] };
+export type CatalogFile = { schemaVersion: "1"; catalog: string; productId?: string; source: { path: string; sha256: string }; status: string; requirements: GeneralRequirement[] };
 
 function catalogPath(workspace: string, productId?: string): string {
   if (!productId) return join(resolve(workspace), ".ases", "catalogs", "ases-300.json");

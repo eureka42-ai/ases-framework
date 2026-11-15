@@ -48,6 +48,8 @@
     "dist/brand.d.ts",
     "dist/catalog.js",
     "dist/catalog.d.ts",
+    "dist/traceability-graph.js",
+    "dist/traceability-graph.d.ts",
     "dist/rag.js",
     "dist/rag.d.ts",
     "dist/memory.js",

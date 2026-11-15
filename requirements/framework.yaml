@@ -1358,14 +1358,14 @@ requirements:
     priority: P2
     milestone: "M15+"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Visualização do grafo de rastreabilidade."
     acceptanceCriteria:
       - id: AC-AFR-113-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Visualização do grafo de rastreabilidade."
+        description: "`ases requirements graph [workspace] [--product id]` exporta Mermaid flowchart determinístico com nós e arestas para requisito, decisões, testes, evidências (integridade) e bloqueios; IDs são hashados e labels escapam HTML, aspas e quebras de linha para reduzir risco de injeção de sintaxe. `--json` devolve metadados e o Mermaid sem gravar arquivos."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/traceability-graph.ts", "packages/cli/src/index.ts", "README.md"]
+    tests: ["packages/cli/src/traceability-graph.test.ts :: traceability Mermaid graph connects decisions, tests, evidence and blockers with escaped labels", "packages/cli/src/traceability-graph.test.ts :: requirements graph CLI exports Mermaid or JSON deterministically"]
   - id: AFR-114
     priority: P2
     milestone: "M15+"
