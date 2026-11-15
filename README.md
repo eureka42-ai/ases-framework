@@ -56,12 +56,12 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases doctor` | Implementado localmente | Node, plataforma, Git, npm, pnpm, workspace/config e ações corretivas |
 | `ases config validate` | Implementado no schema inicial | Configuração JSON bootstrap |
 | `ases config explain` | Implementado no schema inicial | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Em andamento | 72 implementados; 68 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
+| Backlog AFR-001..140 | Em andamento | 79 implementados; 61 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
 | Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |
 | Providers | SPI e mock local implementados | Sem provider remoto, credenciais ou inferência conectada |
-| Agents, RAG offline e ContextBundle | Implementados localmente | Workflows com gate independente; RAG com citações, ACL e refresh; memória local com consentimento/TTL e bundle com redaction/hash. [Guia RAG](docs/rag/offline-index.md) · [Guia de memória](docs/context/memory-and-bundles.md) |
+| Agents, RAG offline e ContextBundle | Implementados localmente | Workflows com gate independente; RAG com citações/ACL/refresh; memória local consentida; bundle com redaction/hash e import ZIP seguro. [Guia RAG](docs/rag/offline-index.md) · [Guia de memória](docs/context/memory-and-bundles.md) · [Guia de import](docs/context/bundle-import.md) |
 
 O estado operacional detalhado está em [`STATUS.md`](STATUS.md) e as evidências executadas ficam em [`evidence/`](evidence/).
 O plano e os gates da candidata npm estão em [`docs/RELEASE.md`](docs/RELEASE.md).
@@ -446,7 +446,7 @@ Resultados reais e limitações ficam em [`evidence/`](evidence/). Uma funcional
 | M4–M5 | MCP e adapters de hosts | MCP stdio, plano e lifecycle local seguro implementados; conexão em sessões reais dos hosts pendente |
 | M6–M8 | Providers, agents, skills e workflows | Implementados localmente; homologação em sessões reais dos hosts segue pendente |
 | M9 | RAG | Implementado localmente: busca offline, citação, ACL, filtros e invalidação |
-| M10 | Memória e ContextBundle | Implementado localmente; import seguro de bundle continua pendente |
+| M10 | Memória e ContextBundle | Implementado localmente; import seguro exige preview e rejeita conflitos |
 | M11–M13 | Evals, segurança, observabilidade e hardening | Planejado |
 | M14 | Release candidate e gate de v1 | Não autorizado |
 

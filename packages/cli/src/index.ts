@@ -18,6 +18,8 @@ export { indexRagSources, RagAccessError, refreshRagIndex, retrieveRequirement, 
 export type { RagIndex, RagQueryAccess, RagQueryFilters, RagQueryOptions, RagResult, RagSourceMetadata } from "./rag.js";
 export { createContextBundle, forgetMemory, inspectMemory, remember, verifyContextBundle } from "./memory.js";
 export type { ContextBundle, ContextBundleInput, ContextBundleItem, MemoryEntry, MemoryOrigin, MemoryScope } from "./memory.js";
+export { BundleArchiveError, importBundleArchive, previewBundleArchive } from "./bundle-archive.js";
+export type { BundleArchivePreview } from "./bundle-archive.js";
 
 export interface CommandResult {
   exitCode: number;
