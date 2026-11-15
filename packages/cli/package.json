@@ -88,6 +88,8 @@
     "dist/config-resolution.d.ts",
     "dist/agents.js",
     "dist/agents.d.ts",
+    "dist/agent-protocol.js",
+    "dist/agent-protocol.d.ts",
     "dist/assessment.js",
     "dist/assessment.d.ts",
     "dist/interview.js",

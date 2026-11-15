@@ -260,6 +260,8 @@ O engine de políticas é default-deny; ferramentas e planos de comando exigem a
 
 Observabilidade local, exportação OpenTelemetry/OTLP e consentimento revogável para telemetria remota, além de evals com fixtures versionadas, estão documentados em [observabilidade e avaliações](docs/security/observability.md).
 
+Para colaboração entre agentes no mesmo processo e projeto, `createAgentMessageBus` fornece ACL default-deny, filas limitadas e mensagens não executáveis; veja [mensageria local A2A](docs/security/agent-messaging.md).
+
 O SDK de plugins inclui template, validação de manifesto/integridade/fonte/compatibilidade, aprovação de permissões extras e contract tests. Consulte [SDK e contrato do registry](docs/plugins/sdk.md).
 
 Remova plugins instalados com `ases plugin remove <plugin-id> [workspace]`; o padrão gera plano sem escrever. Revise o resultado e passe `--apply` para executar. Arquivos editados, symlinks e dados fora do manifesto de propriedade são preservados. Consulte [lifecycle e remoção segura](docs/plugins/lifecycle.md).
