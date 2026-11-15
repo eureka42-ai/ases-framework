@@ -60,7 +60,7 @@ Atualizado em: 2026-11-15
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes automatizados: PASS (149/149; inclui A2A, OTLP, pack de conhecimento, templates, locale, intercâmbio de trackers e policy-as-code), schema sync, dashboard, benchmark, ranking de capabilities, HTTP local e E2E do CLI. Integrações validadas. CI de tracker, locale, templates, conhecimento e OTLP passou em Node.js 22/24 e audit/licenças/SBOM/proveniência (runs `43733719847`, `43734235205`, `43734785438`, `43735432022`, `43735960930`); CI A2A aguarda push.
+- Testes automatizados: PASS (149/149; inclui A2A, OTLP, pack de conhecimento, templates, locale, intercâmbio de trackers e policy-as-code), schema sync, dashboard, benchmark, ranking de capabilities, HTTP local e E2E do CLI. Integrações validadas. CI de tracker, locale, templates, conhecimento, OTLP e A2A passou em Node.js 22/24 e audit/licenças/SBOM/proveniência (runs `43733719847`, `43734235205`, `43734785438`, `43735432022`, `43735960930`, `43736222422`).
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 6 Skills sincronizadas).
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
