@@ -17,7 +17,7 @@ export interface ProviderResponse {
   text: string;
   provider: string;
   model: string;
-  usage: { inputTokens?: number; outputTokens?: number };
+  usage: { inputTokens?: number; outputTokens?: number; reportedCost?: { amountUsd: number; source: string } };
 }
 
 export type CostRecord =

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { runModelBenchmark, type ModelBenchmarkFixture } from "./benchmark.js";
+import { compareModelBenchmarkSummaries, runModelBenchmark, type ModelBenchmarkFixture } from "./benchmark.js";
 import { MockProvider, type Provider } from "./providers.js";
 
 const fixtures: ModelBenchmarkFixture[] = [
@@ -35,11 +35,52 @@ test("model benchmark is opt-in, fingerprinted and excludes prompts and model ou
     providerId: "local-fixture", modelId: "fixture-v1", attempts: 4, passed: 4, failed: 0, errors: 0, skipped: 0,
     successRate: 1, meanLatencyMs: first.summaries[0]!.meanLatencyMs, p95LatencyMs: first.summaries[0]!.p95LatencyMs,
     inputTokens: 12, inputTokenObservations: 4, outputTokens: 8, outputTokenObservations: 4,
+    reportedCostUsd: null, reportedCostObservations: 0,
+  });
+  assert.deepEqual(first.comparison, {
+    costComparable: false,
+    rows: [{ providerId: "local-fixture", modelId: "fixture-v1", rank: 1, successRate: 1, meanLatencyMs: first.summaries[0]!.meanLatencyMs, reportedCostUsd: null }],
   });
   const reportText = JSON.stringify(first);
   assert.equal(reportText.includes("return alpha"), false);
   assert.equal(reportText.includes("Answer:"), false);
   assert.equal(calls, 8);
+});
+
+test("model benchmark compares complete adapter-reported cost without estimating missing values", async () => {
+  const cheap: Provider = {
+    id: "cheap", capabilities: ["text"],
+    async generate(request) { return { text: request.prompt, provider: this.id, model: "model-cheap", usage: { reportedCost: { amountUsd: 0.002, source: "provider usage" } } }; },
+  };
+  const fast: Provider = {
+    id: "fast", capabilities: ["text"],
+    async generate(request) { return { text: request.prompt, provider: this.id, model: "model-fast", usage: { reportedCost: { amountUsd: 0.004, source: "provider usage" } } }; },
+  };
+  const report = await runModelBenchmark([cheap, fast], fixtures, { enabled: true });
+  assert.equal(report.comparison.costComparable, true);
+  assert.deepEqual(report.comparison.rows.map(({ providerId }) => providerId).sort(), ["cheap", "fast"]);
+  assert.ok(report.comparison.rows.every((row) => row.rank !== null));
+  assert.equal(report.summaries.find((summary) => summary.providerId === "cheap")?.reportedCostUsd, 0.004);
+  assert.equal(report.samples[0]?.reportedCostUsd, 0.002);
+
+  const unknownCost: Provider = {
+    id: "unknown", capabilities: ["text"],
+    async generate(request) { return { text: request.prompt, provider: this.id, model: "model-unknown", usage: {} }; },
+  };
+  const incomparable = compareModelBenchmarkSummaries([
+    ...report.summaries,
+    ...(await runModelBenchmark([unknownCost], fixtures, { enabled: true })).summaries,
+  ]);
+  assert.equal(incomparable.costComparable, false);
+  assert.equal(incomparable.rows.find((row) => row.providerId === "unknown")?.reportedCostUsd, null);
+
+  const malformedCost: Provider = {
+    id: "malformed-cost", capabilities: ["text"],
+    async generate(request) { return { text: request.prompt, provider: this.id, model: "model-malformed", usage: { reportedCost: { amountUsd: Number.MAX_VALUE, source: "invalid" } } }; },
+  };
+  const rejected = await runModelBenchmark([malformedCost], fixtures.slice(0, 1), { enabled: true });
+  assert.equal(rejected.samples[0]?.status, "ERROR");
+  assert.equal(rejected.samples[0]?.errorCode, "PROVIDER_FAILURE");
 });
 
 test("model benchmark keeps provider failures sanitized and missing evaluation criteria unscored", async () => {

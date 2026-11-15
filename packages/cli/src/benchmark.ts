@@ -23,6 +23,7 @@ export interface ModelBenchmarkSample {
   latencyMs: number;
   inputTokens: number | null;
   outputTokens: number | null;
+  reportedCostUsd: number | null;
   errorCode?: ProviderErrorCode;
 }
 
@@ -41,7 +42,19 @@ export interface ModelBenchmarkSummary {
   inputTokenObservations: number;
   outputTokens: number | null;
   outputTokenObservations: number;
+  reportedCostUsd: number | null;
+  reportedCostObservations: number;
 }
+
+export interface ModelBenchmarkComparisonRow {
+  providerId: string;
+  modelId: string | null;
+  rank: number | null;
+  successRate: number | null;
+  meanLatencyMs: number | null;
+  reportedCostUsd: number | null;
+}
+export interface ModelBenchmarkComparison { costComparable: boolean; rows: ModelBenchmarkComparisonRow[] }
 
 export interface ModelBenchmarkReport {
   schemaVersion: "1";
@@ -55,6 +68,7 @@ export interface ModelBenchmarkReport {
   status: "COMPLETED" | "SKIPPED";
   skipReason?: "explicit-opt-in-required";
   summaries: ModelBenchmarkSummary[];
+  comparison: ModelBenchmarkComparison;
   samples: ModelBenchmarkSample[];
 }
 
@@ -131,6 +145,7 @@ function summarize(samples: readonly ModelBenchmarkSample[]): ModelBenchmarkSumm
     const latencies = group.map((sample) => sample.latencyMs);
     const inputValues = group.flatMap((sample) => sample.inputTokens === null ? [] : [sample.inputTokens]);
     const outputValues = group.flatMap((sample) => sample.outputTokens === null ? [] : [sample.outputTokens]);
+    const costValues = group.flatMap((sample) => sample.reportedCostUsd === null ? [] : [sample.reportedCostUsd]);
     return {
       providerId: first.providerId,
       modelId: first.modelId,
@@ -146,8 +161,42 @@ function summarize(samples: readonly ModelBenchmarkSample[]): ModelBenchmarkSumm
       inputTokenObservations: inputValues.length,
       outputTokens: outputValues.length ? outputValues.reduce((sum, value) => sum + value, 0) : null,
       outputTokenObservations: outputValues.length,
+      reportedCostUsd: costValues.length ? Math.round(costValues.reduce((sum, value) => sum + value, 0) * 1_000_000) / 1_000_000 : null,
+      reportedCostObservations: costValues.length,
     };
   }).sort((a, b) => a.providerId < b.providerId ? -1 : a.providerId > b.providerId ? 1 : (a.modelId ?? "") < (b.modelId ?? "") ? -1 : (a.modelId ?? "") > (b.modelId ?? "") ? 1 : 0);
+}
+
+/** Pareto-ranks quality, latency and (only when complete) provider-reported cost. */
+export function compareModelBenchmarkSummaries(summaries: readonly ModelBenchmarkSummary[]): ModelBenchmarkComparison {
+  const candidates = summaries.filter((item) => item.successRate !== null && item.meanLatencyMs !== null);
+  const costComparable = candidates.length > 0 && candidates.every((item) => item.reportedCostObservations === item.attempts && item.reportedCostUsd !== null);
+  const dominates = (left: ModelBenchmarkSummary, right: ModelBenchmarkSummary): boolean => {
+    const noWorse = left.successRate! >= right.successRate! && left.meanLatencyMs! <= right.meanLatencyMs! && (!costComparable || left.reportedCostUsd! <= right.reportedCostUsd!);
+    const better = left.successRate! > right.successRate! || left.meanLatencyMs! < right.meanLatencyMs! || (costComparable && left.reportedCostUsd! < right.reportedCostUsd!);
+    return noWorse && better;
+  };
+  const ranks = new Map<ModelBenchmarkSummary, number>();
+  let remaining = [...candidates];
+  let rank = 1;
+  while (remaining.length) {
+    const front = remaining.filter((item) => !remaining.some((other) => other !== item && dominates(other, item)));
+    if (!front.length) break;
+    for (const item of front) ranks.set(item, rank);
+    const frontSet = new Set(front);
+    remaining = remaining.filter((item) => !frontSet.has(item));
+    rank += 1;
+  }
+  const rows = summaries.map((item) => ({
+    providerId: item.providerId, modelId: item.modelId, rank: ranks.get(item) ?? null,
+    successRate: item.successRate, meanLatencyMs: item.meanLatencyMs,
+    reportedCostUsd: item.reportedCostUsd
+  })).sort((left, right) => (left.rank ?? Number.MAX_SAFE_INTEGER) - (right.rank ?? Number.MAX_SAFE_INTEGER)
+    || (right.successRate ?? -1) - (left.successRate ?? -1)
+    || (left.meanLatencyMs ?? Number.MAX_SAFE_INTEGER) - (right.meanLatencyMs ?? Number.MAX_SAFE_INTEGER)
+    || (costComparable ? (left.reportedCostUsd ?? Number.MAX_SAFE_INTEGER) - (right.reportedCostUsd ?? Number.MAX_SAFE_INTEGER) : 0)
+    || left.providerId.localeCompare(right.providerId) || (left.modelId ?? "").localeCompare(right.modelId ?? ""));
+  return { costComparable, rows };
 }
 
 /** Runs a sequential, bounded comparison. Provider calls are opt-in; response text/prompts are never retained in the report. */
@@ -164,7 +213,7 @@ export async function runModelBenchmark(
   const benchmarkId = sha256(JSON.stringify({ fixtureSetSha256, providerIds, repetitions, timeoutMs })).slice(0, 24);
   const startedAt = new Date().toISOString();
   if (options.enabled !== true) {
-    return { schemaVersion: "1", benchmarkId, fixtureSetSha256, providerIds, startedAt, completedAt: new Date().toISOString(), repetitions, timeoutMs, status: "SKIPPED", skipReason: "explicit-opt-in-required", summaries: [], samples: [] };
+    return { schemaVersion: "1", benchmarkId, fixtureSetSha256, providerIds, startedAt, completedAt: new Date().toISOString(), repetitions, timeoutMs, status: "SKIPPED", skipReason: "explicit-opt-in-required", summaries: [], comparison: { costComparable: false, rows: [] }, samples: [] };
   }
 
   const samples: ModelBenchmarkSample[] = [];
@@ -179,7 +228,8 @@ export async function runModelBenchmark(
           if (!response || typeof response.text !== "string" || typeof response.provider !== "string" || typeof response.model !== "string" || !response.model.trim()) throw new ProviderError("PROVIDER_FAILURE", "benchmark adapter returned malformed output");
           const inputTokens = response.usage?.inputTokens;
           const outputTokens = response.usage?.outputTokens;
-          if ((inputTokens !== undefined && (!Number.isInteger(inputTokens) || inputTokens < 0)) || (outputTokens !== undefined && (!Number.isInteger(outputTokens) || outputTokens < 0))) throw new ProviderError("PROVIDER_FAILURE", "benchmark adapter returned malformed usage");
+          const reportedCost = response.usage?.reportedCost;
+          if ((inputTokens !== undefined && (!Number.isInteger(inputTokens) || inputTokens < 0)) || (outputTokens !== undefined && (!Number.isInteger(outputTokens) || outputTokens < 0)) || (reportedCost !== undefined && (!Number.isFinite(reportedCost.amountUsd) || reportedCost.amountUsd < 0 || reportedCost.amountUsd > 1_000_000_000 || typeof reportedCost.source !== "string" || !reportedCost.source.trim() || reportedCost.source.length > 200))) throw new ProviderError("PROVIDER_FAILURE", "benchmark adapter returned malformed usage");
           const expected = fixture.expectedAny ?? [];
           samples.push({
             providerId: provider.id,
@@ -191,13 +241,15 @@ export async function runModelBenchmark(
             latencyMs: Math.round((performance.now() - started) * 100) / 100,
             inputTokens: inputTokens ?? null,
             outputTokens: outputTokens ?? null,
+            reportedCostUsd: reportedCost?.amountUsd ?? null,
           });
         } catch (error) {
           const normalized = error instanceof ProviderError ? error : new ProviderError("PROVIDER_FAILURE", "benchmark provider call failed", { cause: error });
-          samples.push({ providerId: provider.id, modelId: null, fixtureId: fixture.id, fixtureVersion: fixture.version, repetition, status: "ERROR", latencyMs: Math.round((performance.now() - started) * 100) / 100, inputTokens: null, outputTokens: null, errorCode: normalized.code });
+          samples.push({ providerId: provider.id, modelId: null, fixtureId: fixture.id, fixtureVersion: fixture.version, repetition, status: "ERROR", latencyMs: Math.round((performance.now() - started) * 100) / 100, inputTokens: null, outputTokens: null, reportedCostUsd: null, errorCode: normalized.code });
         }
       }
     }
   }
-  return { schemaVersion: "1", benchmarkId, fixtureSetSha256, providerIds, startedAt, completedAt: new Date().toISOString(), repetitions, timeoutMs, status: "COMPLETED", summaries: summarize(samples), samples };
+  const summaries = summarize(samples);
+  return { schemaVersion: "1", benchmarkId, fixtureSetSha256, providerIds, startedAt, completedAt: new Date().toISOString(), repetitions, timeoutMs, status: "COMPLETED", summaries, comparison: compareModelBenchmarkSummaries(summaries), samples };
 }
