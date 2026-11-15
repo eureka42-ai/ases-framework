@@ -746,26 +746,26 @@ requirements:
     priority: P1
     milestone: "M8"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Workflow persistir estado e executar checkpoint."
     acceptanceCriteria:
       - id: AC-AFR-062-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Workflow persistir estado e executar checkpoint."
+        description: "O estado do workflow é salvo atomicamente em `.ases/workflows/<id>.json`, com diretórios locais não symlinkados, ordem, passos completos, próximo índice e hash da definição."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/workflows.ts"]
+    tests: ["packages/cli/src/workflows.test.ts :: workflow checkpoints persist and resume only against the same definition"]
   - id: AFR-063
     priority: P1
     milestone: "M8"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Workflow retomar após interrupção controlada."
     acceptanceCriteria:
       - id: AC-AFR-063-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Workflow retomar após interrupção controlada."
+        description: "Workflow pode retomar do primeiro passo ainda não concluído quando checkpoint, ordem e hash correspondem à definição atual; alteração na definição invalida a retomada."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/workflows.ts"]
+    tests: ["packages/cli/src/workflows.test.ts :: workflow checkpoints persist and resume only against the same definition"]
   - id: AFR-064
     priority: P1
     milestone: "M8"
