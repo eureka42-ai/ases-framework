@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { CallBudget, createCostRecord, createProviderCatalogEntry, generate, generateForMode, getModelControl, MockProvider, ProviderError, selectCapableProvider, selectSafeFallback, type Provider } from "./providers.js";
+import { CallBudget, createCostRecord, createProviderCatalogEntry, generate, generateForMode, getModelControl, MockProvider, probeProvider, ProviderError, selectCapableProvider, selectSafeFallback, type Provider } from "./providers.js";
 
 test("mock provider gives deterministic offline responses", async () => {
   const provider = new MockProvider();
@@ -103,6 +103,30 @@ test("call budget blocks over-limit and concurrent reservations before provider 
   assert.equal(budget.reservedUsd, 0.7);
   await assert.rejects(new CallBudget(0).generate(slow, { prompt: "blocked" }, 0.01), (error: unknown) => error instanceof ProviderError && error.code === "BUDGET_EXCEEDED");
   assert.equal(calls, 1);
+});
+
+test("provider probe requires explicit opt-in and never returns content or raw errors", async () => {
+  let calls = 0;
+  const provider: Provider = {
+    id: "optional-real-adapter",
+    capabilities: ["text"],
+    async generate() {
+      calls += 1;
+      return { text: "sensitive response and sk-secret-value", provider: this.id, model: "remote-model", usage: { inputTokens: 3 } };
+    },
+  };
+  const skipped = await probeProvider(provider);
+  assert.equal(skipped.status, "skipped");
+  assert.equal(calls, 0);
+  const passed = await probeProvider(provider, { enabled: true });
+  assert.equal(passed.status, "passed");
+  assert.equal(JSON.stringify(passed).includes("sk-secret-value"), false);
+  assert.equal(JSON.stringify(passed).includes("sensitive response"), false);
+
+  const broken: Provider = { id: "broken", capabilities: ["text"], async generate() { throw new Error("request failed with sk-secret-value"); } };
+  const failed = await probeProvider(broken, { enabled: true });
+  assert.equal(failed.status, "failed");
+  assert.equal(JSON.stringify(failed).includes("sk-secret-value"), false);
 });
 
 test("provider SPI rejects invalid input and normalizes failures", async () => {

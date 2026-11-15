@@ -136,6 +136,27 @@ export interface GenerateOptions {
   signal?: AbortSignal;
 }
 
+export type ProviderProbeResult =
+  | { status: "skipped"; providerId: string; reason: "explicit-opt-in-required" }
+  | { status: "passed"; providerId: string; model: string; latencyMs: number; usage: ProviderResponse["usage"] }
+  | { status: "failed"; providerId: string; errorCode: ProviderErrorCode; latencyMs: number };
+
+/** Runs an explicitly enabled smoke request and returns metadata only, never content or raw errors. */
+export async function probeProvider(
+  provider: Provider,
+  options: GenerateOptions & { enabled?: boolean } = {},
+): Promise<ProviderProbeResult> {
+  if (options.enabled !== true) return { status: "skipped", providerId: provider.id, reason: "explicit-opt-in-required" };
+  const startedAt = Date.now();
+  try {
+    const response = await generate(provider, { prompt: "Reply with OK." }, options);
+    return { status: "passed", providerId: provider.id, model: response.model, latencyMs: Date.now() - startedAt, usage: response.usage };
+  } catch (error) {
+    const normalized = error instanceof ProviderError ? error : new ProviderError("PROVIDER_FAILURE", "provider probe failed", { cause: error });
+    return { status: "failed", providerId: provider.id, errorCode: normalized.code, latencyMs: Date.now() - startedAt };
+  }
+}
+
 export type ExecutionMode = "host" | "standalone" | "headless" | "offline";
 
 export interface ModelControl {

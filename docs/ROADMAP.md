@@ -6,19 +6,19 @@
 - M3 — IN_PROGRESS: entrevista inicial de perfil e stack implementada, com recomendações propostas e revisão de riscos; refinamento restante do backlog continua.
 - M4 — IMPLEMENTED_LOCALLY / HOST_VALIDATION_PENDING: MCP read-only, planos e adapters de hosts têm evidência local; sessões reais ainda não comprovam todos os hosts.
 - M5 — IN_PROGRESS: plugins/Skills experimentais e manifestos validados; lifecycle local `host apply/update/uninstall` implementado com propriedade por hash e backups; sessão real Claude/hosts e decisões de distribuição permanecem pendentes.
-- M6 — IN_PROGRESS: Provider SPI tipada, mock determinístico, catálogo de capacidades com proveniência, roteamento por capacidade, fallback restrito, classificação de custo, budget concorrente, controle de modelo declarado e bloqueio de chamadas remotas em `offline` implementados (AFR-041/042/044/045/046/047/048/049/050); 1 de 10 requisitos M6 segue pendente.
+- M6 — IMPLEMENTED: provider probe opt-in, SPI tipada, mock determinístico, catálogo com proveniência, roteamento por capacidade, fallback restrito, classificação de custo, budget concorrente, controle de modelo declarado e bloqueio remoto em `offline` concluídos localmente (AFR-041..050); o probe não foi executado contra serviço real.
 - M7–M13 — PLANNED: agents/workflows, RAG/memória, evals, segurança, observabilidade e hardening.
 - M14 — BLOCKED_ON_APPROVAL: release candidate e gate v1 dependem das decisões de licença, homologação e critérios de lançamento.
 
-Backlog estruturado atual: 45/140 requisitos `IMPLEMENTED`, 95/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
+Backlog estruturado atual: 46/140 requisitos `IMPLEMENTED`, 94/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
 
-Distribuição dos 95 pendentes no registro atual:
+Distribuição dos 94 pendentes no registro atual:
 
 | Marco | Pendentes | Observação |
 |---|---:|---|
 | M1 | 0 | AFR-028 passou no CI remoto Node.js 22/24 |
 | M5 | 4 | Claude, Codex, Kimi e Gemini em sessões reais |
-| M6 | 1 | Provider real opcional testável sem expor segredo |
+| M6 | 0 | M6 concluído localmente; provider live opcional não foi testado |
 | M7 | 10 | Permissões, contexto, execução de agentes, Skills e tools |
 | M8 | 8 | DSL e execução de workflows |
 | M9 | 8 | RAG offline, proveniência, ACL e integridade |
