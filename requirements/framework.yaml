@@ -1262,26 +1262,26 @@ requirements:
     priority: P1
     milestone: "M13"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Documentação de instalação usar comandos realmente testados."
     acceptanceCriteria:
       - id: AC-AFR-105-01
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Documentação de instalação usar comandos realmente testados."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["README.md", "README.en.md"]
+    tests: ["evidence/M13-2026-11-15-progress-3.md :: local install and documented command paths executed"]
   - id: AFR-106
     priority: P1
     milestone: "M13"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Documentação pt-BR e inglês cobrir comandos centrais."
     acceptanceCriteria:
       - id: AC-AFR-106-01
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Documentação pt-BR e inglês cobrir comandos centrais."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["README.md", "README.en.md"]
+    tests: ["manual review :: both guides cover installation, core CLI commands, host integrations and security gates"]
   - id: AFR-107
     priority: P1
     milestone: "M13"
