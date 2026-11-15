@@ -12,7 +12,7 @@ Atualizado em: 2026-11-14
 - M10: IMPLEMENTED_LOCALLY (memória local com consentimento/escopo/TTL/origem/inspect/delete, ContextBundle com integridade/redaction e import ZIP seguro com preview e contenção de caminhos)
 - M11: IN_PROGRESS (AFR-084..087/089/090/096..100 implementados localmente; resta MCP remoto autenticado AFR-088)
 - M12: IMPLEMENTED_LOCALLY (SDK, contrato, integridade, compatibilidade, aprovação de permissões e remoção segura AFR-091..095)
-- M13: IN_PROGRESS (AFR-101/102 E2E e CI, AFR-103 supply-chain, AFR-105/106 docs bilingues, AFR-107 TTY, AFR-108 erros, AFR-109 restore e AFR-110 limite de migrações implementados; attestação remota/releases ainda não executadas)
+- M13: IN_PROGRESS (CI Node 22/24 e supply-chain passaram no run 43725514699; provenance SLSA e SBOM SPDX verificadas localmente; resta autorização da release AFR-104)
 - M6: IMPLEMENTED (AFR-041..050 concluídos localmente; probe real é opt-in e ainda não executado contra serviço externo)
 - Repositório Git: branch `main`; plugins Codex/Claude disponíveis no repositório público; AFR-030 implementado nesta rodada
 - Fonte diretora: presente e lida
@@ -194,5 +194,6 @@ Atualizado em: 2026-11-14
 - `evidence/M13-2026-11-15-progress-6.md`
 - `evidence/M13-2026-11-15-progress-7.md`
 - `evidence/M13-2026-11-15-progress-8.md`
+- `evidence/M13-2026-11-15-progress-9.md`
 - `evidence/M9-2026-11-14-progress-2.md`
 
