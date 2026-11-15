@@ -6,13 +6,14 @@ import { createHash } from "node:crypto";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { renderLogo } from "./brand.js";
+import { VERSION } from "./version.js";
 import { runInterview } from "./interview.js";
 import { importAses300, importProductRequirements, readCatalog, updateDecision, updateRequirement } from "./catalog.js";
 import { resolveConfigLayers } from "./config-resolution.js";
 import { createHostPlan, HOSTS, type HostId } from "./host-plan.js";
 import { applyHostIntegration, uninstallHostIntegration, updateHostIntegration } from "./host-install.js";
 
-export const VERSION = "0.0.0-dev";
+export { VERSION } from "./version.js";
 
 export interface CommandResult {
   exitCode: number;

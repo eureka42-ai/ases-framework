@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "eureka42-ases",
-  "version": "0.0.0-dev",
+  "version": "0.1.0-rc.1",
   "description": "EUREKA42 ASES project discovery, stack assessment and verified software workflow",
   "author": {
     "name": "Eureka42"

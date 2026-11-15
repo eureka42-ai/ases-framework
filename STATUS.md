@@ -6,13 +6,13 @@ Atualizado em: 2026-11-14
 
 - M0: IMPLEMENTED / PARTIALLY_VERIFIED
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
-- M5: IN_PROGRESS (6/10 AFRs implementados; lifecycle local possui apply/update/uninstall explícitos)
+- M5: IN_PROGRESS (6/10 AFRs formalmente implementados; smoke de startup Codex passou, mas auto-descoberta da Skill não foi confirmada; lifecycle local possui apply/update/uninstall explícitos)
 - M6: IMPLEMENTED (AFR-041..050 concluídos localmente; probe real é opt-in e ainda não executado contra serviço externo)
-- Repositório Git: branch `main`; integrações Codex/Claude publicadas; AFR-030 implementado nesta rodada
+- Repositório Git: branch `main`; plugins Codex/Claude disponíveis no repositório público; AFR-030 implementado nesta rodada
 - Fonte diretora: presente e lida
-- ASES-300: DOCX e conversão Markdown presentes localmente; revisão estrutural confirmou 300 IDs/títulos e hashes íntegros; amostra visual de 14 páginas renderizadas conferida. Homologação editorial segue pendente: o DOCX renderizado mantém placeholder de sumário e a amostra não equivale a revisão integral.
+- ASES-300: DOCX e conversão Markdown presentes localmente; revisão estrutural confirmou 300 IDs/títulos e hashes íntegros; as 303 páginas foram renderizadas, com inspeção visual amostral registrada em 14 páginas. Homologação editorial segue pendente: há placeholder de sumário, ajuste no pseudocódigo da p. 33 e revisão bibliográfica/editorial solicitada no encerramento do documento.
 - ASES-500 separado: consolidação presente como reconstrução para validação; original independente ausente e homologação pendente.
-- Repositório GitHub público autorizado; publicação em diretórios oficiais de plugins e publicação de pacotes continuam pendentes de licença/aprovação específica.
+- Repositório GitHub público; código licenciado em Apache-2.0 com escopo delimitado; release pública ainda depende de validação de titularidade da marca, assets e fontes metodológicas.
 
 ## Implementação atual
 
@@ -32,7 +32,7 @@ Atualizado em: 2026-11-14
 - Integrações experimentais criadas para Codex, Claude Code, Kimi Code CLI e Gemini CLI.
 - AFR-030 implementado: `ases init` grava manifesto local com hashes; `ases uninstall` é read-only por padrão e só remove arquivos ASES inalterados com `--apply`, preservando edições, symlinks e dados do projeto.
 - Plugin portátil nativo do Codex implementado em `integrations/codex/`: manifesto Agent Plugins, onboarding Skill compartilhada, ícones Eureka42 e marketplace de repositório em `.agents/plugins/marketplace.json`.
-- Instalação e inventário do plugin Codex passaram em `CODEX_HOME=/tmp/eureka42-codex-smoke` isolado; `codex plugin list` mostrou `installed, enabled`. Isso não comprova a execução do onboarding numa conversa.
+- Instalação e inventário do plugin Codex passaram em `CODEX_HOME` isolado; depois, o startup verde foi executado em sessão autenticada read-only. O teste não comprova auto-descoberta da Skill ou configuração MCP no host.
 - `ases host plan` mostra diffs; `ases host apply` e `ases host uninstall` são somente leitura por padrão e só alteram o workspace com `--apply`. Manifestos por host guardam hashes, arquivos modificados são preservados e falhas parciais tentam rollback de arquivos/diretórios recém-criados. Testes exercitam os quatro adapters em workspaces temporários.
 - `ases mcp <workspace>` serve três ferramentas de consulta read-only sobre o workspace fixado via SDK MCP oficial; suporta protocolo moderno e handshake legado, com stdout reservado a JSON-RPC.
 - Leitura de catálogo agora rejeita arquivo catalog symlinkado ou cujo caminho canonicalizado saia do workspace.
@@ -42,9 +42,9 @@ Atualizado em: 2026-11-14
 - Build TypeScript strict: PASS.
 - Testes unitários: PASS (82/82); `pnpm test` também compila TypeScript e valida as integrações. O commit `6b72281` passou nos jobs Node.js 22 e 24 do GitHub Actions; ver [execução CI](https://github.com/eureka42-ai/ases-framework/actions/runs/43663572532).
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 6 Skills sincronizadas).
-- Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
+- Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
-- `npm pack` inclui módulos runtime e os quatro adapters; instalação local do tarball + `ases --version` e `ases host plan` em workspace externo: PASS.
+- `npm pack` inclui módulos runtime e os quatro adapters; tarball RC1 instalado em workspace temporário; `ases --version` e `ases welcome --color`: PASS. A primeira instalação revelou módulos ausentes e foi corrigida antes do segundo empacotamento.
 - Backlog AFR-001..140: 63 requisitos IMPLEMENTED e ligados a código/testes/evidência; 77 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
@@ -58,17 +58,17 @@ Atualizado em: 2026-11-14
 - Regressões cobrem MCP stdio moderno/legado, isolamento de workspace, rejeição de symlinks e segredo em logs, plano host/diff e prevenção de symlink escape, análise de contradições e riscos, persistência de achados na SPEC, inspeção segura de manifestos e retomada de decisões na entrevista, separação de catálogos, ciclo de decisões, rastreabilidade, bloqueios justificados, integridade, piso Node.js, identidade da entrevista, configuração segura e desinstalação conservadora.
 - Parser ASES-300: classificação e prioridade agora são extraídas separadamente quando aparecem na mesma linha; regressão automatizada PASS.
 - Validadores de integração: PASS (4 manifests, 2 marketplaces, 6 Skills).
-- Validação host estática nesta rodada: Claude schema PASS, profile de diretório bloqueado por licença; Gemini extension PASS; `kimi doctor` validou só os arquivos de configuração; Codex 0.169.0 detectado. Descoberta/execução em sessões de agente permanecem pendentes.
+- Validação host nesta rodada: Claude schema PASS, mas sessão impedida por falta de login; Gemini extension PASS, mas sem provider autenticado; Kimi validação estrutural PASS e sessão falhou com `EMFILE`; smoke de startup Codex passou em sessão real read-only, embora auto-descoberta da Skill/MCP ainda esteja pendente.
 - Validação continuada anterior: `git diff --check` PASS; `kimi doctor` PASS para configuração local (não é validação do plugin).
 - CI GitHub Actions observado em execução remota: PASS nos jobs Node.js 22 e 24, instalação congelada e `pnpm test`; AFR-028 atualizado para IMPLEMENTED. Ver `evidence/CI-2026-11-14.md`.
 - AFR-027 coberto por preservação idempotente no `init`, recusa de sobrescrita da entrevista sem `--resume` explícito e plano de instalação host somente leitura.
 - Matriz local de versões e contratos de integração dos quatro hosts registrada; hosts sem prova de carga/execução da Skill continuam `NOT_TESTED`, como cobre o teste de `host list`.
-- Claude Code: plugin validado com `claude plugin validate --strict`, marketplace do repositório validado, instalação isolada e inventário confirmaram duas Skills carregadas. A invocação em conversa permanece pendente; perfil de distribuição oficial Anthropic exige decisão de licença.
+- Claude Code: plugin validado com `claude plugin validate --strict`, marketplace do repositório validado, instalação isolada e inventário confirmaram duas Skills carregadas. Smoke em conversa segue pendente porque não há login; distribuição oficial depende da revisão dos direitos dos assets.
 - Guia Claude agora recomenda `--scope local`, explicita o padrão potencialmente global de `user` e usa `--keep-data` na desinstalação para preservar dados persistentes do plugin.
 - Instalação/listagem/desinstalação Claude repetidas em `CLAUDE_CONFIG_DIR` isolado com escopo `local`; marketplace removido no fim do ciclo. Ver `evidence/M5-2026-11-14-progress-5.md`.
 - Configuração MCP de projeto Claude gerada e conferida em workspace temporário; `claude mcp list` marcou `Pending approval`, sem inicializar o servidor.
 - Kimi: `host plan` agora prepara a Skill em `.agents/skills/`, que é auto-descoberta pelo projeto; `kimi --skills-dir <path> --help` reconheceu a opção. O plugin Beta não foi instalado e a sessão segue `NOT_TESTED`.
-- Codex CLI 0.169.0: plugin nativo instalado e listado como habilitado em configuração temporária isolada; invocação da Skill em conversa permanece `NOT_TESTED`.
+- Codex CLI 0.169.0: plugin RC1 habilitado temporariamente em sessão autenticada; `codex exec` read-only executou `ases welcome --color` como primeira ação e confirmou ANSI verde. Plugin e marketplace temporários foram removidos depois. Auto-descoberta da Skill e MCP do host ainda não foram comprovados.
 - SPI de providers implementada com erros tipados, timeout, cancelamento e provider mock determinístico; sem provider remoto ou credenciais.
 - Gemini: usuário autorizou confiança no workspace; recusou o aviso subsequente de instalação/injeção de instruções. `gemini extensions list` confirmou que nada foi instalado.
 - Claude Code oferece `--plugin-dir` para carga local temporária; smoke não interativo de AFR-031 foi tentado sem persistência/ferramentas, mas o CLI respondeu `Not logged in · Please run /login`; execução funcional continua pendente.
@@ -110,10 +110,10 @@ Atualizado em: 2026-11-14
 - A conversão ASES-300 requer revisão contra o DOCX antes de declarar o catálogo homologado.
 - O original independente ASES-500 não foi localizado; a consolidação permanece reconstrução para validação.
 - Evidências são comparadas ao SHA-256 ao consultar o catálogo; a validade semântica do conteúdo e a relação automática com mudanças no código ainda não são avaliadas.
-- A licença/copyright do software, metodologia e marca não foi aprovada; não é possível finalizar distribuição pública dos plugins.
+- O escopo Apache-2.0 foi preparado para software; titularidade do código, ativos de marca e fontes metodológicas ainda requer confirmação antes da distribuição externa.
 - Os quatro executáveis de host foram detectados, mas detecção não prova descoberta e execução do plugin em sessão real.
 - O roadmap completo M0–M14 é maior que o vertical slice atual; componentes não construídos continuam `PLANNED` ou `NOT_IMPLEMENTED`.
-- Para distribuição npm, o pacote ainda está marcado `private: true`, versão `0.0.0-dev`, e não existe decisão de licença/copyright aprovada. Isso impede publicação segura do CLI.
+- Pacote npm preparado como `@eureka42/ases-cli@0.1.0-rc.1`, sem `private: true`, com metadados Apache-2.0 e arquivos de licença no tarball; publicação ainda bloqueada por validação de titularidade de marca/assets e autorização do registry.
 
 ## Evidências
 
@@ -163,6 +163,9 @@ Atualizado em: 2026-11-14
 - `evidence/M8-2026-11-14-progress-6.md`
 - `evidence/CI-2026-11-14-progress-7.md`
 - `evidence/CI-2026-11-14-progress-8.md`
+- `evidence/LAUNCH-2026-11-14-progress-1.md`
+- `evidence/SOURCES-2026-11-14-review-1.md`
+- `evidence/M5-2026-11-14-progress-10.md`
 - `evidence/CI-2026-11-14-progress-5.md`
 - `evidence/CI-2026-11-14-progress-6.md`
 

@@ -1,6 +1,6 @@
 # Host integrations
 
-Status geral: `EXPERIMENTAL`. Os manifests de Claude Code e Gemini CLI passaram seus validadores locais; ainda falta smoke funcional de sessão para cada host. Codex e Kimi foram detectados, mas suas integrações permanecem `NOT_TESTED`.
+Status geral: `EXPERIMENTAL`. Codex executou o comando de startup verde em sessão autenticada; o auto-carregamento da Skill ainda não foi confirmado. Claude e Gemini passaram nos validadores estruturais, mas não puderam iniciar sessão autenticada neste ambiente; Kimi falhou ao iniciar com erro `EMFILE`.
 
 O EUREKA42 ASES possui um núcleo portátil e artefatos separados por host. Eles não são tratados como equivalentes porque cada CLI possui contratos próprios.
 
@@ -17,10 +17,10 @@ Versões coletadas em 2026-11-14 com os comandos locais indicados. A coluna de c
 
 | Host | Versão observada | Interface de integração no repositório | Validação objetiva | Execução da Skill na sessão |
 |---|---:|---|---|---|
-| Codex CLI | 0.169.0 (`codex --version`) | Plugin portátil com onboarding Skill, catálogo no marketplace do repositório, `AGENTS.md` e MCP stdio read-only opcional | Adicionado e instalado em `CODEX_HOME` temporário; `codex plugin list` mostrou `installed, enabled` | `NOT_TESTED` |
-| Claude Code | 2.1.323 (`claude --version`) | Plugin, command e Skill; carregamento via `--plugin-dir` ou marketplace do repositório | `claude plugin validate --strict` passou; instalado e inventariado em `CLAUDE_CONFIG_DIR` temporário isolado | Invocação da Skill em conversa `NOT_TESTED` |
-| Kimi Code CLI | 2.5.3 (`kimi --version`) | Skill via projeto `.agents/skills/` e pacote Beta `kimi.plugin.json` | `kimi --help` confirma `--skills-dir`; não lista subcomando `plugin`; manifest/Skill passam validação estrutural do repositório | `NOT_TESTED` |
-| Gemini CLI | 0.42.0 (`gemini --version`) | Extension com contexto, command, Skill e tema | `gemini extensions validate` passou; instalação foi recusada no prompt de confiança | `NOT_TESTED` |
+| Codex CLI | 0.169.0 (`codex --version`) | Plugin portátil com onboarding Skill, catálogo no marketplace do repositório, `AGENTS.md` e MCP stdio read-only opcional | Plugin RC1 habilitado em sessão autenticada; `codex exec --ephemeral --sandbox read-only` executou `ases welcome --color`, saída RGB verde confirmada; instalação temporária removida depois | Startup confirmado; auto-descoberta da onboarding Skill e MCP do host ainda não confirmados |
+| Claude Code | 2.1.323 (`claude --version`) | Plugin, command e Skill; carregamento via `--plugin-dir` ou marketplace do repositório | `claude plugin validate --strict` passou; `claude auth status` retornou `loggedIn: false` | Sessão bloqueada por ausência de login |
+| Kimi Code CLI | 2.5.3 (`kimi --version`) | Skill via projeto `.agents/skills/` e pacote Beta `kimi.plugin.json` | `kimi --help` confirma `--skills-dir`; não lista subcomando `plugin`; duas tentativas read-only falharam com `EMFILE: too many open files, watch`, inclusive em workspace temporário vazio | Sessão bloqueada pelo erro `EMFILE` do CLI |
+| Gemini CLI | 0.42.0 (`gemini --version`) | Extension com contexto, command, Skill e tema | `gemini extensions validate` passou; `gemini auth status` não encontrou provider configurado; instalação anteriormente recusada no prompt de confiança | Sessão não executada; requer autenticação e confirmação de confiança |
 
 Na instalação Claude documentada acima, `--scope local` limita a configuração ao checkout atual; consulte [`claude-code/README.md`](claude-code/README.md) para o ciclo de remoção com preservação de dados. Para promover uma linha a `SUPPORTED`, registre instalação ou carregamento, descoberta e execução funcional da Skill na versão anotada. Recolha as versões novamente antes de publicar uma release, pois esta matriz é uma observação local datada.
 

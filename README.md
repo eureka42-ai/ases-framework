@@ -11,9 +11,10 @@
 
 <p align="center">
   <code>STATUS: desenvolvimento inicial</code> ·
-  <code>VERSÃO: 0.0.0-dev</code> ·
+  <code>VERSÃO: 0.1.0-rc.1 (candidata)</code> ·
   <code>PUBLICAÇÃO: não publicada</code> ·
-  <code>LICENÇA: aguardando decisão</code>
+  <code>CÓDIGO: Apache-2.0</code> ·
+  <code>MÉTODO E MARCA: direitos reservados; validação de titularidade pendente</code>
 </p>
 
 > [!IMPORTANT]
@@ -63,6 +64,7 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | Agents, RAG e ContextBundle | Planejado | Não declarar suporte antes de implementação e evidência |
 
 O estado operacional detalhado está em [`STATUS.md`](STATUS.md) e as evidências executadas ficam em [`evidence/`](evidence/).
+O plano e os gates da candidata npm estão em [`docs/RELEASE.md`](docs/RELEASE.md).
 
 ## Requisitos para desenvolvimento
 
@@ -315,9 +317,9 @@ Os adapters experimentais ficam em [`integrations/`](integrations/):
 | Kimi Code CLI | `kimi.plugin.json` + `sessionStart.skill` | ativa o fluxo ao iniciar sessão |
 | Gemini CLI | extension, Skill, command e tema | tema `eureka42-teal` |
 
-Todos permanecem `NOT_TESTED` para execução comportamental de sessão. Claude Code também foi validado em instalação isolada: o marketplace foi aceito e o inventário confirmou duas Skills carregadas. Consulte [`integrations/README.md`](integrations/README.md) antes de instalar.
+O startup verde passou em uma sessão Codex autenticada; descoberta automática da Skill e integração MCP ainda não foram comprovadas. Claude Code também passou validação e instalação isolada, mas a invocação em conversa requer login. Kimi falhou ao iniciar com `EMFILE`; Gemini está sem provider autenticado. Consulte [`integrations/README.md`](integrations/README.md) antes de instalar.
 
-O plugin Claude Code também possui marketplace publicado no próprio repositório: `claude plugin marketplace add eureka42-ai/ases-framework` e `claude plugin install eureka42-ases@eureka42-ases-plugins`. O manifesto e a instalação local foram validados; a invocação da Skill em conversa ainda não foi verificada. A submissão ao diretório Anthropic aguarda definição de licença.
+O plugin Claude Code também possui marketplace no repositório: `claude plugin marketplace add eureka42-ai/ases-framework` e `claude plugin install eureka42-ases@eureka42-ases-plugins`. O manifesto e a instalação local foram validados; a invocação da Skill em conversa aguarda login. Publicação oficial requer revisão dos direitos dos assets de marca.
 
 Para revisar o que seria preparado para um workspace sem modificar arquivos, execute `ases host plan codex ./meu-projeto` (ou `claude-code`, `kimi-code`, `gemini-cli`). `ases host apply <host> ./meu-projeto` também é somente um plano; somente a opção explícita `--apply` grava arquivos dentro do workspace. Destinos divergentes interrompem toda a operação antes da escrita. `ases host update <host> <workspace>` mostra o plano sem gravar; com `--apply`, atualiza apenas arquivos regulares ainda iguais ao hash anteriormente instalado e grava uma cópia de cada versão substituída em `.ases/backups/hosts/<host>/`. Alterações locais geram conflito e nenhum arquivo é atualizado; os backups permanecem após uninstall. `ases host uninstall <host> <workspace>` também é somente leitura por padrão; com `--apply`, remove arquivos regulares cujo SHA-256 ainda corresponde ao manifesto ASES e preserva os que foram alterados. Arquivos compartilhados entre adapters são protegidos enquanto houver referência ativa; após remover o último consumidor, repita o comando do host proprietário para retirar o arquivo. Nenhum dos comandos altera configuração global do host.
 
@@ -531,21 +533,21 @@ chore: manutenção interna
 
 Os assets utilizados foram organizados a partir da pasta de identidade visual do projeto Eureka42. A marca segue a paleta Noite e Teal; não deve ser distorcida, redesenhada com glifo de sistema, receber glow, sombra ou cores não previstas.
 
-Proveniência e hashes dos arquivos devem ser preservados antes de publicação pública. O uso no repositório não resolve, por si só, as decisões pendentes de licença e titularidade.
+Proveniência e hashes dos arquivos devem ser preservados. O código do software está sob Apache-2.0; a marca e os materiais metodológicos têm termos separados. Titularidade e autorização de distribuição dos ativos Eureka42 ainda precisam ser confirmadas antes da publicação de pacotes ou plugins.
 
 ## Governança, licença e publicação
 
-Permanecem pendentes de decisão humana:
+Permanecem pendentes de decisão e validação:
 
-- licença do software e da metodologia;
-- titularidade e autorização de distribuição do ASES-300/500;
-- nome definitivo do pacote npm;
+- confirmação de que Eureka42 AI pode licenciar todas as contribuições do código sob Apache-2.0;
+- titularidade e autorização de distribuição da marca e dos materiais ASES-300/500;
+- acesso autorizado ao escopo npm `@eureka42`;
 - política de plugins comunitários;
 - hosts e plataformas oficialmente suportados;
 - orçamento de testes live e providers iniciais;
 - eventual serviço remoto e sua operação.
 
-Nenhum `npm publish`, release público, infraestrutura cloud ou configuração global será executado sem autorização explícita e gates de segurança.
+O candidato npm `@eureka42/ases-cli@0.1.0-rc.1` está preparado, mas não foi publicado. A publicação permanece bloqueada até os gates acima passarem. Nenhuma infraestrutura cloud foi criada.
 
 ---
 

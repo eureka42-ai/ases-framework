@@ -1,12 +1,37 @@
 {
   "name": "@eureka42/ases-cli",
-  "version": "0.0.0-dev",
-  "private": true,
+  "version": "0.1.0-rc.1",
+  "description": "EUREKA42 ASES project discovery, stack assessment, and verified software CLI",
+  "license": "Apache-2.0",
+  "author": "Eureka42 AI",
+  "homepage": "https://github.com/eureka42-ai/ases-framework/tree/main/packages/cli#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eureka42-ai/ases-framework.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/eureka42-ai/ases-framework/issues"
+  },
+  "keywords": ["eureka42", "ases", "framework", "cli", "agents", "mcp", "requirements"],
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "next"
+  },
   "type": "module",
   "bin": {
     "ases": "dist/bin.js"
   },
   "files": [
+    "LICENSE",
+    "LICENSES.md",
+    "NOTICE",
+    "TRADEMARKS.md",
+    "THIRD_PARTY_NOTICES.md",
+    "README.md",
     "dist/bin.js",
     "dist/bin.d.ts",
     "dist/index.js",
@@ -17,23 +42,38 @@
     "dist/catalog.d.ts",
     "dist/config-resolution.js",
     "dist/config-resolution.d.ts",
+    "dist/agents.js",
+    "dist/agents.d.ts",
     "dist/assessment.js",
     "dist/assessment.d.ts",
     "dist/interview.js",
     "dist/interview.d.ts",
     "dist/host-plan.js",
     "dist/host-plan.d.ts",
+    "dist/host-install.js",
+    "dist/host-install.d.ts",
     "dist/mcp-server.js",
     "dist/mcp-server.d.ts",
     "dist/recommendations.js",
     "dist/recommendations.d.ts",
     "dist/providers.js",
     "dist/providers.d.ts",
+    "dist/skills.js",
+    "dist/skills.d.ts",
+    "dist/tools.js",
+    "dist/tools.d.ts",
+    "dist/workflows.js",
+    "dist/workflows.d.ts",
+    "dist/workspace-path.js",
+    "dist/workspace-path.d.ts",
+    "dist/version.js",
+    "dist/version.d.ts",
     "dist/integrations"
   ],
   "scripts": {
     "build": "tsc -b",
-    "test": "node --test dist/**/*.test.js"
+    "test": "node --test dist/**/*.test.js",
+    "prepack": "pnpm --dir ../.. build"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "2.4.0",

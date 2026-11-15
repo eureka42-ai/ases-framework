@@ -5,12 +5,13 @@ import { McpServer } from "@modelcontextprotocol/server";
 import { serveStdio } from "@modelcontextprotocol/server/stdio";
 import { z } from "zod/v4";
 import { readCatalog } from "./catalog.js";
+import { VERSION } from "./version.js";
 
 const PRODUCT_ID = /^[a-z0-9][a-z0-9-]*$/;
 const REQUIREMENT_ID = /^REQ-\d{3}$/;
 
 function makeServer(workspace: string): McpServer {
-  const server = new McpServer({ name: "eureka42-ases", version: "0.0.0-dev" }, { capabilities: { tools: {} } });
+  const server = new McpServer({ name: "eureka42-ases", version: VERSION }, { capabilities: { tools: {} } });
   const catalogArgs = z.object({ productId: z.string().regex(PRODUCT_ID).optional() });
   const itemArgs = z.object({ id: z.string().regex(REQUIREMENT_ID), productId: z.string().regex(PRODUCT_ID).optional() });
 

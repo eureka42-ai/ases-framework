@@ -20,10 +20,14 @@ const skillFiles = [
   "integrations/gemini-cli/skills/ases-project-start/SKILL.md",
   "integrations/codex/skills/ases-project-start/SKILL.md"
 ];
+const cliPackage = JSON.parse(await readFile(resolve(root, "packages/cli/package.json"), "utf8"));
+const versionSource = await readFile(resolve(root, "packages/cli/src/version.ts"), "utf8");
+const sourceVersion = versionSource.match(/VERSION\s*=\s*"([^"]+)"/)?.[1];
+if (!sourceVersion || sourceVersion !== cliPackage.version) throw new Error("Versão da CLI diverge de packages/cli/package.json");
 
 for (const relative of jsonFiles) {
   const parsed = JSON.parse(await readFile(resolve(root, relative), "utf8"));
-  if (parsed.name !== "eureka42-ases" || typeof parsed.version !== "string") {
+  if (parsed.name !== "eureka42-ases" || parsed.version !== cliPackage.version) {
     throw new Error(`Manifest inválido: ${relative}`);
   }
 }
