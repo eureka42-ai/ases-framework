@@ -16,6 +16,30 @@ export interface WorkflowDefinition {
   steps: readonly WorkflowStep[];
 }
 
+/** A reusable, serial feature-delivery workflow. Approval enforcement belongs to the review handler. */
+export function createFeatureWorkflow(featureId = "feature-delivery"): WorkflowDefinition {
+  return {
+    id: featureId,
+    steps: [
+      { id: "analyze", kind: "agent", dependsOn: [] },
+      { id: "plan", kind: "agent", dependsOn: ["analyze"] },
+      { id: "implement", kind: "agent", dependsOn: ["plan"] },
+      { id: "test", kind: "tool", dependsOn: ["implement"] },
+      { id: "evidence", kind: "tool", dependsOn: ["test"] },
+      { id: "review", kind: "approval", dependsOn: ["evidence"] },
+    ],
+  };
+}
+
+export interface FeatureWorkflowHandlers {
+  analyze(context: WorkflowExecutionContext): Promise<void>;
+  plan(context: WorkflowExecutionContext): Promise<void>;
+  implement(context: WorkflowExecutionContext): Promise<void>;
+  test(context: WorkflowExecutionContext): Promise<void>;
+  evidence(context: WorkflowExecutionContext): Promise<void>;
+  review(context: WorkflowExecutionContext): Promise<WorkflowApproval>;
+}
+
 export class WorkflowValidationError extends Error {
   constructor(message: string) {
     super(message);
@@ -23,7 +47,7 @@ export class WorkflowValidationError extends Error {
   }
 }
 
-export type WorkflowExecutionErrorCode = "CANCELLED" | "TIMEOUT" | "RETRIES_EXHAUSTED";
+export type WorkflowExecutionErrorCode = "CANCELLED" | "TIMEOUT" | "RETRIES_EXHAUSTED" | "APPROVAL_REQUIRED";
 
 export class WorkflowExecutionError extends Error {
   constructor(readonly code: WorkflowExecutionErrorCode, message: string, options?: ErrorOptions) {
@@ -239,4 +263,29 @@ export async function executeWorkflow(
     await executeStep(stepId, context);
   }
   return { status: "COMPLETED", order };
+}
+
+/** Executes the feature lifecycle and fails closed unless its final reviewer is independent and approved. */
+export async function executeFeatureWorkflow(
+  handlers: FeatureWorkflowHandlers,
+  options: { dryRun: boolean; featureId?: string },
+): Promise<WorkflowRunResult> {
+  const workflow = createFeatureWorkflow(options.featureId);
+  return executeWorkflow(workflow, async (stepId, context) => {
+    if (stepId === "review") {
+      const approval = await handlers.review(context);
+      if (!isWorkflowApprovalSatisfied(approval)) {
+        throw new WorkflowExecutionError("APPROVAL_REQUIRED", "feature workflow requires explicit approval from an independent reviewer");
+      }
+      return;
+    }
+    switch (stepId) {
+      case "analyze": await handlers.analyze(context); return;
+      case "plan": await handlers.plan(context); return;
+      case "implement": await handlers.implement(context); return;
+      case "test": await handlers.test(context); return;
+      case "evidence": await handlers.evidence(context); return;
+      default: throw new WorkflowValidationError(`unknown feature workflow step: ${stepId}`);
+    }
+  }, options);
 }

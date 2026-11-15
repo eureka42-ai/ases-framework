@@ -1,9 +1,69 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { mkdtemp } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { spawnSync } from "node:child_process";
+import { mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createWorkflowCheckpoint, executeWorkflow, isWorkflowApprovalSatisfied, loadWorkflowCheckpoint, resumeWorkflow, runStepWithRetry, saveWorkflowCheckpoint, validateWorkflow, WorkflowDefinition, WorkflowExecutionError, WorkflowValidationError } from "./workflows.js";
+import { createFeatureWorkflow, createWorkflowCheckpoint, executeFeatureWorkflow, executeWorkflow, isWorkflowApprovalSatisfied, loadWorkflowCheckpoint, resumeWorkflow, runStepWithRetry, saveWorkflowCheckpoint, validateWorkflow, WorkflowDefinition, WorkflowExecutionError, WorkflowValidationError } from "./workflows.js";
+
+test("feature workflow runs tests, writes verifiable evidence, and requires independent review", async () => {
+  const workspace = await mkdtemp(join(tmpdir(), "ases-feature-flow-"));
+  const workflow = createFeatureWorkflow();
+  const expected = ["analyze", "plan", "implement", "test", "evidence", "review"];
+  assert.deepEqual(validateWorkflow(workflow), expected);
+
+  const executed: string[] = [];
+  let testOutput = "";
+  const handlers = {
+    analyze: async () => { executed.push("analyze"); },
+    plan: async () => { executed.push("plan"); },
+    implement: async () => { executed.push("implement"); },
+    test: async () => {
+      executed.push("test");
+      const fixture = join(workspace, "feature.smoke.test.mjs");
+      await writeFile(fixture, 'import assert from "node:assert/strict"; import test from "node:test"; test("feature behavior", () => assert.equal(2 + 2, 4));\n', { flag: "wx" });
+      const childEnv = { ...process.env };
+      delete childEnv.NODE_TEST_CONTEXT;
+      const outcome = spawnSync(process.execPath, ["--test", fixture], { cwd: workspace, encoding: "utf8", timeout: 10_000, env: childEnv });
+      assert.equal(outcome.status, 0, outcome.stderr || outcome.stdout);
+      testOutput = `${outcome.stdout}${outcome.stderr}`;
+      assert.match(testOutput, /pass 1/);
+      assert.match(testOutput, /fail 0/);
+    },
+    evidence: async () => {
+      executed.push("evidence");
+      assert.match(testOutput, /pass 1/);
+      assert.match(testOutput, /fail 0/);
+      const evidence = {
+        workflowId: workflow.id,
+        testCommand: "node --test feature.smoke.test.mjs",
+        testOutput,
+        testOutputSha256: createHash("sha256").update(testOutput).digest("hex"),
+      };
+      await writeFile(join(workspace, "feature-evidence.json"), `${JSON.stringify(evidence, null, 2)}\n`, { flag: "wx" });
+    },
+    review: async () => {
+      executed.push("review");
+      const evidence = JSON.parse(await readFile(join(workspace, "feature-evidence.json"), "utf8")) as { testOutput: string; testOutputSha256: string };
+      assert.equal(createHash("sha256").update(evidence.testOutput).digest("hex"), evidence.testOutputSha256);
+      return { status: "APPROVED" as const, authorId: "implementer", reviewerId: "independent-reviewer" };
+    },
+  };
+  const result = await executeFeatureWorkflow(handlers, { dryRun: false });
+
+  assert.equal(result.status, "COMPLETED");
+  assert.deepEqual(executed, expected);
+  const evidence = JSON.parse(await readFile(join(workspace, "feature-evidence.json"), "utf8")) as { testOutputSha256: string };
+  assert.match(evidence.testOutputSha256, /^[a-f0-9]{64}$/);
+
+  const blockedHandlers = {
+    analyze: async () => undefined, plan: async () => undefined, implement: async () => undefined,
+    test: async () => undefined, evidence: async () => undefined,
+    review: async () => ({ status: "APPROVED" as const, authorId: "implementer", reviewerId: " IMPLEMENTER " }),
+  };
+  await assert.rejects(executeFeatureWorkflow(blockedHandlers, { dryRun: false }), (error: unknown) => error instanceof WorkflowExecutionError && error.code === "APPROVAL_REQUIRED");
+});
 
 test("workflow validator returns a deterministic dependency order", () => {
   assert.deepEqual(validateWorkflow({

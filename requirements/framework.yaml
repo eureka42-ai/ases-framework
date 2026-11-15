@@ -794,14 +794,14 @@ requirements:
     priority: P1
     milestone: "M8"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Workflow de feature implementar teste e evidência reais."
     acceptanceCriteria:
       - id: AC-AFR-066-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Workflow de feature implementar teste e evidência reais."
+        description: "O workflow de feature executa análise, plano, implementação, teste, grava evidência com SHA-256 e falha fechado sem aprovação explícita de revisor independente."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/workflows.ts", "docs/workflows/feature-development.md"]
+    tests: ["packages/cli/src/workflows.test.ts :: feature workflow runs tests, writes verifiable evidence, and requires independent review"]
   - id: AFR-067
     priority: P1
     milestone: "M8"
