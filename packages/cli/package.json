@@ -94,6 +94,8 @@
     "dist/multi-repo.d.ts",
     "dist/community-agents.js",
     "dist/community-agents.d.ts",
+    "dist/support-ledger.js",
+    "dist/support-ledger.d.ts",
     "dist/assessment.js",
     "dist/assessment.d.ts",
     "dist/interview.js",

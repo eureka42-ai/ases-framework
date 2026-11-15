@@ -1670,14 +1670,14 @@ requirements:
     priority: P3
     milestone: "M15+"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Controle de SLA, incidentes e suporte empresarial."
     acceptanceCriteria:
       - id: AC-AFR-139-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Controle de SLA, incidentes e suporte empresarial."
+        description: "createSupportLedger valida metas P1–P4, mede prazos de primeira resposta/resolução, registra transições de incidentes com ator e timestamp, calcula violações e impede transições inválidas; implementação local não presume alertas ou persistência externa."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/support-ledger.ts", "docs/security/support-ledger.md"]
+    tests: ["packages/cli/src/support-ledger.test.ts :: support ledger measures SLA deadlines and records valid incident transitions", "packages/cli/src/support-ledger.test.ts :: support ledger validates SLA policies and returns detached incident snapshots"]
   - id: AFR-140
     priority: P3
     milestone: "M15+"
