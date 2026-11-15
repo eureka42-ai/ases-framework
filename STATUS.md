@@ -9,6 +9,7 @@ Atualizado em: 2026-11-14
 - M5: IN_PROGRESS (6/10 AFRs formalmente implementados; smoke de startup Codex passou, mas auto-descoberta da Skill não foi confirmada; lifecycle local possui apply/update/uninstall explícitos)
 - M8: IMPLEMENTED_LOCALLY (AFR-061..068; workflow de feature testado com evidência hashada e aprovação independente)
 - M9: IMPLEMENTED_LOCALLY (RAG lexical offline com citações, proveniência, filtros de licença/versão/ACL, refresh/invalidação e permissão cross-project explícita)
+- M10: IN_PROGRESS (memória local com consentimento, escopo, TTL, origem, inspect/delete; ContextBundle com hash de integridade e redaction; import seguro pendente)
 - M6: IMPLEMENTED (AFR-041..050 concluídos localmente; probe real é opt-in e ainda não executado contra serviço externo)
 - Repositório Git: branch `main`; plugins Codex/Claude disponíveis no repositório público; AFR-030 implementado nesta rodada
 - Fonte diretora: presente e lida
@@ -47,7 +48,7 @@ Atualizado em: 2026-11-14
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; tarball RC1 instalado em workspace temporário; `ases --version` e `ases welcome --color`: PASS. A primeira instalação revelou módulos ausentes e foi corrigida antes do segundo empacotamento.
-- Backlog AFR-001..140: 72 requisitos IMPLEMENTED e ligados a código/testes/evidência; 68 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 77 requisitos IMPLEMENTED e ligados a código/testes/evidência; 63 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -105,7 +106,7 @@ Atualizado em: 2026-11-14
 
 1. Prioridade Claude Code: observar descoberta e executar `/eureka42-ases:ases-start` em sessão real para completar a evidência de AFR-031; depois avançar Codex (AFR-033), Kimi (AFR-032) e Gemini (AFR-034) conforme permissões de instalação já registradas.
 2. Prosseguir a entrevista com personas, autenticação, integrações, observabilidade e critérios de aceite.
-3. Iniciar M10 (memória/ContextBundle) e M11–M13 conforme dependências e critérios do backlog.
+3. Fechar AFR-082/083 (preview e import seguro de bundle); iniciar M11–M13 conforme dependências e critérios do backlog.
 
 ## Bloqueios de conclusão integral
 
@@ -174,5 +175,6 @@ Atualizado em: 2026-11-14
 - `evidence/M8-2026-11-14-progress-7.md`
 - `evidence/M9-2026-11-14-progress-1.md`
 - `evidence/M9-2026-11-14-progress-2.md`
+- `evidence/M10-2026-11-14-progress-1.md`
 - `evidence/M9-2026-11-14-progress-2.md`
 

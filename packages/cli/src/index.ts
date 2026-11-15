@@ -16,6 +16,8 @@ import { applyHostIntegration, uninstallHostIntegration, updateHostIntegration }
 export { VERSION } from "./version.js";
 export { indexRagSources, RagAccessError, refreshRagIndex, retrieveRequirement, searchRag } from "./rag.js";
 export type { RagIndex, RagQueryAccess, RagQueryFilters, RagQueryOptions, RagResult, RagSourceMetadata } from "./rag.js";
+export { createContextBundle, forgetMemory, inspectMemory, remember, verifyContextBundle } from "./memory.js";
+export type { ContextBundle, ContextBundleInput, ContextBundleItem, MemoryEntry, MemoryOrigin, MemoryScope } from "./memory.js";
 
 export interface CommandResult {
   exitCode: number;

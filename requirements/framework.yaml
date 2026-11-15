@@ -926,62 +926,62 @@ requirements:
     priority: P1
     milestone: "M10"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Memória registrar escopo, TTL, consentimento e origem."
     acceptanceCriteria:
       - id: AC-AFR-077-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Memória registrar escopo, TTL, consentimento e origem."
+        description: "remember exige consentimento explícito, escopo session/project, TTL de 1 segundo a 1 ano e origem; guarda tudo localmente com SHA-256 do valor."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/memory.ts"]
+    tests: ["packages/cli/src/memory.test.ts :: memory requires consent and retains scope, TTL, origin and inspectable content"]
   - id: AFR-078
     priority: P1
     milestone: "M10"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Memória permitir inspeção e exclusão efetiva."
     acceptanceCriteria:
       - id: AC-AFR-078-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Memória permitir inspeção e exclusão efetiva."
+        description: "inspectMemory filtra por escopo e oculta entradas expiradas por padrão; forgetMemory remove o arquivo e confirma se existia."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/memory.ts"]
+    tests: ["packages/cli/src/memory.test.ts :: memory hides expired entries and deletion removes data from disk"]
   - id: AFR-079
     priority: P1
     milestone: "M10"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "ContextBundle exportar decisões, REQs e checkpoints."
     acceptanceCriteria:
       - id: AC-AFR-079-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: ContextBundle exportar decisões, REQs e checkpoints."
+        description: "createContextBundle exporta somente as decisões, requisitos e checkpoints explícitos recebidos como entrada."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/memory.ts", "docs/context/memory-and-bundles.md"]
+    tests: ["packages/cli/src/memory.test.ts :: ContextBundle exports selected records, redacts secrets, and detects tampering"]
   - id: AFR-080
     priority: P1
     milestone: "M10"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "ContextBundle rejeitar hashes inconsistentes."
     acceptanceCriteria:
       - id: AC-AFR-080-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: ContextBundle rejeitar hashes inconsistentes."
+        description: "Export valida SHA-256 do conteúdo original; verifyContextBundle confere hash integral e estrutura do bundle, recusando alterações posteriores."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/memory.ts"]
+    tests: ["packages/cli/src/memory.test.ts :: ContextBundle exports selected records, redacts secrets, and detects tampering"]
   - id: AFR-081
     priority: P1
     milestone: "M10"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "ContextBundle remover segredos antes de exportar."
     acceptanceCriteria:
       - id: AC-AFR-081-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: ContextBundle remover segredos antes de exportar."
+        description: "ContextBundle redige tokens conhecidos, bearer credentials, chaves privadas e assignments de credenciais antes de serializar conteúdo, título ou caminho."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/memory.ts"]
+    tests: ["packages/cli/src/memory.test.ts :: ContextBundle exports selected records, redacts secrets, and detects tampering"]
   - id: AFR-082
     priority: P1
     milestone: "M10"

@@ -61,7 +61,7 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |
 | Providers | SPI e mock local implementados | Sem provider remoto, credenciais ou inferência conectada |
-| Agents e RAG offline | Implementado localmente | Workflows com gate independente; índice lexical com citações, ACL, hashes e refresh. [Guia RAG](docs/rag/offline-index.md); ContextBundle segue planejado |
+| Agents, RAG offline e ContextBundle | Implementados localmente | Workflows com gate independente; RAG com citações, ACL e refresh; memória local com consentimento/TTL e bundle com redaction/hash. [Guia RAG](docs/rag/offline-index.md) · [Guia de memória](docs/context/memory-and-bundles.md) |
 
 O estado operacional detalhado está em [`STATUS.md`](STATUS.md) e as evidências executadas ficam em [`evidence/`](evidence/).
 O plano e os gates da candidata npm estão em [`docs/RELEASE.md`](docs/RELEASE.md).
@@ -446,7 +446,7 @@ Resultados reais e limitações ficam em [`evidence/`](evidence/). Uma funcional
 | M4–M5 | MCP e adapters de hosts | MCP stdio, plano e lifecycle local seguro implementados; conexão em sessões reais dos hosts pendente |
 | M6–M8 | Providers, agents, skills e workflows | Implementados localmente; homologação em sessões reais dos hosts segue pendente |
 | M9 | RAG | Implementado localmente: busca offline, citação, ACL, filtros e invalidação |
-| M10 | Memória e ContextBundle | Planejado |
+| M10 | Memória e ContextBundle | Implementado localmente; import seguro de bundle continua pendente |
 | M11–M13 | Evals, segurança, observabilidade e hardening | Planejado |
 | M14 | Release candidate e gate de v1 | Não autorizado |
 
