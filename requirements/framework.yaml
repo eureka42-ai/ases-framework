@@ -1226,14 +1226,14 @@ requirements:
     priority: P1
     milestone: "M13"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "CI fazer lint/typecheck/unit/integration/build/smoke."
     acceptanceCriteria:
       - id: AC-AFR-102-01
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: CI fazer lint/typecheck/unit/integration/build/smoke."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: [".github/workflows/ci.yml", "package.json", "scripts/lint.mjs", "scripts/smoke-cli.mjs"]
+    tests: ["CI Node.js 22/24: lint, typecheck, build, test:unit, integrations:validate, smoke"]
   - id: AFR-103
     priority: P1
     milestone: "M13"

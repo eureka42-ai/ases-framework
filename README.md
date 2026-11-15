@@ -56,7 +56,7 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases doctor` | Implementado localmente | Node, plataforma, Git, npm, pnpm, workspace/config e ações corretivas |
 | `ases config validate` | Implementado no schema inicial | Configuração JSON bootstrap |
 | `ases config explain` | Implementado no schema inicial | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Em andamento | 96 implementados; 44 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
+| Backlog AFR-001..140 | Em andamento | 97 implementados; 43 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
 | Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |
@@ -113,9 +113,16 @@ ases --version
 
 ```bash
 corepack pnpm install --frozen-lockfile
+corepack pnpm lint
+corepack pnpm typecheck
 corepack pnpm build
+corepack pnpm test:unit
+corepack pnpm integrations:validate
+corepack pnpm smoke
 corepack pnpm test
 ```
+
+O workflow [`CI`](.github/workflows/ci.yml) roda os gates separadamente em Node.js 22 e 24. `lint` cobre whitespace rastreado e sintaxe dos scripts; typecheck e suíte verificam TypeScript e comportamento. Isso ainda não declara auditoria de dependências/licenças/SBOM.
 
 ## Primeiro uso
 
@@ -458,7 +465,8 @@ Resultados reais e limitações ficam em [`evidence/`](evidence/). Uma funcional
 | M9 | RAG | Implementado localmente: busca offline, citação, ACL, filtros e invalidação |
 | M10 | Memória e ContextBundle | Implementado localmente; import seguro exige preview e rejeita conflitos |
 | M11 | Evidências, segurança e evals | Em andamento; evidências, default-deny e guardas de comando/path implementados |
-| M12–M13 | SDK, registry, observabilidade e hardening | Planejado |
+| M12 | SDK e lifecycle seguro de plugins | Implementado localmente |
+| M13 | E2E e CI segmentado | Em andamento; release, docs bilingues, TUI, restore de backups e decisão de publicação seguem |
 | M14 | Release candidate e gate de v1 | Não autorizado |
 
 Consulte [`docs/ROADMAP.md`](docs/ROADMAP.md) e [`STATUS.md`](STATUS.md) para o próximo incremento seguro.

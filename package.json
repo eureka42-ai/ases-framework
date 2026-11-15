@@ -13,6 +13,10 @@
   ],
   "scripts": {
     "build": "tsc -b && node scripts/copy-host-integrations.mjs",
+    "lint": "node scripts/lint.mjs",
+    "typecheck": "tsc -b --pretty false",
+    "test:unit": "node --test packages/cli/dist/**/*.test.js scripts/*.test.mjs",
+    "smoke": "node scripts/smoke-cli.mjs",
     "check": "tsc -b --pretty false && node --test packages/cli/dist/**/*.test.js && pnpm run integrations:validate",
     "test": "pnpm run build && node --test packages/cli/dist/**/*.test.js scripts/*.test.mjs && pnpm run integrations:validate",
     "integrations:validate": "node scripts/validate-integrations.mjs",
