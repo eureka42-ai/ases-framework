@@ -16,9 +16,9 @@
 - M13 — IN_PROGRESS: E2E do CLI (AFR-101), CI (AFR-102), audit/license/SBOM/provenance (AFR-103), docs pt-BR/EN (AFR-105/106), saída/TTY (AFR-107), erros (AFR-108), restore hashado (AFR-109) e limites de migração (AFR-110) implementados; CI Node 22/24 e as duas atestações passaram no run 43728310089; autorização do release segue pendente.
 - M14 — BLOCKED_ON_APPROVAL: release candidate e gate v1 dependem das decisões de licença, homologação e critérios de lançamento.
 
-Backlog estruturado atual: 112/140 requisitos `IMPLEMENTED`, 28/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
+Backlog estruturado atual: 113/140 requisitos `IMPLEMENTED`, 27/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
 
-Distribuição dos 28 pendentes no registro atual:
+Distribuição dos 27 pendentes no registro atual:
 
 | Marco | Pendentes | Observação |
 |---|---:|---|
@@ -32,7 +32,9 @@ Distribuição dos 28 pendentes no registro atual:
 | M11 | 0 | MCP HTTP autenticado testado localmente; falta validação com um Authorization Server real |
 | M12 | 0 | SDK e lifecycle de plugins concluídos localmente |
 | M13 | 1 | Aprovação do release |
-| M15+ | 23 | Capacidades avançadas opcionais; não fazem parte do primeiro gate v1 |
+| M15+ | 22 | Capacidades avançadas opcionais; não fazem parte do primeiro gate v1 |
 
-O gate M14 não está representado por um requisito AFR separado; a autorização do release continua uma decisão humana conforme AFR-104. Os 28 itens pendentes são a contagem do backlog AFR, não uma previsão exata de rodadas até DONE. Aprovação de licença, homologação de fontes, validação de hosts e autenticação OAuth em provedor real são gates separados.
+AFR-126 (intercâmbio local de tarefas com trackers) foi implementado e validado em `evidence/M15-2026-11-15-progress-8.md`. O CLI exporta JSON neutro e importa com prévia, persistindo somente mediante `--apply`; sincronização com serviços remotos ainda não está incluída.
+
+O gate M14 não está representado por um requisito AFR separado; a autorização do release continua uma decisão humana conforme AFR-104. Os 27 itens pendentes são a contagem do backlog AFR, não uma previsão exata de rodadas até DONE. Aprovação de licença, homologação de fontes, validação de hosts e autenticação OAuth em provedor real são gates separados.
 

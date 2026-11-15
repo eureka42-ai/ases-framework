@@ -239,8 +239,12 @@ ases config schema --check schemas/ases.config.schema.json
 | `ases dashboard [workspace] [--product id] [--json]` | Gera snapshot HTML local de requisitos, workflows, integridade e custos registrados | stdout |
 | `ases requirements set-status <workspace> <REQ-ID> <status> [--product id]` | Atualiza estado e rastreabilidade; `VERIFIED` exige evidência hashada e contexto | Grava catálogo local |
 | `ases requirements set-decision <workspace> <REQ-ID> <state> [--product id]` | Atualiza decisão sem alterar estado da implementação | Grava catálogo local |
+| `ases tracker export [workspace] [--product id]` | Exporta tarefas em JSON neutro para importação em trackers | stdout |
+| `ases tracker import <bundle.json> [workspace] [--apply]` | Valida e pré-visualiza; com `--apply`, arquiva bundle local sem sobrescrever | `.ases/tracker-imports/` |
 
 Os demais comandos do documento-mestre são contratos planejados, não funcionalidades existentes. Eles somente serão documentados como disponíveis depois de implementados e testados.
+
+Para intercâmbio local de tarefas com trackers, consulte [exportação e importação](docs/trackers.md). A exportação gera bundle JSON; importação é prévia por padrão e `--apply` grava apenas uma cópia local.
 
 Para marcar um requisito como `VERIFIED`, associe uma evidência local e registre como foi produzida com `--execution-context`; veja [vínculo de evidências e validade](docs/requirements/evidence-linking.md).
 

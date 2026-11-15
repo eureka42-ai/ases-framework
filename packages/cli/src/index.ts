@@ -18,6 +18,7 @@ import { readDashboardData, renderDashboardHtml } from "./dashboard.js";
 import { generateAsesConfigJsonSchema, validateAsesConfig } from "./config-schema.js";
 import { checkArchitectureContracts } from "./architecture-contracts.js";
 import { createTeamPolicyEngine, isSecurityAction, readTeamPolicyFile, teamPolicyTemplate, validateTeamPolicy } from "./team-policy.js";
+import { exportTrackerTasks, importTrackerTasks } from "./tracker-exchange.js";
 
 export { VERSION } from "./version.js";
 export { indexRagSources, RagAccessError, refreshRagIndex, retrieveRequirement, searchRag } from "./rag.js";
@@ -53,6 +54,8 @@ export { checkArchitectureContracts } from "./architecture-contracts.js";
 export type { ArchitectureAssertion, ArchitectureAssertionStatus, ArchitectureContractReport, ArchitectureContractResult } from "./architecture-contracts.js";
 export { createTeamPolicyEngine, isSecurityAction, readTeamPolicyFile, teamPolicyTemplate, validateTeamPolicy } from "./team-policy.js";
 export type { TeamPolicyDocument, TeamPolicyRule, TeamPolicyValidation } from "./team-policy.js";
+export { exportTrackerTasks, importTrackerTasks } from "./tracker-exchange.js";
+export type { TrackerBundle, TrackerTask } from "./tracker-exchange.js";
 
 export interface CommandResult {
   exitCode: number;
@@ -99,6 +102,8 @@ Comandos disponíveis:
   policy template          Exibe template de policy default-deny
   policy validate <file>   Valida policy-as-code local sem aplicar regras
   policy evaluate <file> --actor id --action ação --resource ref  Simula decisão sem executar ação
+  tracker export [workspace] [--product id]  Exporta tarefas ASES em bundle JSON para tracker
+  tracker import <bundle.json> [workspace] [--apply]  Valida/pré-visualiza bundle; grava cópia local somente com --apply
   requirements set-status <workspace> <REQ-ID> <status> [--product id|--evidence arquivo --execution-context texto [--evidence-expires-at ISO]|--decision DEC|--test ref|--na-reason texto|--blocked-by ref --reason texto]
   requirements set-decision <workspace> <REQ-ID> <state> [--product id|--ref ADR --reason texto]
   plugin remove <plugin-id> [workspace]  Remove arquivos ASES inalterados (--apply para executar)
@@ -438,6 +443,28 @@ export async function run(argv: string[]): Promise<CommandResult> {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_PRODUCT_CATALOG_IMPORT", error: message }, null, 2) : `Falha ao importar catálogo do produto: ${message}` };
+    }
+  }
+  if (command === "tracker" && args[1] === "export") {
+    try {
+      const productId = optionValues(argv, "--product")[0];
+      const workspace = args.slice(2).filter((arg) => arg !== productId && arg !== "--json")[0] ?? process.cwd();
+      const bundle = await exportTrackerTasks(workspace, productId);
+      return { exitCode: 0, output: JSON.stringify(bundle, null, 2) };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_TRACKER_EXPORT", error: message }, null, 2) : `Falha ao exportar tarefas: ${message}` };
+    }
+  }
+  if (command === "tracker" && args[1] === "import") {
+    try {
+      if (!args[2]) return { exitCode: 2, output: "Uso: ases tracker import <bundle.json> [workspace] [--apply]" };
+      const workspace = args.slice(3).filter((arg) => arg !== "--apply" && arg !== "--json")[0] ?? process.cwd();
+      const result = await importTrackerTasks(args[2], workspace, argv.includes("--apply"));
+      return { exitCode: 0, output: JSON.stringify(result, null, 2) };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_TRACKER_IMPORT", error: message }, null, 2) : `Falha ao importar tarefas: ${message}` };
     }
   }
   if (command === "requirements" && args[1] === "graph") {

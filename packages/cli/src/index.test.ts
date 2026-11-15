@@ -884,3 +884,31 @@ test("imports product requirements into a catalog isolated from ASES-300", async
   }
 });
 
+test("tracker exchange exports a portable bundle and imports only after explicit apply", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-tracker-exchange-"));
+  const source = join(root, "ases.md");
+  const md = Array.from({ length: 300 }, (_, i) => `### REQ-${String(i + 1).padStart(3, "0")} — Task ${i + 1}\n\nCritério de aceite mínimo: concluir ${i + 1}.`).join("\n\n");
+  await writeFile(source, md);
+  assert.equal((await run(["catalog", "import-ases300", source, root])).exitCode, 0);
+  const exported = await run(["tracker", "export", root]);
+  assert.equal(exported.exitCode, 0);
+  const bundle = JSON.parse(exported.output);
+  assert.equal(bundle.format, "eureka42-tracker-tasks");
+  assert.equal(bundle.tasks.length, 300);
+  assert.equal(bundle.tasks[0].source.id, "REQ-001");
+  const bundlePath = join(root, "tasks.json");
+  await writeFile(bundlePath, exported.output);
+  const preview = await run(["tracker", "import", bundlePath, root, "--json"]);
+  assert.equal(JSON.parse(preview.output).status, "preview");
+  assert.equal(JSON.parse(preview.output).count, 300);
+  const absent = await readFile(join(root, ".ases", "catalogs", "ases-300.json"), "utf8");
+  assert.equal(JSON.parse(absent).requirements.length, 300);
+  const applied = await run(["tracker", "import", bundlePath, root, "--apply", "--json"]);
+  assert.equal(JSON.parse(applied.output).status, "imported");
+  assert.equal(JSON.parse(await readFile(JSON.parse(applied.output).output, "utf8")).tasks.length, 300);
+  assert.equal((await run(["tracker", "import", bundlePath, root, "--apply", "--json"])).exitCode, 5, "existing import must not be overwritten");
+  const invalidPath = join(root, "invalid.json");
+  await writeFile(invalidPath, JSON.stringify({ ...bundle, tasks: [{ ...bundle.tasks[0], id: "bad id" }] }));
+  assert.equal((await run(["tracker", "import", invalidPath, root, "--json"])).exitCode, 5);
+});
+
