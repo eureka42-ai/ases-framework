@@ -56,6 +56,8 @@
     "dist/benchmark.d.ts",
     "dist/config-schema.js",
     "dist/config-schema.d.ts",
+    "dist/architecture-contracts.js",
+    "dist/architecture-contracts.d.ts",
     "dist/rag.js",
     "dist/rag.d.ts",
     "dist/memory.js",

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1",
+  "contracts": [
+    {
+      "id": "monorepo-typescript-runtime",
+      "adrId": "ADR-001",
+      "adrPath": "docs/adr/ADR-001-monorepo-typescript.md",
+      "assertions": [
+        { "id": "esm-package", "kind": "json-pointer-equals", "path": "package.json", "pointer": "/type", "expected": "module" },
+        { "id": "pnpm-workspace", "kind": "json-pointer-equals", "path": "package.json", "pointer": "/packageManager", "expected": "pnpm@10.20.0" },
+        { "id": "workspace-package-layout", "kind": "json-pointer-equals", "path": "package.json", "pointer": "/workspaces/0", "expected": "packages/*" },
+        { "id": "typescript-strict", "kind": "json-pointer-equals", "path": "packages/cli/tsconfig.json", "pointer": "/compilerOptions/strict", "expected": true }
+      ]
+    },
+    {
+      "id": "offline-cli-bootstrap",
+      "adrId": "ADR-002",
+      "adrPath": "docs/adr/ADR-002-offline-cli.md",
+      "assertions": [
+        { "id": "dependency-lockfile", "kind": "file-exists", "path": "pnpm-lock.yaml" },
+        { "id": "offline-version-regression", "kind": "text-contains", "path": "packages/cli/src/index.test.ts", "value": "test(\"reports version offline\"" },
+        { "id": "safe-init-regression", "kind": "text-contains", "path": "packages/cli/src/index.test.ts", "value": "test(\"init dry-run does not write\"" }
+      ]
+    }
+  ]
+}

@@ -87,6 +87,7 @@ The restore command also defaults to a read-only plan; add `--apply` to restore 
 | `ases interview [workspace]` | Propose an initial application profile and stack |
 | `ases config validate [file]` | Validate the bootstrap JSON configuration |
 | `ases config schema [--check file]` | Generate the config JSON Schema or verify a checked-in artifact without writing |
+| `ases architecture check [workspace] [--contracts path] [--json]` | Check declarative architecture contracts linked to ADRs without running code |
 | `ases config explain [file]` | Resolve config sources without revealing unrelated secrets |
 | `ases requirements list\|show\|trace\|graph` | Inspect requirements, evidence, or export a Mermaid traceability graph |
 | `ases dashboard [workspace] [--product id] [--json]` | Generate a local HTML snapshot of requirements, workflow checkpoints, evidence integrity and recorded costs |

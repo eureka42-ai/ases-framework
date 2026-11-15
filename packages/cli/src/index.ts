@@ -16,6 +16,7 @@ import { removeInstalledPlugin } from "./plugin-lifecycle.js";
 import { renderTraceabilityGraph } from "./traceability-graph.js";
 import { readDashboardData, renderDashboardHtml } from "./dashboard.js";
 import { generateAsesConfigJsonSchema, validateAsesConfig } from "./config-schema.js";
+import { checkArchitectureContracts } from "./architecture-contracts.js";
 
 export { VERSION } from "./version.js";
 export { indexRagSources, RagAccessError, refreshRagIndex, retrieveRequirement, searchRag } from "./rag.js";
@@ -47,6 +48,8 @@ export { ProviderError } from "./providers.js";
 export type { GenerateOptions, Provider, ProviderCapability, ProviderContext, ProviderErrorCode, ProviderRequest, ProviderResponse } from "./providers.js";
 export { asesConfigSchema, generateAsesConfigJsonSchema, validateAsesConfig } from "./config-schema.js";
 export type { AsesConfig } from "./config-schema.js";
+export { checkArchitectureContracts } from "./architecture-contracts.js";
+export type { ArchitectureAssertion, ArchitectureAssertionStatus, ArchitectureContractReport, ArchitectureContractResult } from "./architecture-contracts.js";
 
 export interface CommandResult {
   exitCode: number;
@@ -89,6 +92,7 @@ Comandos disponíveis:
   requirements list|show|trace  Consulta catálogo e trilha de evidências [--product id]
   requirements graph [dir]  Exporta o grafo de decisões, testes e evidências em Mermaid
   dashboard [workspace] [--product id] [--json]  Gera snapshot local de requisitos, workflows, evidências e custos
+  architecture check [workspace] [--contracts path] [--json]  Detecta drift contra contratos ligados a ADRs
   requirements set-status <workspace> <REQ-ID> <status> [--product id|--evidence arquivo --execution-context texto [--evidence-expires-at ISO]|--decision DEC|--test ref|--na-reason texto|--blocked-by ref --reason texto]
   requirements set-decision <workspace> <REQ-ID> <state> [--product id|--ref ADR --reason texto]
   plugin remove <plugin-id> [workspace]  Remove arquivos ASES inalterados (--apply para executar)
@@ -586,6 +590,26 @@ export async function run(argv: string[]): Promise<CommandResult> {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       return { exitCode: 3, output: json ? JSON.stringify({ path: schemaPath, valid: false, code: "ASES_SCHEMA_READ", error: message }, null, 2) : `FAIL não foi possível verificar o schema ${schemaPath}: ${message}` };
+    }
+  }
+  if (command === "architecture" && args[1] === "check") {
+    const contractsPath = optionValues(argv, "--contracts")[0] ?? "docs/architecture/contracts.json";
+    const workspace = args.slice(2).filter((arg) => arg !== contractsPath)[0] ?? process.cwd();
+    try {
+      const report = await checkArchitectureContracts(workspace, contractsPath);
+      const exitCode = report.status === "DRIFT" ? 1 : report.status === "UNVERIFIABLE" ? 2 : 0;
+      if (json) return { exitCode, output: JSON.stringify(report, null, 2) };
+      const lines = [
+        `${report.status} architecture contracts · ${report.summary.contracts} contrato(s) · ${report.summary.passed} pass · ${report.summary.drift} drift observado · ${report.summary.unverifiable + report.summary.adrUnverifiable} não verificável`,
+        ...report.contracts.flatMap((contract) => [
+          `${contract.id} → ${contract.adrId} (${contract.adrStatus ?? "ADR não verificável"}; ${contract.enforcement})`,
+          ...contract.assertions.filter((assertion) => assertion.status !== "PASS").map((assertion) => `  ${assertion.status} ${assertion.id}: ${assertion.detail}`),
+        ]),
+      ];
+      return { exitCode, output: lines.join("\n") };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 2, output: json ? JSON.stringify({ code: "ASES_ARCHITECTURE_CHECK_FAILED", error: message }, null, 2) : `Não foi possível verificar os contratos de arquitetura: ${message}` };
     }
   }
   if (command === "config" && args[1] === "explain") {
