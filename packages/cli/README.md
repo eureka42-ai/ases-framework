@@ -1,6 +1,6 @@
 # EUREKA42 ASES CLI
 
-The `ases` command starts the EUREKA42 ASES project-discovery workflow, validates local configuration, manages host integration files, and serves read-only requirements tools over MCP stdio.
+The `ases` command starts the EUREKA42 ASES project-discovery workflow, validates local configuration, manages host integration files, and serves read-only requirements tools over MCP stdio or optional authenticated Streamable HTTP.
 
 ## Status
 
@@ -41,6 +41,10 @@ ases welcome --color
 ases doctor .
 ases interview .
 ```
+
+## Optional authenticated HTTP MCP
+
+The default remains local stdio. HTTP mode requires an external OAuth authorization server and RFC 7662 token introspection. See the repository [MCP remote setup](../../README.md#mcp-remoto-autenticado-opcional) for all required `ASES_MCP_*` environment variables, resource URL/audience rules, TLS proxy requirements, and the command `ases mcp ./workspace --http`.
 
 `ases interview` creates a proposal in `.ases/`. Technology recommendations stay `PROPOSED` until explicitly confirmed. Inspect the generated files before applying project changes.
 

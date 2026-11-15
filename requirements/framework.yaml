@@ -1058,14 +1058,14 @@ requirements:
     priority: P1
     milestone: "M11"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "MCP remoto opcional seguir autenticação vigente."
     acceptanceCriteria:
       - id: AC-AFR-088-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: MCP remoto opcional seguir autenticação vigente."
+        description: "MCP remoto opcional usa Streamable HTTP do SDK oficial e OAuth Resource Server: metadata RFC 9728/8414, bearer obrigatório, introspecção RFC 7662, validação active/exp/audience e scopes, timeout, redirects proibidos e fail-closed; default loopback, bind remoto exige recurso HTTPS atrás de TLS proxy confiável."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/mcp-server.ts", "packages/cli/README.md", "README.md", "README.en.md"]
+    tests: ["packages/cli/src/mcp-server.test.ts :: MCP OAuth introspection accepts only active, unexpired tokens bound to this resource", "packages/cli/src/mcp-server.test.ts :: MCP OAuth introspection rejects malformed and oversized provider responses", "packages/cli/src/mcp-server.test.ts :: MCP Streamable HTTP advertises OAuth metadata and rejects unauthenticated calls", "packages/cli/src/mcp-server.test.ts :: MCP Streamable HTTP verifies bearer auth, resource audience and required scopes before dispatch"]
   - id: AFR-089
     priority: P1
     milestone: "M11"

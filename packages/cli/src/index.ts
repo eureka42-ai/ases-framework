@@ -65,7 +65,7 @@ Comandos disponíveis:
   host update <host> [dir] Atualiza arquivos ASES rastreados com backup
   host restore <host> <backup-id> [dir] Restaura snapshot verificado (--apply para executar)
   host uninstall <host> [dir] Remove somente arquivos intactos rastreados
-  mcp [workspace]         Inicia servidor MCP somente leitura via stdio
+  mcp [workspace]         Inicia servidor MCP read-only via stdio; --http habilita HTTP OAuth autenticado
   doctor [diretório]      Diagnostica o ambiente sem chamadas remotas
   config validate [path]  Valida a configuração JSON do projeto
   config explain [path]   Resolve defaults, ambiente e --set sem revelar secrets

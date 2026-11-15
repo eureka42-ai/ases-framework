@@ -1,10 +1,12 @@
 # Compatibility Sources
 
-Verificadas em 2026-11-14:
+Verificadas em 2026-11-15:
 
 - OpenAI Skills: https://developers.openai.com/plugins/concepts/skills — `SKILL.md`, recursos progressivos e separação entre workflow e MCP.
 - OpenAI Docs MCP: https://developers.openai.com/resources/docs-mcp — servidor de documentação read-only e configuração MCP atual.
-- MCP 2026-07-28: https://blog.modelcontextprotocol.io/posts/2026-07-28/ — núcleo stateless e mudanças de autorização; implementação MCP ainda não iniciada.
+- MCP 2026-07-28: https://blog.modelcontextprotocol.io/posts/2026-07-28/ — protocolo moderno, cabeçalhos de transporte e modelo stateless; implementado via SDK oficial.
+- MCP TypeScript SDK authorization: https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/serving/authorization.md — OAuth Resource Server, bearer challenges, RFC 7662 verifier, audience binding, scopes e metadata RFC 9728/8414 consultados para AFR-088.
+- MCP TypeScript SDK packages: https://github.com/modelcontextprotocol/typescript-sdk — `@modelcontextprotocol/server` 2.4.0, `@modelcontextprotocol/express` 2.0.2 e `@modelcontextprotocol/node` 2.1.2; peer ranges verificados no registry e transporte HTTP implementado via adaptadores oficiais.
 - Agent Skills: https://agentskills.io/specification — validação detalhada pendente antes de gerar Skills distribuíveis.
 - Kimi Code CLI Plugins: https://moonshotai.github.io/kimi-cli/en/customization/plugins.html — pacote `kimi.plugin.json` e estado Beta verificados; comandos reais dependem da versão do CLI.
 - Kimi Code CLI Skills: https://moonshotai.github.io/kimi-cli/en/customization/skills.html — descoberta de Skills em `.agents/skills/` e `--skills-dir` verificados.

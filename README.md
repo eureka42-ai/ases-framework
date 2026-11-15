@@ -58,7 +58,7 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases doctor` | Implementado localmente | Node, plataforma, Git, npm, pnpm, workspace/config e ações corretivas |
 | `ases config validate` | Implementado no schema inicial | Configuração JSON bootstrap |
 | `ases config explain` | Implementado no schema inicial | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Em andamento | 104 implementados; 36 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
+| Backlog AFR-001..140 | Em andamento | 105 implementados; 35 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
 | Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |
@@ -216,6 +216,7 @@ ASES_PROJECT_MODE=offline ases config explain ./meu-projeto/.ases/config.json --
 | `ases host update <host> [workspace]` | Mostra plano; `--apply` atualiza arquivos ASES intactos e faz backup antes de substituir | `.ases/backups/hosts/<host>/` e manifesto de propriedade |
 | `ases host uninstall <host> [workspace]` | Mostra plano; `--apply` remove somente arquivos intactos rastreados | Manifesto de propriedade da integração |
 | `ases mcp [workspace]` | Serve ferramentas MCP de requisitos por stdio (read-only) | Nenhum |
+| `ases mcp [workspace] --http` | Serve MCP por HTTP Streamable com OAuth bearer/introspecção | `ASES_MCP_*` |
 | `ases catalog import-ases300 <md> [workspace]` | Valida 300 IDs e importa o catálogo geral | Grava `.ases/catalogs/ases-300.json` |
 | `ases catalog import-product <id> <md> [workspace]` | Importa REQ-301..500 para catálogo específico | Grava `.ases/catalogs/products/<id>.json` |
 | `ases requirements list [workspace] [--product id]` | Lista requisitos gerais ou específicos | Nenhum |
@@ -350,6 +351,27 @@ Para revisar o que seria preparado para um workspace sem modificar arquivos, exe
 
 O servidor MCP é iniciado por `ases mcp ./meu-projeto`. Ele fixa o processo ao workspace canonicalizado e oferece `requirements_list`, `requirements_show` e `requirements_trace`, todas somente leitura. Configure cada host para executar esse comando com o diretório do projeto; não passe credenciais por argumentos. O SDK oficial mantém compatibilidade com o protocolo MCP moderno e com o handshake legado; stdout é reservado aos frames JSON-RPC e logs de transporte vão para stderr.
 
+### MCP remoto autenticado (opcional)
+
+O transporte remoto é opt-in; stdio continua sendo o padrão local. Para HTTP, o ASES atua somente como **OAuth Resource Server** e não emite tokens. Configure um Authorization Server compatível e introspecção RFC 7662 antes de iniciar:
+
+```sh
+export ASES_MCP_HOST=127.0.0.1
+export ASES_MCP_PORT=3333
+export ASES_MCP_RESOURCE_URL=http://127.0.0.1:3333/mcp
+export ASES_MCP_AUTHORIZATION_METADATA_URL=https://id.example.com/.well-known/oauth-authorization-server
+export ASES_MCP_INTROSPECTION_URL=https://id.example.com/oauth2/introspect
+export ASES_MCP_CLIENT_ID=ases-resource-server
+export ASES_MCP_CLIENT_SECRET_ENV=ASES_MCP_INTROSPECTION_SECRET
+export ASES_MCP_INTROSPECTION_SECRET='valor-injetado-pelo-gerenciador-de-segredos'
+export ASES_MCP_REQUIRED_SCOPES='mcp:read'
+ases mcp ./meu-projeto --http
+```
+
+O endpoint `/mcp` exige `Authorization: Bearer`; cada token é consultado por introspecção HTTPS, e precisa estar ativo, não expirado, ter `aud` igual à URL completa do recurso e incluir todos os escopos configurados. O SDK serve os metadados de recurso protegido RFC 9728 e os metadados do Authorization Server RFC 8414. A chave secreta é lida apenas do ambiente referenciado, nunca é argumento de processo, persistida ou registrada. O servidor falha fechado se introspecção estiver indisponível ou malformada.
+
+O padrão escuta apenas em `127.0.0.1:3333`. Para acesso por rede, use `ASES_MCP_HOST=0.0.0.0`, URL de recurso HTTPS pública e um proxy TLS confiável que encaminhe para o processo; o ASES recusa URL de recurso não HTTPS fora de loopback. Restrinja o proxy/firewall ao endpoint e configure os hosts permitidos no proxy. As ferramentas continuam read-only e limitadas ao workspace configurado. Tokens de acesso, provedor OAuth e infraestrutura TLS são responsabilidade do operador.
+
 ## Arquitetura pretendida
 
 ```mermaid
@@ -472,7 +494,7 @@ Resultados reais e limitações ficam em [`evidence/`](evidence/). Uma funcional
 | M6–M8 | Providers, agents, skills e workflows | Implementados localmente; homologação em sessões reais dos hosts segue pendente |
 | M9 | RAG | Implementado localmente: busca offline, citação, ACL, filtros e invalidação |
 | M10 | Memória e ContextBundle | Implementado localmente; import seguro exige preview e rejeita conflitos |
-| M11 | Evidências, segurança e evals | Em andamento; evidências, default-deny e guardas de comando/path implementados |
+| M11 | Evidências, segurança e evals | Implementado localmente, incluindo MCP HTTP com OAuth introspection |
 | M12 | SDK e lifecycle seguro de plugins | Implementado localmente |
 | M13 | E2E, CI e documentação bilingue | Em andamento; release, TUI e decisão de publicação seguem |
 | M14 | Release candidate e gate de v1 | Não autorizado |

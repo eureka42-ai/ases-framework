@@ -91,8 +91,9 @@ The restore command also defaults to a read-only plan; add `--apply` to restore 
 | `ases host list\|plan\|apply\|update\|uninstall` | Inspect or manage project-level host integrations |
 | `ases plugin remove <id> [workspace]` | Plan safe removal; add `--apply` after reviewing |
 | `ases mcp [workspace]` | Start the local read-only MCP server over stdio |
+| `ases mcp [workspace] --http` | Start authenticated Streamable HTTP MCP using OAuth bearer introspection |
 
-The MCP server currently supports local stdio. Authenticated remote MCP is not implemented. Providers are opt-in; offline mode never calls a remote model. See [security policy](docs/security/policy-engine.md), [safe logging](docs/security/safe-logging.md), and [telemetry/evaluation behavior](docs/security/observability.md).
+The MCP server defaults to local stdio. Optional Streamable HTTP mode acts as an OAuth resource server and requires an external authorization server with token introspection; it never issues tokens. Configure `ASES_MCP_RESOURCE_URL`, `ASES_MCP_AUTHORIZATION_METADATA_URL`, `ASES_MCP_INTROSPECTION_URL`, `ASES_MCP_CLIENT_ID`, `ASES_MCP_CLIENT_SECRET_ENV`, and the named secret environment variable before running `ases mcp [workspace] --http`. The default listener is loopback. Network exposure requires an HTTPS resource URL behind a trusted TLS-terminating proxy. See the [Portuguese setup guide](README.md#mcp-remoto-autenticado-opcional), [security policy](docs/security/policy-engine.md), [safe logging](docs/security/safe-logging.md), and [telemetry/evaluation behavior](docs/security/observability.md).
 
 For structured failure codes and recovery steps, see the [CLI error reference](docs/cli/errors.md).
 
