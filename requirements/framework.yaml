@@ -698,26 +698,26 @@ requirements:
     priority: P1
     milestone: "M7"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Tools validarem entrada e saída em runtime."
     acceptanceCriteria:
       - id: AC-AFR-058-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Tools validarem entrada e saída em runtime."
+        description: "O executor valida entradas com parser runtime antes da chamada e valida saídas com type guard após a execução; cada violação falha com código tipado."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/tools.ts"]
+    tests: ["packages/cli/src/tools.test.ts :: runtime tools validate input and output"]
   - id: AFR-059
     priority: P1
     milestone: "M7"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Tools exigirem política antes de ações com side effect."
     acceptanceCriteria:
       - id: AC-AFR-059-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Tools exigirem política antes de ações com side effect."
+        description: "Tools marcadas `sideEffect` exigem autorização explícita e aguardam resposta positiva da política antes de chamar `run`; ausência ou negação bloqueia a execução."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/tools.ts"]
+    tests: ["packages/cli/src/tools.test.ts :: side-effect tools require and obey policy before running"]
   - id: AFR-060
     priority: P1
     milestone: "M7"
