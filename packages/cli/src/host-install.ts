@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { lstat, mkdir, readFile, realpath, rename, rmdir, unlink, writeFile } from "node:fs/promises";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
-import { createHostPlan, readHostAsset, type HostId } from "./host-plan.js";
+import { createHostPlan, HOSTS, readHostAsset, type HostId } from "./host-plan.js";
 
 const FORMAT = "eureka42-ases-host-install-manifest";
 const hash = (bytes: Buffer | string): string => createHash("sha256").update(bytes).digest("hex");
@@ -19,6 +19,14 @@ interface HostManifest {
   files: OwnedFile[];
   directories: string[];
   asesDirectoryCreated: boolean;
+  manifestSha256: string;
+}
+
+interface HostBackupManifest {
+  format: "eureka42-host-backup";
+  schemaVersion: "1";
+  host: HostId;
+  files: Array<{ path: string; sha256: string }>;
   manifestSha256: string;
 }
 
@@ -212,6 +220,16 @@ export async function updateHostIntegration(host: HostId, workspacePath: string,
       await assertNoSymlinkPath(root, backupAbsolute);
       await writeFile(backupAbsolute, item.previous, { flag: "wx" });
       backedUp.push(backupRelative);
+    }
+    const backupBase = {
+      format: "eureka42-host-backup" as const,
+      schemaVersion: "1" as const,
+      host,
+      files: updates.map((item) => ({ path: item.path, sha256: item.previousHash })).sort((a, b) => a.path.localeCompare(b.path)),
+    };
+    const backupManifest: HostBackupManifest = { ...backupBase, manifestSha256: hash(JSON.stringify(backupBase)) };
+    await writeFile(resolve(backupRoot, "manifest.json"), `${JSON.stringify(backupManifest, null, 2)}\n`, { flag: "wx", mode: 0o600 });
+    for (const item of updates) {
       await replaceRegularFile(root, item.absolute, item.previousHash, item.next);
       replaced.push(item);
     }
@@ -232,6 +250,78 @@ export async function updateHostIntegration(host: HostId, workspacePath: string,
     }
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(`Atualização interrompida: ${message}. Backups preservados em ${backupRootRelative}.${rollbackErrors.length ? ` Rollback incompleto para: ${rollbackErrors.join(", ")}.` : " Arquivos atualizados foram restaurados."}`);
+  }
+}
+
+export async function restoreHostBackup(host: HostId, backupId: string, workspacePath: string, apply: boolean) {
+  if (!HOSTS.includes(host) || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(backupId)) throw new Error("Host or backup ID is invalid.");
+  const root = await realpath(resolve(workspacePath));
+  const backupRelative = `.ases/backups/hosts/${host}/${backupId}`;
+  if (!isSafeRelative(backupRelative)) throw new Error("Backup path is invalid.");
+  const backupRoot = resolve(root, backupRelative);
+  await assertNoSymlinkPath(root, backupRoot);
+  const directoryInfo = await lstat(backupRoot).catch((error) => {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return undefined;
+    throw error;
+  });
+  if (!directoryInfo) return { status: "not-found" as const, host, backupId, workspace: root, apply, restored: [] as string[], conflicts: [] as string[] };
+  if (!directoryInfo.isDirectory() || directoryInfo.isSymbolicLink()) throw new Error("Backup directory is not a regular directory.");
+  const backupManifestPath = resolve(backupRoot, "manifest.json");
+  await assertNoSymlinkPath(root, backupManifestPath);
+  const backupInfo = await lstat(backupManifestPath);
+  if (!backupInfo.isFile() || backupInfo.isSymbolicLink()) throw new Error("Backup manifest is not a regular file.");
+  const backupManifest = JSON.parse(await readFile(backupManifestPath, "utf8")) as Partial<HostBackupManifest>;
+  const backupBase = { format: backupManifest.format, schemaVersion: backupManifest.schemaVersion, host: backupManifest.host, files: backupManifest.files };
+  if (backupManifest.format !== "eureka42-host-backup" || backupManifest.schemaVersion !== "1" || backupManifest.host !== host || !Array.isArray(backupManifest.files) || typeof backupManifest.manifestSha256 !== "string" || hash(JSON.stringify(backupBase)) !== backupManifest.manifestSha256) throw new Error("Backup manifest is invalid or tampered.");
+  const installed = await readManifest(root, host);
+  const restores: Array<{ path: string; target: string; current: Buffer; currentHash: string; backup: Buffer; backupHash: string }> = [];
+  const conflicts: string[] = [];
+  const paths = new Set<string>();
+  for (const item of backupManifest.files) {
+    if (!item || typeof item.path !== "string" || !isSafeRelative(item.path) || paths.has(item.path) || typeof item.sha256 !== "string" || !/^[a-f0-9]{64}$/.test(item.sha256)) throw new Error("Backup manifest contains an invalid file entry.");
+    paths.add(item.path);
+    const owned = installed.files.find((entry) => entry.path === item.path && entry.owned);
+    if (!owned) { conflicts.push(item.path); continue; }
+    const target = resolve(root, item.path);
+    const backupFile = resolve(backupRoot, item.path);
+    await assertNoSymlinkPath(root, target);
+    await assertNoSymlinkPath(backupRoot, backupFile);
+    try {
+      const [targetInfo, backupFileInfo] = await Promise.all([lstat(target), lstat(backupFile)]);
+      if (!targetInfo.isFile() || targetInfo.isSymbolicLink() || !backupFileInfo.isFile() || backupFileInfo.isSymbolicLink()) { conflicts.push(item.path); continue; }
+      const [current, backup] = await Promise.all([readFile(target), readFile(backupFile)]);
+      const currentHash = hash(current);
+      if (currentHash !== owned.sha256 || hash(backup) !== item.sha256) { conflicts.push(item.path); continue; }
+      restores.push({ path: item.path, target, current, currentHash, backup, backupHash: item.sha256 });
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") conflicts.push(item.path);
+      else throw error;
+    }
+  }
+  if (conflicts.length) return { status: "conflict" as const, host, backupId, workspace: root, apply: false, restored: [] as string[], conflicts };
+  if (!apply) return { status: "planned" as const, host, backupId, workspace: root, apply: false, restore: restores.map((item) => item.path), conflicts: [] as string[] };
+  const replaced: typeof restores = [];
+  try {
+    for (const item of restores) {
+      await replaceRegularFile(root, item.target, item.currentHash, item.backup);
+      replaced.push(item);
+    }
+    const nextFiles = installed.files.map((entry) => {
+      const restored = restores.find((item) => item.path === entry.path);
+      return restored ? { ...entry, sha256: restored.backupHash } : entry;
+    });
+    const nextBase = manifestBase(host, nextFiles, installed.directories, installed.asesDirectoryCreated);
+    const nextManifest: HostManifest = { ...nextBase, manifestSha256: hash(JSON.stringify(nextBase)) };
+    await replaceManifest(root, host, installed, nextManifest);
+    return { status: "restored" as const, host, backupId, workspace: root, apply: true, restored: restores.map((item) => item.path), conflicts: [] as string[] };
+  } catch (error) {
+    const rollbackErrors: string[] = [];
+    for (const item of replaced.reverse()) {
+      try { await replaceRegularFile(root, item.target, item.backupHash, item.current); }
+      catch { rollbackErrors.push(item.path); }
+    }
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Restore failed: ${message}.${rollbackErrors.length ? ` Rollback incomplete for: ${rollbackErrors.join(", ")}.` : " Restored files were rolled back."}`);
   }
 }
 

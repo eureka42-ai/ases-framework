@@ -11,7 +11,7 @@ import { runInterview } from "./interview.js";
 import { importAses300, importProductRequirements, readCatalog, updateDecision, updateRequirement } from "./catalog.js";
 import { resolveConfigLayers } from "./config-resolution.js";
 import { createHostPlan, HOSTS, type HostId } from "./host-plan.js";
-import { applyHostIntegration, uninstallHostIntegration, updateHostIntegration } from "./host-install.js";
+import { applyHostIntegration, restoreHostBackup, uninstallHostIntegration, updateHostIntegration } from "./host-install.js";
 import { removeInstalledPlugin } from "./plugin-lifecycle.js";
 
 export { VERSION } from "./version.js";
@@ -32,6 +32,7 @@ export { runPluginContractCases, validatePluginContract, validatePluginManifest 
 export type { PluginContract, PluginContractCase, PluginManifest, PluginValidationOptions } from "./plugins.js";
 export { createPluginInstallManifest, removeInstalledPlugin } from "./plugin-lifecycle.js";
 export type { PluginInstallManifest, PluginRemovalResult } from "./plugin-lifecycle.js";
+export { restoreHostBackup } from "./host-install.js";
 
 export interface CommandResult {
   exitCode: number;
@@ -62,6 +63,7 @@ Comandos disponíveis:
   host plan <host> [dir]  Mostra o diff da integração sem escrever arquivos
   host apply <host> [dir] Instala no workspace após plano; exige --apply
   host update <host> [dir] Atualiza arquivos ASES rastreados com backup
+  host restore <host> <backup-id> [dir] Restaura snapshot verificado (--apply para executar)
   host uninstall <host> [dir] Remove somente arquivos intactos rastreados
   mcp [workspace]         Inicia servidor MCP somente leitura via stdio
   doctor [diretório]      Diagnostica o ambiente sem chamadas remotas
@@ -513,6 +515,18 @@ export async function run(argv: string[]): Promise<CommandResult> {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_HOST_PLAN_FAILED", error: message }, null, 2) : `Falha ao gerar plano do host: ${message}` };
+    }
+  }
+  if (command === "host" && args[1] === "restore") {
+    const host = args[2];
+    if (!HOSTS.includes(host as HostId)) return { exitCode: 2, output: json ? JSON.stringify({ code: "ASES_HOST_INVALID", allowed: HOSTS }, null, 2) : `Host inválido; use: ${HOSTS.join(", ")}` };
+    if (!args[3]) return { exitCode: 2, output: "Uso: ases host restore <host> <backup-id> [workspace] [--apply]" };
+    try {
+      const result = await restoreHostBackup(host as HostId, args[3], args[4] ?? process.cwd(), argv.includes("--apply") && !dryRun);
+      return { exitCode: result.status === "conflict" ? 3 : 0, output: json ? JSON.stringify(result, null, 2) : `${result.status.toUpperCase()} backup ${result.backupId}\n${JSON.stringify(result, null, 2)}` };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 3, output: json ? JSON.stringify({ code: "ASES_HOST_RESTORE_FAILED", error: message }) : `Falha ao restaurar backup: ${message}` };
     }
   }
   if (command === "host" && ["apply", "update", "uninstall"].includes(args[1] ?? "")) {

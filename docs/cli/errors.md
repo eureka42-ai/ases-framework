@@ -24,5 +24,6 @@ With `--json`, command failures return a stable `code` where the command defines
 | `ASES_HOST_APPLY_FAILED` | 5 | Host integration apply failed | Inspect conflicts and ownership manifest; use plan first and `--apply` only after review. |
 | `ASES_HOST_UPDATE_FAILED` | 5 | Host update failed | Check modified owned files and backup location; do not delete preserved backups. |
 | `ASES_HOST_UNINSTALL_FAILED` | 5 | Host removal failed | Review preserved/modified files and symlink paths; use the read-only plan first. |
+| `ASES_HOST_RESTORE_FAILED` | 3 | Backup snapshot could not be verified or restored | Check the backup ID, snapshot manifest and current host ownership; retain the backup and inspect conflicts before retrying. |
 
 Exit codes are stable at a broad level: `0` success/unchanged, `1` unknown command, `2` usage/precondition, `3` configuration/safe removal, `4` interview data, and `5` catalog/host/requirement operation. JSON mode is recommended for automation.

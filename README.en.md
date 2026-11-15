@@ -68,10 +68,13 @@ ases host list
 ases host plan claude-code ./my-project
 ases host apply claude-code ./my-project --apply
 ases host update claude-code ./my-project --apply
+ases host restore claude-code <backup-id> ./my-project
 ases host uninstall claude-code ./my-project --apply
 ```
 
 Plans are read-only. Apply/update/uninstall require `--apply`; ownership manifests and hashes protect modified or unrelated files. See each host guide under [`integrations/`](integrations/).
+
+The restore command also defaults to a read-only plan; add `--apply` to restore a verified snapshot. See the [backup guide](docs/cli/backups.md).
 
 ## Core commands
 
