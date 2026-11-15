@@ -51,7 +51,7 @@ Atualizado em: 2026-11-15
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes automatizados: PASS (131/131; inclui benchmark, dashboard, ranking de capabilities, execução HTTP local e E2E do CLI). `pnpm integrations:validate`: PASS. CI Node.js 22/24 e audit/licenças/SBOM/proveniência passaram para AFR-115 no run `43730687132`; CI do AFR-116 segue após o push.
+- Testes automatizados: PASS (131/131; inclui benchmark, dashboard, ranking de capabilities, execução HTTP local e E2E do CLI). `pnpm integrations:validate`: PASS. CI Node.js 22/24 e audit/licenças/SBOM/proveniência: PASS no run `43731336229` para AFR-116.
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 6 Skills sincronizadas).
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
