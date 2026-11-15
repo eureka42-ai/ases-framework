@@ -39,12 +39,12 @@ Atualizado em: 2026-11-14
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (67/67); `pnpm test` também compila TypeScript e valida as integrações. O commit `5356c5c` passou nos jobs Node.js 22 e 24 do GitHub Actions; ver [execução CI](https://github.com/eureka42-ai/ases-framework/actions/runs/43660923658). A prevenção de escrita conflitante aguarda CI remoto.
+- Testes unitários: PASS (69/69); `pnpm test` também compila TypeScript e valida as integrações. O commit `2700563` passou nos jobs Node.js 22 e 24 do GitHub Actions; ver [execução CI](https://github.com/eureka42-ai/ases-framework/actions/runs/43661264802). O schema de Skills aguarda CI remoto.
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 5 Skills sincronizadas).
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; instalação local do tarball + `ases --version` e `ases host plan` em workspace externo: PASS.
-- Backlog AFR-001..140: 51 requisitos IMPLEMENTED e ligados a código/testes/evidência; 89 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 52 requisitos IMPLEMENTED e ligados a código/testes/evidência; 88 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -87,6 +87,7 @@ Atualizado em: 2026-11-14
 - AFR-053 implementado: execução serial preserva ordem quando paralelismo não está disponível.
 - AFR-055 implementado: revisão exige identidade de revisor independente da autoria, normalizando espaços e caixa.
 - AFR-054 implementado: tarefas com claims de escrita conflitantes são barradas antes que qualquer agente comece.
+- AFR-056 implementado: Skills passam por schema de frontmatter e testes positivos/negativos integrados ao `pnpm test`.
 
 ## Próximas tarefas READY
 
@@ -138,6 +139,7 @@ Atualizado em: 2026-11-14
 - `evidence/M7-2026-11-14-progress-2.md`
 - `evidence/M7-2026-11-14-progress-3.md`
 - `evidence/M7-2026-11-14-progress-4.md`
+- `evidence/M7-2026-11-14-progress-5.md`
 - `evidence/CI-2026-11-14-progress-5.md`
 - `evidence/CI-2026-11-14-progress-6.md`
 

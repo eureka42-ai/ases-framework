@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
+import { parseSkillFrontmatter } from "./skill-schema.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const marketplaceFile = ".claude-plugin/marketplace.json";
@@ -37,7 +38,7 @@ if (codexManifest.extensions?.["com.openai"]?.onboardingSkill !== "./skills/ases
 let canonicalSkill;
 for (const relative of skillFiles) {
   const content = await readFile(resolve(root, relative), "utf8");
-  if (!content.startsWith("---\nname: ases-project-start\n") || !content.includes("`PROPOSED`")) throw new Error(`Skill inválida: ${relative}`);
+  if (parseSkillFrontmatter(content).name !== "ases-project-start" || !content.includes("`PROPOSED`")) throw new Error(`Skill inválida: ${relative}`);
   if (canonicalSkill === undefined) canonicalSkill = content;
   else if (content !== canonicalSkill) throw new Error(`Skills divergentes; sincronize com .agents/skills/ases-project-start/SKILL.md: ${relative}`);
 }
