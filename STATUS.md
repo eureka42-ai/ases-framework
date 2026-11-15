@@ -11,6 +11,7 @@ Atualizado em: 2026-11-14
 - M9: IMPLEMENTED_LOCALLY (RAG lexical offline com citações, proveniência, filtros de licença/versão/ACL, refresh/invalidação e permissão cross-project explícita)
 - M10: IMPLEMENTED_LOCALLY (memória local com consentimento/escopo/TTL/origem/inspect/delete, ContextBundle com integridade/redaction e import ZIP seguro com preview e contenção de caminhos)
 - M11: IN_PROGRESS (AFR-084..087/089/090/096..100 implementados localmente; resta MCP remoto autenticado AFR-088)
+- M12: IN_PROGRESS (SDK, contrato, integridade, compatibilidade e aprovação de permissões AFR-091..094 implementados localmente; AFR-095 pendente)
 - M6: IMPLEMENTED (AFR-041..050 concluídos localmente; probe real é opt-in e ainda não executado contra serviço externo)
 - Repositório Git: branch `main`; plugins Codex/Claude disponíveis no repositório público; AFR-030 implementado nesta rodada
 - Fonte diretora: presente e lida
@@ -49,7 +50,7 @@ Atualizado em: 2026-11-14
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; tarball RC1 instalado em workspace temporário; `ases --version` e `ases welcome --color`: PASS. A primeira instalação revelou módulos ausentes e foi corrigida antes do segundo empacotamento.
-- Backlog AFR-001..140: 90 requisitos IMPLEMENTED e ligados a código/testes/evidência; 50 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 98 requisitos IMPLEMENTED e ligados a código/testes/evidência; 42 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -107,7 +108,7 @@ Atualizado em: 2026-11-14
 
 1. Prioridade Claude Code: observar descoberta e executar `/eureka42-ases:ases-start` em sessão real para completar a evidência de AFR-031; depois avançar Codex (AFR-033), Kimi (AFR-032) e Gemini (AFR-034) conforme permissões de instalação já registradas.
 2. Prosseguir a entrevista com personas, autenticação, integrações, observabilidade e critérios de aceite.
-3. Implementar e revisar o boundary opcional de MCP remoto autenticado (AFR-088) antes de expor rede.
+3. Fechar lifecycle de plugin com remoção sem apagar dados alheios (AFR-095); depois avaliar MCP remoto autenticado (AFR-088).
 
 ## Bloqueios de conclusão integral
 
@@ -182,5 +183,6 @@ Atualizado em: 2026-11-14
 - `evidence/M11-2026-11-15-progress-1.md`
 - `evidence/M11-2026-11-15-progress-2.md`
 - `evidence/M11-2026-11-15-progress-3.md`
+- `evidence/M12-2026-11-15-progress-1.md`
 - `evidence/M9-2026-11-14-progress-2.md`
 

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1",
+  "id": "example-plugin",
+  "version": "0.1.0",
+  "apiVersion": "1.0.0",
+  "entrypoint": "src/index.ts",
+  "integrity": "sha256:REPLACE_WITH_64_HEX_DIGEST",
+  "source": "https://registry.eureka42.ai",
+  "permissions": ["workspace:read"]
+}

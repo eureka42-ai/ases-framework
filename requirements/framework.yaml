@@ -1094,50 +1094,50 @@ requirements:
     priority: P1
     milestone: "M12"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Plugin SDK oferecer template e contract tests."
     acceptanceCriteria:
       - id: AC-AFR-091-01
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Plugin SDK oferecer template e contract tests."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["templates/plugin", "packages/cli/src/plugins.ts"]
+    tests: ["packages/cli/src/plugins.test.ts :: plugin SDK contract checks tool permissions and executes deterministic contract cases"]
   - id: AFR-092
     priority: P1
     milestone: "M12"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Registry exigir manifesto/versão/compatibilidade."
     acceptanceCriteria:
       - id: AC-AFR-092-01
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Registry exigir manifesto/versão/compatibilidade."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/plugins.ts", "docs/plugins/sdk.md"]
+    tests: ["packages/cli/src/plugins.test.ts :: plugin manifest validates trusted source, compatible API, integrity and scoped permissions"]
   - id: AFR-093
     priority: P1
     milestone: "M12"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Plugin com permissões extras solicitar aprovação."
     acceptanceCriteria:
       - id: AC-AFR-093-01
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Plugin com permissões extras solicitar aprovação."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/plugins.ts"]
+    tests: ["packages/cli/src/plugins.test.ts :: plugin permission expansion requires approval and tampered or untrusted plugins fail closed"]
   - id: AFR-094
     priority: P1
     milestone: "M12"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Plugin adulterado/fonte não confiável ser bloqueado."
     acceptanceCriteria:
       - id: AC-AFR-094-01
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Plugin adulterado/fonte não confiável ser bloqueado."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/plugins.ts"]
+    tests: ["packages/cli/src/plugins.test.ts :: plugin permission expansion requires approval and tampered or untrusted plugins fail closed"]
   - id: AFR-095
     priority: P1
     milestone: "M12"
