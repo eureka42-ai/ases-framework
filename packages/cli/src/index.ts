@@ -42,6 +42,8 @@ export { createSupportLedger } from "./support-ledger.js";
 export type { IncidentSeverity, IncidentStatus, SlaPolicy, SlaTarget, SupportIncident, SupportIncidentEvent, SupportIncidentView } from "./support-ledger.js";
 export { createConsoleAuth, createLocalConsoleApp, hashConsolePassword, startLocalConsole } from "./console-auth.js";
 export type { ConsoleAction, ConsoleAuthOptions, ConsoleMembership, ConsoleRole, ConsoleSession, ConsoleUserRecord, LocalConsoleOptions } from "./console-auth.js";
+export { createFeatureWorkflow, createWorkflowCheckpoint, executeFeatureWorkflow, executeWorkflow, isWorkflowApprovalSatisfied, loadWorkflowCheckpoint, resumeWorkflow, runStepWithRetry, saveWorkflowCheckpoint, validateWorkflow } from "./workflows.js";
+export type { FeatureWorkflowHandlers, WorkflowApproval, WorkflowDefinition, WorkflowExecutionContext, WorkflowPermission, WorkflowRetryOptions, WorkflowRunResult, WorkflowStep, WorkflowStepKind } from "./workflows.js";
 export { createSafeLogRecord, writeSafeLog } from "./logging.js";
 export type { SafeLogRecord, SafeLogResult } from "./logging.js";
 export { redactSensitiveText } from "./memory.js";

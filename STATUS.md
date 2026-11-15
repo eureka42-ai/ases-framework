@@ -61,12 +61,12 @@ Atualizado em: 2026-11-15
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes automatizados: PASS (151/151; inclui multi-repo, A2A, OTLP, pack de conhecimento, templates, locale, intercâmbio de trackers e policy-as-code), schema sync, dashboard, benchmark, ranking de capabilities, HTTP local e E2E do CLI. Integrações validadas. CI de tracker, locale, templates, conhecimento, OTLP e A2A passou em Node.js 22/24 e audit/licenças/SBOM/proveniência (runs `43733719847`, `43734235205`, `43734785438`, `43735432022`, `43735960930`, `43736222422`).
+- Testes automatizados: PASS (160/160; inclui multi-repo, A2A, OTLP, pack de conhecimento, templates, locale, intercâmbio de trackers, policy-as-code e console autenticado), schema sync, dashboard, benchmark, ranking de capabilities, HTTP local e E2E do CLI. Integrações validadas. CI de tracker, locale, templates, conhecimento, OTLP e A2A passou em Node.js 22/24 e audit/licenças/SBOM/proveniência (runs `43733719847`, `43734235205`, `43734785438`, `43735432022`, `43735960930`, `43736222422`).
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 6 Skills sincronizadas).
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; tarball RC1 instalado em workspace temporário; `ases --version` e `ases welcome --color`: PASS. A primeira instalação revelou módulos ausentes e foi corrigida antes do segundo empacotamento.
-- Backlog AFR-001..140: 119 requisitos IMPLEMENTED e ligados a código/testes/evidência; 21 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 125 requisitos IMPLEMENTED e ligados a código/testes/evidência; 15 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -102,6 +102,7 @@ Atualizado em: 2026-11-15
 - AFR-135 implementado localmente: catálogo de releases comunitárias com busca, filtros, ordenação SemVer, compatibilidade e marcação de fonte confiável. Descoberta não instala nem executa código. Ver `docs/security/community-agents.md`.
 - AFR-139 implementado localmente: ledger em memória com metas por severidade, prazos de resposta/resolução, eventos de transição e medição de violações. Persistência, alertas e operação gerenciada não estão incluídos. Ver `docs/security/support-ledger.md`.
 - AFR-133 implementado localmente: console web multiusuário com login scrypt, sessões em memória HttpOnly, RBAC por organização/repo, rate limit e bind obrigatório em loopback. SSO e hospedagem pública não estão incluídos. Ver `docs/security/multi-user-console.md`.
+- AFR-136 implementado localmente: editor visual de workflows React/Vite com grafo de dependências, painel de edição, save local, intercâmbio JSON e preview determinístico sem execução. Build React e verificação Chrome desktop/mobile passaram. Ver `packages/workflow-editor/README.md` e `evidence/M15-2026-11-15-progress-20.md`.
 - AFR-044 implementado: catálogo de provider/modelo valida capacidades e guarda a fonte e a data de observação sem alegar verificação live.
 - AFR-045 implementado: roteador escolhe provider que declara todas as capabilities exigidas e rejeita seleção impossível.
 - AFR-049 implementado: API reporta seleção `host-managed` no modo host e deixa claro que o ASES não escolhe o modelo do CLI hospedeiro.

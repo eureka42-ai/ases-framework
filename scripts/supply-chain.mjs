@@ -7,7 +7,7 @@ import { tmpdir } from "node:os";
 const packageJson = JSON.parse(await readFile(new URL("../packages/cli/package.json", import.meta.url), "utf8"));
 const raw = execFileSync("pnpm", ["licenses", "list", "--json"], { encoding: "utf8", maxBuffer: 10 * 1024 * 1024 });
 const grouped = JSON.parse(raw);
-const allowedLicenses = new Set(["0BSD", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "CC0-1.0", "ISC", "MIT"]);
+const allowedLicenses = new Set(["0BSD", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "CC-BY-4.0", "CC0-1.0", "ISC", "MIT"]);
 const componentMap = new Map();
 const problems = [];
 for (const [groupLicense, packages] of Object.entries(grouped)) {

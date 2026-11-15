@@ -8,7 +8,7 @@ Run the local license/SBOM step with:
 corepack pnpm supply-chain
 ```
 
-The SBOM is written to a temporary directory by default. In CI, `ASES_SBOM_OUTPUT` selects the artifact path. The license gate currently permits `0BSD`, Apache-2.0, BSD-2-Clause, BSD-3-Clause, CC0-1.0, ISC, and MIT. New licenses fail closed until reviewed and added deliberately. The generated SBOM uses metadata from the frozen pnpm installation and lockfile.
+The SBOM is written to a temporary directory by default. In CI, `ASES_SBOM_OUTPUT` selects the artifact path. The license gate currently permits `0BSD`, Apache-2.0, BSD-2-Clause, BSD-3-Clause, CC-BY-4.0, CC0-1.0, ISC, and MIT. CC-BY-4.0 is declared by the `caniuse-lite` browser compatibility data used by the private workflow-editor build; the upstream license remains in the installed development dependency, and that package is not bundled in the CLI tarball. New licenses fail closed until reviewed and added deliberately. The generated SBOM uses metadata from the frozen pnpm installation and lockfile.
 
 Run the vulnerability audit with:
 

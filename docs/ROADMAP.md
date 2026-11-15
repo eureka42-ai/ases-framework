@@ -16,9 +16,9 @@
 - M13 — IN_PROGRESS: E2E do CLI (AFR-101), CI (AFR-102), audit/license/SBOM/provenance (AFR-103), docs pt-BR/EN (AFR-105/106), saída/TTY (AFR-107), erros (AFR-108), restore hashado (AFR-109) e limites de migração (AFR-110) implementados; CI Node 22/24 e as duas atestações passaram no run 43728310089; autorização do release segue pendente.
 - M14 — BLOCKED_ON_APPROVAL: release candidate e gate v1 dependem das decisões de licença, homologação e critérios de lançamento.
 
-Backlog estruturado atual: 124/140 requisitos `IMPLEMENTED`, 16/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
+Backlog estruturado atual: 125/140 requisitos `IMPLEMENTED`, 15/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
 
-Distribuição dos 16 pendentes no registro atual:
+Distribuição dos 15 pendentes no registro atual:
 
 | Marco | Pendentes | Observação |
 |---|---:|---|
@@ -32,7 +32,7 @@ Distribuição dos 16 pendentes no registro atual:
 | M11 | 0 | MCP HTTP autenticado testado localmente; falta validação com um Authorization Server real |
 | M12 | 0 | SDK e lifecycle de plugins concluídos localmente |
 | M13 | 1 | Aprovação do release |
-| M15+ | 11 | Capacidades avançadas opcionais; não fazem parte do primeiro gate v1 |
+| M15+ | 10 | Capacidades avançadas opcionais; não fazem parte do primeiro gate v1 |
 
 AFR-126 (intercâmbio local de tarefas com trackers) foi implementado e validado em `evidence/M15-2026-11-15-progress-8.md`. O CLI exporta JSON neutro e importa com prévia, persistindo somente mediante `--apply`; sincronização com serviços remotos ainda não está incluída.
 
@@ -56,7 +56,9 @@ AFR-135 adiciona catálogo local versionado para releases comunitárias de agent
 
 AFR-139 implementa ledger em memória para metas de SLA P1–P4 e ciclo de vida de incidentes com cálculo de violações. Persistência, alertas e autenticação de operadores ficam a cargo do host empresarial. Ver `docs/security/support-ledger.md`.
 
+AFR-136 entrega editor visual local React/Vite para o grafo de workflows, com painel de propriedades, reordenação, validação topológica sem execução, salvamento no navegador e intercâmbio JSON versionado. Permissões e timeout são declarados no workflow e precisam ser aplicados pelo host executor. Ver `packages/workflow-editor/README.md` e `evidence/M15-2026-11-15-progress-20.md`.
+
 AFR-133 adiciona console web local multiusuário, autenticação scrypt, sessões revogáveis e memberships RBAC exatos por repo, fixo em loopback. Não inclui SSO, armazenamento de sessão persistente nem hospedagem pública. Ver `docs/security/multi-user-console.md`.
 
-O gate M14 não está representado por um requisito AFR separado; a autorização do release continua uma decisão humana conforme AFR-104. Os 16 itens pendentes são a contagem do backlog AFR, não uma previsão exata de rodadas até DONE. Aprovação de licença, homologação de fontes, validação de hosts e autenticação OAuth em provedor real são gates separados.
+O gate M14 não está representado por um requisito AFR separado; a autorização do release continua uma decisão humana conforme AFR-104. Os 15 itens pendentes são a contagem do backlog AFR, não uma previsão exata de rodadas até DONE. Aprovação de licença, homologação de fontes, validação de hosts e autenticação OAuth em provedor real são gates separados.
 

@@ -1634,14 +1634,14 @@ requirements:
     priority: P3
     milestone: "M15+"
     owner: "UNASSIGNED"
-    status: "PENDING"
-    summary: "UX visual editor de workflows (não requerido ao CLI)."
+    status: "IMPLEMENTED"
+    summary: "Editor visual local de workflows com grafo, propriedades, persistência e importação/exportação."
     acceptanceCriteria:
       - id: AC-AFR-136-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: UX visual editor de workflows (não requerido ao CLI)."
+        description: "Pacote React/Vite local permite criar, editar, reordenar e remover etapas; configurar nome, tipo, agente, dependências, timeout e permissões; validar a ordem topológica sem executar handlers; salvar localmente; importar/exportar JSON schemaVersion 1; e expor metadados ao WorkflowExecutionContext."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/workflow-editor/", "packages/cli/src/workflows.ts", "docs/design/workflow-editor-concept.png", "evidence/M15-2026-11-15-progress-20.md"]
+    tests: ["pnpm --filter @eureka42/ases-workflow-editor build", "packages/cli/src/workflows.test.ts :: workflow execution exposes editor metadata and checkpoints track configuration changes", "evidence/M15-2026-11-15-progress-20.md :: Chrome desktop/mobile interaction verification"]
   - id: AFR-137
     priority: P3
     milestone: "M15+"

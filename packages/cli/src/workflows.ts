@@ -3,16 +3,23 @@ import { lstat, mkdir, open, readFile, realpath, rename, unlink } from "node:fs/
 import { join } from "node:path";
 
 export type WorkflowStepKind = "agent" | "tool" | "approval" | "condition";
+export type WorkflowPermission = "workspace.read" | "workspace.write" | "network" | "command.execute";
 
 export interface WorkflowStep {
   id: string;
   kind: WorkflowStepKind;
   dependsOn: readonly string[];
+  name?: string;
+  agentId?: string;
+  timeoutMinutes?: number;
+  permissions?: readonly WorkflowPermission[];
   sideEffect?: { strategy: "idempotent" };
 }
 
 export interface WorkflowDefinition {
+  schemaVersion?: "1";
   id: string;
+  title?: string;
   steps: readonly WorkflowStep[];
 }
 
@@ -20,6 +27,7 @@ export interface WorkflowDefinition {
 export function createFeatureWorkflow(featureId = "feature-delivery"): WorkflowDefinition {
   return {
     id: featureId,
+    title: "Feature delivery",
     steps: [
       { id: "analyze", kind: "agent", dependsOn: [] },
       { id: "plan", kind: "agent", dependsOn: ["analyze"] },
@@ -110,7 +118,8 @@ export interface WorkflowCheckpoint {
 function workflowHash(workflow: WorkflowDefinition): string {
   const canonical = JSON.stringify({
     id: workflow.id,
-    steps: workflow.steps.map((step) => ({ id: step.id, kind: step.kind, dependsOn: [...step.dependsOn].sort(), sideEffect: step.sideEffect ?? null })),
+    title: workflow.title ?? null,
+    steps: workflow.steps.map((step) => ({ id: step.id, kind: step.kind, name: step.name ?? null, agentId: step.agentId ?? null, timeoutMinutes: step.timeoutMinutes ?? null, permissions: [...(step.permissions ?? [])].sort(), dependsOn: [...step.dependsOn].sort(), sideEffect: step.sideEffect ?? null })),
   });
   return createHash("sha256").update(canonical).digest("hex");
 }
@@ -197,12 +206,19 @@ export async function loadWorkflowCheckpoint(workspaceRoot: string, workflowId: 
 
 /** Validates workflow nodes and returns a deterministic topological execution order. */
 export function validateWorkflow(workflow: WorkflowDefinition): string[] {
+  if (workflow.schemaVersion !== undefined && workflow.schemaVersion !== "1") throw new WorkflowValidationError("unsupported workflow schema version");
   if (!/^[a-z][a-z0-9-]{1,62}$/.test(workflow.id)) throw new WorkflowValidationError("workflow ID must be a lowercase slug");
+  if (workflow.title !== undefined && (typeof workflow.title !== "string" || !workflow.title.trim() || workflow.title.length > 120)) throw new WorkflowValidationError("workflow title must be non-empty and at most 120 characters");
   if (workflow.steps.length === 0) throw new WorkflowValidationError("workflow must contain at least one step");
   const byId = new Map<string, WorkflowStep>();
   for (const step of workflow.steps) {
     if (!/^[a-z][a-z0-9-]{0,62}$/.test(step.id) || byId.has(step.id)) throw new WorkflowValidationError(`invalid or duplicate workflow step ID: ${step.id}`);
     if (!["agent", "tool", "approval", "condition"].includes(step.kind)) throw new WorkflowValidationError(`invalid workflow step kind: ${step.kind}`);
+    if (step.name !== undefined && (typeof step.name !== "string" || !step.name.trim() || step.name.length > 120)) throw new WorkflowValidationError(`invalid step name: ${step.id}`);
+    if (step.agentId !== undefined && (typeof step.agentId !== "string" || !/^[a-z][a-z0-9-]{1,62}$/.test(step.agentId))) throw new WorkflowValidationError(`invalid agent ID: ${step.id}`);
+    if (step.timeoutMinutes !== undefined && (!Number.isSafeInteger(step.timeoutMinutes) || step.timeoutMinutes < 1 || step.timeoutMinutes > 120)) throw new WorkflowValidationError(`invalid timeout for step: ${step.id}`);
+    const knownPermissions = new Set<WorkflowPermission>(["workspace.read", "workspace.write", "network", "command.execute"]);
+    if (step.permissions !== undefined && (!Array.isArray(step.permissions) || new Set(step.permissions).size !== step.permissions.length || step.permissions.some((permission) => !knownPermissions.has(permission)))) throw new WorkflowValidationError(`invalid permissions for step: ${step.id}`);
     if (new Set(step.dependsOn).size !== step.dependsOn.length || step.dependsOn.includes(step.id)) throw new WorkflowValidationError(`invalid dependencies for step: ${step.id}`);
     if (step.sideEffect && step.sideEffect.strategy !== "idempotent") throw new WorkflowValidationError(`side-effect step ${step.id} must declare an idempotent strategy`);
     byId.set(step.id, step);
@@ -233,6 +249,7 @@ export type WorkflowRunResult =
 
 export interface WorkflowExecutionContext {
   idempotencyKey?: string;
+  step?: WorkflowStep;
 }
 
 export interface WorkflowApproval {
@@ -258,8 +275,8 @@ export async function executeWorkflow(
   for (const stepId of order) {
     const step = workflow.steps.find((candidate) => candidate.id === stepId)!;
     const context = step.sideEffect?.strategy === "idempotent"
-      ? { idempotencyKey: `${workflow.id}:${workflowHash(workflow)}:${step.id}` }
-      : {};
+      ? { idempotencyKey: `${workflow.id}:${workflowHash(workflow)}:${step.id}`, step }
+      : { step };
     await executeStep(stepId, context);
   }
   return { status: "COMPLETED", order };

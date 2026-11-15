@@ -59,12 +59,14 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases config validate` | Implementado | Valida config pela mesma definição Zod que gera o JSON Schema |
 | `ases config schema [--check path]` | Implementado | Gera o JSON Schema no stdout ou verifica o artefato sem escrever |
 | `ases config explain` | Implementado | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Em andamento | 112 implementados; 28 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
+| Backlog AFR-001..140 | Em andamento | 125 implementados; 15 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
 | Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |
 | Providers | SPI e mock local implementados | Sem provider remoto, credenciais ou inferência conectada |
 | Agents, RAG offline e ContextBundle | Implementados localmente | Workflows com gate independente; RAG com citações/ACL/refresh; memória local consentida; bundle com redaction/hash e import ZIP seguro. [Guia RAG](docs/rag/offline-index.md) · [Guia de memória](docs/context/memory-and-bundles.md) · [Guia de import](docs/context/bundle-import.md) |
+
+Editor visual local de workflows (React/Vite): [guia de instalação e uso](packages/workflow-editor/README.md).
 
 O estado operacional detalhado está em [`STATUS.md`](STATUS.md) e as evidências executadas ficam em [`evidence/`](evidence/).
 O plano e os gates da candidata npm estão em [`docs/RELEASE.md`](docs/RELEASE.md).
@@ -322,6 +324,8 @@ ases dashboard ./meu-projeto > ./dashboard.html
 ```
 
 Abra `dashboard.html` no navegador. O comando não inicia servidor e lê somente o catálogo local, checkpoints em `.ases/workflows/` e traces opt-in em `.ases/observability/traces.jsonl`. Custos medidos e informados por providers ficam separados; valores não registrados não são estimados. `ases dashboard ./meu-projeto --json` exporta os mesmos agregados em JSON. Consulte [`docs/security/observability.md`](docs/security/observability.md) para configurar o arquivo local de traces.
+
+Para compor workflows visualmente, execute `pnpm --filter @eureka42/ases-workflow-editor dev -- --host 127.0.0.1` e abra o endereço local do Vite. O editor permite criar/editar etapas e dependências, validar o plano, guardar o draft no perfil do navegador e importar/exportar JSON. “Run preview” não executa agents nem ferramentas; detalhes de `agentId`, timeout e permissões seguem como metadados para o host aplicar no executor. Consulte [`packages/workflow-editor/README.md`](packages/workflow-editor/README.md).
 
 Para `VERIFIED`, `--evidence` deve apontar para um arquivo regular existente dentro do workspace. O CLI calcula SHA-256 e rejeita caminhos externos e links simbólicos que escapem do workspace. `requirements show` recalcula a integridade e marca a evidência como `CURRENT`, `STALE`, `MISSING`, `OUTSIDE_WORKSPACE` ou `UNVERIFIABLE`; isso identifica mudanças no arquivo, mas não avalia se o conteúdo comprova semanticamente o critério de aceite.
 

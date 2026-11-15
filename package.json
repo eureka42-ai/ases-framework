@@ -12,7 +12,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "tsc -b && node scripts/copy-host-integrations.mjs",
+    "build": "tsc -b && node scripts/copy-host-integrations.mjs && pnpm --filter @eureka42/ases-workflow-editor build",
     "lint": "node scripts/lint.mjs",
     "typecheck": "tsc -b --pretty false",
     "test:unit": "node scripts/check-config-schema.mjs && node --test packages/cli/dist/**/*.test.js scripts/*.test.mjs",

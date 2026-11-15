@@ -159,3 +159,19 @@ test("workflow side effects receive a stable idempotency key", async () => {
   assert.equal(keys[0], keys[1]);
   assert.match(keys[0]!, /^feature-build:[a-f0-9]{64}:publish-artifact$/);
 });
+
+test("workflow execution exposes editor metadata and checkpoints track configuration changes", async () => {
+  const workflow: WorkflowDefinition = {
+    id: "configured-flow", title: "Configured flow", steps: [
+      { id: "implement", name: "Implement", kind: "agent", agentId: "development", dependsOn: [], timeoutMinutes: 30, permissions: ["workspace.read", "workspace.write"] },
+    ],
+  };
+  const first = createWorkflowCheckpoint(workflow);
+  const received: unknown[] = [];
+  await executeWorkflow(workflow, async (_id, context) => { received.push(context.step); }, { dryRun: false });
+  assert.deepEqual(received, workflow.steps);
+  const changed: WorkflowDefinition = { ...workflow, steps: [{ ...workflow.steps[0]!, timeoutMinutes: 45 }] };
+  assert.notEqual(createWorkflowCheckpoint(changed).definitionHash, first.definitionHash);
+  assert.throws(() => resumeWorkflow(changed, first), /does not match/);
+  assert.throws(() => validateWorkflow({ ...workflow, steps: [{ ...workflow.steps[0]!, timeoutMinutes: 0 }] }), /invalid timeout/);
+});
