@@ -5,7 +5,7 @@ description: Start or assess a software project with EUREKA42 ASES. Use when a u
 
 # EUREKA42 ASES Project Start
 
-Begin with the EUREKA42 ASES identity before asking anything. If the `ases` CLI is available, run `ases interview` first: it renders the teal/green terminal identity, safely inspects known project manifests and begins the interview. For a JSON-driven interview, pass an answers file; never make up answers or inspect `.env` files. State that all recommendations remain `PROPOSED` until the user confirms them.
+At invocation, make `ases welcome --color` the first terminal action whenever the CLI and a terminal tool are available. The explicit color option forces the green Eureka42 logo even when the host captures subprocess output; normal CLI use still respects terminal color support and `NO_COLOR`. Then conduct this Skill's interview in the host conversation so the questions stay with the user. If the CLI is unavailable but a terminal is available, print a plain-text `EUREKA42 ASES` mark there; if no terminal tool exists, show the text mark in the response. Never emit raw ANSI escape codes into chat. Use `ases interview` only when the user asks to run or persist the CLI interview; it starts its own interactive prompt. State that all recommendations remain `PROPOSED` until the user confirms them.
 
 1. If the CLI is unavailable, print the plain-text mark `EUREKA42 ASES` and the tagline `From specification to verified software.` Do not emit raw ANSI codes into chat output.
 2. Inspect project manifests and existing decisions before asking questions. Treat detections as clues, not approvals; never read `.env`, credential stores or secret files.

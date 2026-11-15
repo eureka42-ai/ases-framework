@@ -55,7 +55,7 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases doctor` | Implementado localmente | Node, plataforma, Git, npm, pnpm, workspace/config e ações corretivas |
 | `ases config validate` | Implementado no schema inicial | Configuração JSON bootstrap |
 | `ases config explain` | Implementado no schema inicial | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Em andamento | 37 implementados; 103 pendentes. Critérios de aceite ainda precisam ser refinados em parte do backlog |
+| Backlog AFR-001..140 | Em andamento | 63 implementados; 77 pendentes. Critérios de aceite ainda precisam ser refinados em parte do backlog |
 | Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |
@@ -191,7 +191,7 @@ ASES_PROJECT_MODE=offline ases config explain ./meu-projeto/.ases/config.json --
 | `ases init [diretório]` | Inicializa `.ases/` e próximos passos | Cria arquivos locais |
 | `ases init --dry-run` | Mostra o plano de inicialização | Nenhum |
 | `ases uninstall [diretório]` | Planeja desinstalação dos arquivos ASES ainda intactos | Nenhum; exige `--apply` para remover, compara SHA-256 e preserva alterações/dados |
-| `ases welcome` | Exibe a identidade Eureka42 em teal/verde | Nenhum |
+| `ases welcome [--color|--no-color]` | Exibe a marca Eureka42 em verde; respeita TTY e `NO_COLOR`, `--color` força a abertura dos plugins e `--no-color` desliga ANSI | Nenhum |
 | `ases interview [diretório]` | Pergunta tipo, stack, hospedagem, banco, escala e dados | Cria proposta em `.ases/` |
 | `ases interview --answers <json>` | Executa a entrevista de modo reproduzível | Cria proposta em `.ases/` |
 | `ases doctor [diretório]` | Diagnostica ferramentas e workspace | Nenhum |

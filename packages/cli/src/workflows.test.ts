@@ -86,3 +86,16 @@ test("workflow approvals stay blocked until an independent reviewer explicitly a
   assert.equal(isWorkflowApprovalSatisfied({ status: "REJECTED", authorId: "agent-a", reviewerId: "reviewer-b" }), false);
   assert.equal(isWorkflowApprovalSatisfied({ status: "APPROVED", authorId: "agent-a", reviewerId: "reviewer-b" }), true);
 });
+
+test("workflow side effects receive a stable idempotency key", async () => {
+  const workflow: WorkflowDefinition = { id: "feature-build", steps: [
+    { id: "publish-artifact", kind: "tool", dependsOn: [], sideEffect: { strategy: "idempotent" } },
+  ] };
+  const keys: string[] = [];
+  const execute = async () => executeWorkflow(workflow, async (_stepId, context) => { keys.push(context.idempotencyKey ?? ""); }, { dryRun: false });
+  await execute();
+  await execute();
+  assert.ok(keys[0]);
+  assert.equal(keys[0], keys[1]);
+  assert.match(keys[0]!, /^feature-build:[a-f0-9]{64}:publish-artifact$/);
+});

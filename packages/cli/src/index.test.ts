@@ -14,6 +14,7 @@ import { collectInterviewAnswers, inspectWorkspaceContext, runInterview } from "
 import { assessInterview } from "./assessment.js";
 import { readCatalog } from "./catalog.js";
 import { applyHostIntegration } from "./host-install.js";
+import { renderLogo, supportsColor } from "./brand.js";
 
 const sha256 = (value: string | Buffer): string => createHash("sha256").update(value).digest("hex");
 
@@ -223,8 +224,25 @@ test("renders Eureka42 identity without color when NO_COLOR is set", async () =>
   if (previous === undefined) delete process.env.NO_COLOR;
   else process.env.NO_COLOR = previous;
   assert.equal(result.exitCode, 0);
-  assert.match(result.output, /EUREKA42 ASES/);
+  assert.match(result.output, /EUREKA42/);
+  assert.match(result.output, /ASES FRAMEWORK/);
   assert.doesNotMatch(result.output, /\u001b\[/);
+});
+
+test("renders the Eureka42 wordmark in green only on a capable interactive terminal", async () => {
+  assert.equal(supportsColor({}, true), true);
+  assert.equal(supportsColor({ NO_COLOR: "1" }, true), false);
+  assert.equal(supportsColor({ TERM: "dumb" }, true), false);
+  assert.equal(supportsColor({}, false), false);
+  const logo = renderLogo(true);
+  assert.match(logo, /\u001b\[38;2;0;190;130m/);
+  assert.match(logo, /EUREKA42/);
+  assert.match(logo, /ASES FRAMEWORK/);
+  assert.match(logo, /\u001b\[0m/);
+  const forced = await run(["welcome", "--color"]);
+  assert.match(forced.output, /\u001b\[38;2;0;190;130m/);
+  const disabled = await run(["welcome", "--color", "--no-color"]);
+  assert.doesNotMatch(disabled.output, /\u001b\[/);
 });
 
 test("JSON interview requires an answers file", async () => {

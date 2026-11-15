@@ -22,7 +22,8 @@ Atualizado em: 2026-11-14
 - `config explain` resolve defaults, arquivo, variáveis ASES allowlistadas e `--set` com precedência explícita; segredos fora da allowlist não são lidos nem impressos.
 - Schema inicial publicado localmente em `schemas/ases.config.schema.json`.
 - README completo e assets oficiais da marca organizados em `docs/assets/brand/`.
-- Identidade ANSI teal/verde disponível em `ases welcome` e na ajuda.
+- Identidade Eureka42 verde disponível em `ases welcome`; `ases welcome --color` força a abertura visual para plugins mesmo com stdout capturado e `--no-color` tem precedência explícita.
+- Codex, Claude Code, Kimi e Gemini invocam `ases welcome --color` como primeira ação de terminal; validação estrutural confere os seis Skills compartilhados e os entrypoints. Isso ainda não prova renderização em sessão real de cada host.
 - Entrevista inicial implementada com tipo de aplicativo, linguagem, hospedagem, banco, escala e dados sensíveis; AFR-016..020 rastreados a código e testes.
 - O fluxo interativo apresenta a marca antes das perguntas; a saída `--json` exige arquivo `--answers` para preservar JSON válido.
 - Antes das perguntas, a entrevista consulta somente manifestos conhecidos, exibe arquivos e pistas de stack, deixa inferências editáveis e não lê `.env`/credenciais; destino Docker continua sem confirmação automática.
@@ -39,12 +40,12 @@ Atualizado em: 2026-11-14
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes unitários: PASS (80/80); `pnpm test` também compila TypeScript e valida as integrações. O commit `c7e35b9` passou nos jobs Node.js 22 e 24 do GitHub Actions; ver [execução CI](https://github.com/eureka42-ai/ases-framework/actions/runs/43662792365).
-- Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 5 Skills sincronizadas).
+- Testes unitários: PASS (82/82); `pnpm test` também compila TypeScript e valida as integrações. O commit `c7e35b9` passou nos jobs Node.js 22 e 24 do GitHub Actions; ver [execução CI](https://github.com/eureka42-ai/ases-framework/actions/runs/43662792365). As mudanças atuais ainda precisam de CI remoto.
+- Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 6 Skills sincronizadas).
 - Claude plugin validator: manifest/commands válidos; publicação no diretório bloqueada pela ausência de licença aprovada.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; instalação local do tarball + `ases --version` e `ases host plan` em workspace externo: PASS.
-- Backlog AFR-001..140: 62 requisitos IMPLEMENTED e ligados a código/testes/evidência; 78 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 63 requisitos IMPLEMENTED e ligados a código/testes/evidência; 77 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -56,7 +57,7 @@ Atualizado em: 2026-11-14
 - `requirements show/list` recalculam integridade de evidências (`CURRENT`, `STALE`, `MISSING`, `OUTSIDE_WORKSPACE`, `UNVERIFIABLE`); README documenta limites da checagem semântica.
 - Regressões cobrem MCP stdio moderno/legado, isolamento de workspace, rejeição de symlinks e segredo em logs, plano host/diff e prevenção de symlink escape, análise de contradições e riscos, persistência de achados na SPEC, inspeção segura de manifestos e retomada de decisões na entrevista, separação de catálogos, ciclo de decisões, rastreabilidade, bloqueios justificados, integridade, piso Node.js, identidade da entrevista, configuração segura e desinstalação conservadora.
 - Parser ASES-300: classificação e prioridade agora são extraídas separadamente quando aparecem na mesma linha; regressão automatizada PASS.
-- Validadores de integração: PASS (4 manifests, 2 marketplaces, 5 Skills).
+- Validadores de integração: PASS (4 manifests, 2 marketplaces, 6 Skills).
 - Validação host estática nesta rodada: Claude schema PASS, profile de diretório bloqueado por licença; Gemini extension PASS; `kimi doctor` validou só os arquivos de configuração; Codex 0.169.0 detectado. Descoberta/execução em sessões de agente permanecem pendentes.
 - Validação continuada anterior: `git diff --check` PASS; `kimi doctor` PASS para configuração local (não é validação do plugin).
 - CI GitHub Actions observado em execução remota: PASS nos jobs Node.js 22 e 24, instalação congelada e `pnpm test`; AFR-028 atualizado para IMPLEMENTED. Ver `evidence/CI-2026-11-14.md`.
@@ -94,6 +95,7 @@ Atualizado em: 2026-11-14
 - AFR-061 implementado: DSL de workflow valida nós/dependências, rejeita ciclos e produz ordem topológica determinística.
 - AFR-062/063 implementados: checkpoints gravados atomicamente e retomada restrita a definição com hash idêntico.
 - AFR-064 implementado: etapas suportam timeout e retry limitado; cancelamento do chamador interrompe sem retry.
+- AFR-065 implementado: etapas com side effects recebem chave idempotente estável, derivada da definição completa e da etapa; adaptadores precisam encaminhar essa chave para obter deduplicação no serviço. A garantia de idempotência externa depende do serviço executor.
 - AFR-068 implementado: dry-run valida e retorna o plano sem invocar handlers.
 - AFR-067 implementado: gates de aprovação só abrem com decisão explícita de revisor independente; pendências e autoaprovação ficam bloqueadas.
 
@@ -101,6 +103,7 @@ Atualizado em: 2026-11-14
 
 1. Prioridade Claude Code: observar descoberta e executar `/eureka42-ases:ases-start` em sessão real para completar a evidência de AFR-031; depois avançar Codex (AFR-033), Kimi (AFR-032) e Gemini (AFR-034) conforme permissões de instalação já registradas.
 2. Prosseguir a entrevista com personas, autenticação, integrações, observabilidade e critérios de aceite.
+3. Implementar AFR-066 (fluxo de feature com teste e evidência reais); iniciar M9–M13 segundo dependências e critérios do backlog.
 
 ## Bloqueios de conclusão integral
 
@@ -110,6 +113,7 @@ Atualizado em: 2026-11-14
 - A licença/copyright do software, metodologia e marca não foi aprovada; não é possível finalizar distribuição pública dos plugins.
 - Os quatro executáveis de host foram detectados, mas detecção não prova descoberta e execução do plugin em sessão real.
 - O roadmap completo M0–M14 é maior que o vertical slice atual; componentes não construídos continuam `PLANNED` ou `NOT_IMPLEMENTED`.
+- Para distribuição npm, o pacote ainda está marcado `private: true`, versão `0.0.0-dev`, e não existe decisão de licença/copyright aprovada. Isso impede publicação segura do CLI.
 
 ## Evidências
 
@@ -156,6 +160,7 @@ Atualizado em: 2026-11-14
 - `evidence/M8-2026-11-14-progress-3.md`
 - `evidence/M8-2026-11-14-progress-4.md`
 - `evidence/M8-2026-11-14-progress-5.md`
+- `evidence/M8-2026-11-14-progress-6.md`
 - `evidence/CI-2026-11-14-progress-7.md`
 - `evidence/CI-2026-11-14-progress-5.md`
 - `evidence/CI-2026-11-14-progress-6.md`

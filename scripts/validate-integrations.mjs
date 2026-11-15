@@ -15,6 +15,7 @@ const jsonFiles = [
 const skillFiles = [
   ".agents/skills/ases-project-start/SKILL.md",
   "integrations/claude-code/skills/ases-project-start/SKILL.md",
+  "integrations/codex/.agents/skills/ases-project-start/SKILL.md",
   "integrations/kimi-code/skills/ases-project-start/SKILL.md",
   "integrations/gemini-cli/skills/ases-project-start/SKILL.md",
   "integrations/codex/skills/ases-project-start/SKILL.md"
@@ -38,10 +39,21 @@ if (codexManifest.extensions?.["com.openai"]?.onboardingSkill !== "./skills/ases
 let canonicalSkill;
 for (const relative of skillFiles) {
   const content = await readFile(resolve(root, relative), "utf8");
-  if (parseSkillFrontmatter(content).name !== "ases-project-start" || !content.includes("`PROPOSED`")) throw new Error(`Skill inválida: ${relative}`);
+  if (parseSkillFrontmatter(content).name !== "ases-project-start" || !content.includes("`PROPOSED`") || !content.includes("ases welcome --color")) throw new Error(`Skill inválida ou sem abertura visual verde: ${relative}`);
   if (canonicalSkill === undefined) canonicalSkill = content;
   else if (content !== canonicalSkill) throw new Error(`Skills divergentes; sincronize com .agents/skills/ases-project-start/SKILL.md: ${relative}`);
 }
+const hostEntrypoints = [
+  "integrations/claude-code/commands/ases-start.md",
+  "integrations/codex/AGENTS.md",
+  "integrations/gemini-cli/GEMINI.md",
+  "integrations/gemini-cli/commands/ases/start.toml",
+];
+for (const relative of hostEntrypoints) {
+  if (!(await readFile(resolve(root, relative), "utf8")).includes("ases welcome --color")) throw new Error(`Entry point deve apresentar o logo verde no início: ${relative}`);
+}
+const kimiPlugin = JSON.parse(await readFile(resolve(root, "integrations/kimi-code/kimi.plugin.json"), "utf8"));
+if (!kimiPlugin.systemPrompt?.includes("ases welcome --color")) throw new Error("Kimi sessionStart deve apresentar o logo verde no início");
 if (existsSync(resolve(root, "integrations/claude-code/.claude-plugin/plugin.json"))) {
   const validation = spawnSync("claude", ["plugin", "validate", "integrations/claude-code", "--strict"], { cwd: root, encoding: "utf8" });
   if (validation.error && validation.error.code !== "ENOENT") throw validation.error;

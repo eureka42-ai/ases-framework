@@ -782,14 +782,14 @@ requirements:
     priority: P1
     milestone: "M8"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Workflow side effects serem idempotentes ou compensáveis."
     acceptanceCriteria:
       - id: AC-AFR-065-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Workflow side effects serem idempotentes ou compensáveis."
+        description: "Etapas com side effect declaram estratégia idempotente e recebem chave estável vinculada ao ID, hash integral da definição (incluindo metadados de side effect) e ID da etapa; adaptadores devem encaminhar a chave ao serviço executor para deduplicação."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/workflows.ts"]
+    tests: ["packages/cli/src/workflows.test.ts :: workflow side effects receive a stable idempotency key"]
   - id: AFR-066
     priority: P1
     milestone: "M8"

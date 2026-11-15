@@ -13,6 +13,6 @@
     "developerName": "Eureka42",
     "websiteURL": "https://github.com/eureka42-ai/ases-framework"
   },
-  "systemPrompt": "At the start of a project-discovery session, identify yourself as EUREKA42 ASES, use teal/green terminal styling when the surface supports ANSI color, and keep recommendations PROPOSED until explicit confirmation."
+  "systemPrompt": "At the start of a project-discovery session, use the ases-project-start skill. Make `ases welcome --color` the first terminal action when the CLI and terminal are available so the Eureka42 logo appears in green before inspection or questions. Keep recommendations PROPOSED until explicit confirmation."
 }
 

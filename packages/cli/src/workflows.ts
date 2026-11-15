@@ -8,6 +8,7 @@ export interface WorkflowStep {
   id: string;
   kind: WorkflowStepKind;
   dependsOn: readonly string[];
+  sideEffect?: { strategy: "idempotent" };
 }
 
 export interface WorkflowDefinition {
@@ -85,7 +86,7 @@ export interface WorkflowCheckpoint {
 function workflowHash(workflow: WorkflowDefinition): string {
   const canonical = JSON.stringify({
     id: workflow.id,
-    steps: workflow.steps.map((step) => ({ id: step.id, kind: step.kind, dependsOn: [...step.dependsOn].sort() })),
+    steps: workflow.steps.map((step) => ({ id: step.id, kind: step.kind, dependsOn: [...step.dependsOn].sort(), sideEffect: step.sideEffect ?? null })),
   });
   return createHash("sha256").update(canonical).digest("hex");
 }
@@ -179,6 +180,7 @@ export function validateWorkflow(workflow: WorkflowDefinition): string[] {
     if (!/^[a-z][a-z0-9-]{0,62}$/.test(step.id) || byId.has(step.id)) throw new WorkflowValidationError(`invalid or duplicate workflow step ID: ${step.id}`);
     if (!["agent", "tool", "approval", "condition"].includes(step.kind)) throw new WorkflowValidationError(`invalid workflow step kind: ${step.kind}`);
     if (new Set(step.dependsOn).size !== step.dependsOn.length || step.dependsOn.includes(step.id)) throw new WorkflowValidationError(`invalid dependencies for step: ${step.id}`);
+    if (step.sideEffect && step.sideEffect.strategy !== "idempotent") throw new WorkflowValidationError(`side-effect step ${step.id} must declare an idempotent strategy`);
     byId.set(step.id, step);
   }
   for (const step of workflow.steps) {
@@ -205,6 +207,10 @@ export type WorkflowRunResult =
   | { status: "DRY_RUN"; order: string[] }
   | { status: "COMPLETED"; order: string[] };
 
+export interface WorkflowExecutionContext {
+  idempotencyKey?: string;
+}
+
 export interface WorkflowApproval {
   status: "PENDING" | "APPROVED" | "REJECTED";
   authorId: string;
@@ -220,11 +226,17 @@ export function isWorkflowApprovalSatisfied(approval: WorkflowApproval): boolean
 /** Executes a validated graph serially, or returns a pure plan without invoking handlers in dry-run mode. */
 export async function executeWorkflow(
   workflow: WorkflowDefinition,
-  executeStep: (stepId: string) => Promise<void>,
+  executeStep: (stepId: string, context: WorkflowExecutionContext) => Promise<void>,
   options: { dryRun: boolean },
 ): Promise<WorkflowRunResult> {
   const order = validateWorkflow(workflow);
   if (options.dryRun) return { status: "DRY_RUN", order };
-  for (const stepId of order) await executeStep(stepId);
+  for (const stepId of order) {
+    const step = workflow.steps.find((candidate) => candidate.id === stepId)!;
+    const context = step.sideEffect?.strategy === "idempotent"
+      ? { idempotencyKey: `${workflow.id}:${workflowHash(workflow)}:${step.id}` }
+      : {};
+    await executeStep(stepId, context);
+  }
   return { status: "COMPLETED", order };
 }

@@ -1,3 +1,3 @@
 description = "Start an EUREKA42 ASES project interview"
-prompt = "Use the ases-project-start skill. Inspect the workspace and begin the progressive project interview."
+prompt = "Use the ases-project-start skill. First run ases welcome --color in the terminal when available so the green Eureka42 logo appears before any questions. Then inspect the workspace and begin the progressive project interview."
 

@@ -38,7 +38,7 @@ Comandos disponíveis:
   init [diretório]        Inicializa um workspace local de forma idempotente
   uninstall [diretório]  Remove somente arquivos ASES intactos (--apply para executar)
   interview [diretório]   Entrevista o projeto e propõe stack inicial
-  welcome                 Exibe a identidade Eureka42 no terminal
+  welcome [--color|--no-color] Exibe a marca Eureka42 no terminal
   host list               Detecta CLIs compatíveis sem alterar configurações
   host plan <host> [dir]  Mostra o diff da integração sem escrever arquivos
   host apply <host> [dir] Instala no workspace após plano; exige --apply
@@ -339,7 +339,7 @@ export async function run(argv: string[]): Promise<CommandResult> {
   if (argv.includes("--version")) return { exitCode: 0, output: VERSION };
   const command = args[0] ?? "help";
   if (command === "help" || command === "--help") return { exitCode: 0, output: help };
-  if (command === "welcome") return { exitCode: 0, output: renderLogo() };
+  if (command === "welcome") return { exitCode: 0, output: renderLogo(argv.includes("--no-color") ? false : argv.includes("--color") ? true : undefined) };
   if (command === "init") return initProject(args[1], dryRun, json);
   if (command === "uninstall") {
     try {

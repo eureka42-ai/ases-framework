@@ -28,7 +28,7 @@ Na instalação Claude documentada acima, `--scope local` limita a configuraçã
 
 ## Experiência pretendida
 
-1. A identidade EUREKA42 ASES aparece em teal/verde quando o terminal permite.
+1. O primeiro comando de terminal do fluxo plugin é `ases welcome --color`; a marca Eureka42 aparece em verde antes das perguntas.
 2. O agente inspeciona o workspace.
 3. Pergunta tipo de aplicativo, linguagem, hospedagem e banco de dados.
 4. Avalia escolhas existentes sem substituí-las silenciosamente.
