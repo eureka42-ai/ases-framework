@@ -11,6 +11,7 @@ test("generated config JSON Schema matches the checked-in artifact and runtime v
   assert.deepEqual(generateAsesConfigJsonSchema(), artifact);
   const valid = { schemaVersion: "1", project: { id: "demo-app", name: "Demo App", locale: "pt-BR", mode: "offline", privacy: "local-only" } };
   assert.deepEqual(validateAsesConfig(valid), []);
+  for (const locale of ["en-US", "es-ES", "it-IT"]) assert.deepEqual(validateAsesConfig({ ...valid, project: { ...valid.project, locale } }), []);
   assert.ok(validateAsesConfig({ ...valid, project: { ...valid.project, name: "  " } }).includes("project.name é obrigatório"));
   assert.ok(validateAsesConfig({ ...valid, extra: true }).some((error) => error.includes("propriedade não permitida: extra")));
 });

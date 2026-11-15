@@ -6,7 +6,7 @@ export function supportsColor(env: NodeJS.ProcessEnv = process.env, isTTY = Bool
   return isTTY && env.NO_COLOR === undefined && env.TERM !== "dumb";
 }
 
-export function renderLogo(color = supportsColor()): string {
+export function renderLogo(color = supportsColor(), tagline = "From specification to verified software."): string {
   const mark = [
     "╭───╮ ╭───╮",
     "│   ╰─╯   │",
@@ -15,7 +15,6 @@ export function renderLogo(color = supportsColor()): string {
   ].join("\n");
   const word = "EUREKA42";
   const product = "ASES FRAMEWORK";
-  const tagline = "From specification to verified software.";
   if (!color) return `${mark}\n${word}\n${product}\n${tagline}`;
   return `${GREEN}${mark}\n${word}${RESET}\n${MUTED}${product}\n${tagline}${RESET}`;
 }

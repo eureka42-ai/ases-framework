@@ -22,6 +22,19 @@ test("reports version offline", async () => {
   assert.deepEqual(await run(["--version"]), { exitCode: 0, output: VERSION });
 });
 
+test("CLI help and welcome support Portuguese, English, Spanish and Italian locales", async () => {
+  const expected = [["pt-BR", "Comandos disponíveis"], ["en-US", "Available commands"], ["es-ES", "Comandos disponibles"], ["it-IT", "Comandi disponibili"]] as const;
+  for (const [locale, heading] of expected) {
+    const result = await run(["help", "--locale", locale]);
+    assert.equal(result.exitCode, 0);
+    assert.match(result.output, new RegExp(heading));
+  }
+  assert.match((await run(["welcome", "--locale=es-ES", "--no-color"])).output, /software verificado/);
+  const invalid = await run(["help", "--locale", "fr-FR", "--json"]);
+  assert.equal(invalid.exitCode, 2);
+  assert.equal(JSON.parse(invalid.output).code, "ASES_LOCALE_UNSUPPORTED");
+});
+
 test("init dry-run does not write", async () => {
   const root = await mkdtemp(join(tmpdir(), "ases-dry-"));
   const result = await run(["init", root, "--dry-run", "--json"]);

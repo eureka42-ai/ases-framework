@@ -5,7 +5,7 @@ export type ResolvedProjectConfig = {
   project: {
     id: string;
     name: string;
-    locale: "pt-BR" | "en-US";
+    locale: "pt-BR" | "en-US" | "es-ES" | "it-IT";
     mode: "host" | "standalone" | "headless" | "offline";
     privacy: "local-only";
   };
@@ -100,7 +100,7 @@ export function resolveConfigLayers(options: {
   if (config.schemaVersion !== "1") errors.push("schemaVersion deve ser '1'");
   if (typeof config.project.id !== "string" || !/^[a-z0-9][a-z0-9-]*$/.test(config.project.id)) errors.push("project.id deve usar letras minúsculas, números e hífens");
   if (typeof config.project.name !== "string" || !config.project.name.trim()) errors.push("project.name é obrigatório");
-  if (config.project.locale !== "pt-BR" && config.project.locale !== "en-US") errors.push("project.locale inválido");
+  if (!("pt-BR en-US es-ES it-IT".split(" ").includes(config.project.locale))) errors.push("project.locale inválido");
   if (!["host", "standalone", "headless", "offline"].includes(config.project.mode)) errors.push("project.mode inválido");
   if (config.project.privacy !== "local-only") errors.push("project.privacy deve ser 'local-only' nesta versão");
   return { config, resolved, errors };

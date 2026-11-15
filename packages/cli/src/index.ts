@@ -19,6 +19,7 @@ import { generateAsesConfigJsonSchema, validateAsesConfig } from "./config-schem
 import { checkArchitectureContracts } from "./architecture-contracts.js";
 import { createTeamPolicyEngine, isSecurityAction, readTeamPolicyFile, teamPolicyTemplate, validateTeamPolicy } from "./team-policy.js";
 import { exportTrackerTasks, importTrackerTasks } from "./tracker-exchange.js";
+import { renderHelp, resolveLocale, welcomeTagline } from "./i18n.js";
 
 export { VERSION } from "./version.js";
 export { indexRagSources, RagAccessError, refreshRagIndex, retrieveRequirement, searchRag } from "./rag.js";
@@ -56,6 +57,8 @@ export { createTeamPolicyEngine, isSecurityAction, readTeamPolicyFile, teamPolic
 export type { TeamPolicyDocument, TeamPolicyRule, TeamPolicyValidation } from "./team-policy.js";
 export { exportTrackerTasks, importTrackerTasks } from "./tracker-exchange.js";
 export type { TrackerBundle, TrackerTask } from "./tracker-exchange.js";
+export { renderHelp, resolveLocale } from "./i18n.js";
+export type { Locale } from "./i18n.js";
 
 export interface CommandResult {
   exitCode: number;
@@ -67,56 +70,11 @@ interface ProjectConfig {
   project: {
     id: string;
     name: string;
-    locale: "pt-BR" | "en-US";
+    locale: "pt-BR" | "en-US" | "es-ES" | "it-IT";
     mode: "host" | "standalone" | "headless" | "offline";
     privacy: "local-only";
   };
 }
-
-const help = `${renderLogo()}\n\nEUREKA42 ASES Framework ${VERSION}
-
-Uso: ases <comando> [opções]
-
-Comandos disponíveis:
-  init [diretório]        Inicializa um workspace local de forma idempotente
-  uninstall [diretório]  Remove somente arquivos ASES intactos (--apply para executar)
-  interview [diretório]   Entrevista o projeto e propõe stack inicial
-  welcome [--color|--no-color] Exibe a marca Eureka42 no terminal
-  host list               Detecta CLIs compatíveis sem alterar configurações
-  host plan <host> [dir]  Mostra o diff da integração sem escrever arquivos
-  host apply <host> [dir] Instala no workspace após plano; exige --apply
-  host update <host> [dir] Atualiza arquivos ASES rastreados com backup
-  host restore <host> <backup-id> [dir] Restaura snapshot verificado (--apply para executar)
-  host uninstall <host> [dir] Remove somente arquivos intactos rastreados
-  mcp [workspace]         Inicia servidor MCP read-only via stdio; --http habilita HTTP OAuth autenticado
-  doctor [diretório]      Diagnostica o ambiente sem chamadas remotas
-  config validate [path]  Valida a configuração JSON do projeto
-  config schema [--check path]  Gera schema JSON ou verifica um artefato
-  config explain [path]   Resolve defaults, ambiente e --set sem revelar secrets
-  catalog import-ases300 <md> Importa e valida a fonte ASES-300 local
-  catalog import-product <id> <md> [workspace] Importa requisitos específicos separados
-  requirements list|show|trace  Consulta catálogo e trilha de evidências [--product id]
-  requirements graph [dir]  Exporta o grafo de decisões, testes e evidências em Mermaid
-  dashboard [workspace] [--product id] [--json]  Gera snapshot local de requisitos, workflows, evidências e custos
-  architecture check [workspace] [--contracts path] [--json]  Detecta drift contra contratos ligados a ADRs
-  policy template          Exibe template de policy default-deny
-  policy validate <file>   Valida policy-as-code local sem aplicar regras
-  policy evaluate <file> --actor id --action ação --resource ref  Simula decisão sem executar ação
-  tracker export [workspace] [--product id]  Exporta tarefas ASES em bundle JSON para tracker
-  tracker import <bundle.json> [workspace] [--apply]  Valida/pré-visualiza bundle; grava cópia local somente com --apply
-  requirements set-status <workspace> <REQ-ID> <status> [--product id|--evidence arquivo --execution-context texto [--evidence-expires-at ISO]|--decision DEC|--test ref|--na-reason texto|--blocked-by ref --reason texto]
-  requirements set-decision <workspace> <REQ-ID> <state> [--product id|--ref ADR --reason texto]
-  plugin remove <plugin-id> [workspace]  Remove arquivos ASES inalterados (--apply para executar)
-  help                    Exibe esta ajuda
-
-Opções:
-  --json                  Saída estruturada em JSON
-  --dry-run               Mostra o plano sem escrever arquivos
-  --apply                 Aplica instalação/desinstalação após conferir o plano
-  --answers <arquivo>     Respostas JSON para entrevista não interativa
-  --resume                Retoma a entrevista salva em .ases/interview.json
-  --version               Exibe a versão
-`;
 
 const execFileAsync = promisify(execFile);
 
@@ -374,11 +332,19 @@ async function explainConfigCommand(pathArg: string | undefined, json: boolean, 
 export async function run(argv: string[]): Promise<CommandResult> {
   const json = argv.includes("--json");
   const dryRun = argv.includes("--dry-run");
-  const args = argv.filter((arg) => !arg.startsWith("--"));
+  const localeResult = resolveLocale(argv);
+  if (localeResult.error) return { exitCode: 2, output: json ? JSON.stringify({ code: "ASES_LOCALE_UNSUPPORTED", error: localeResult.error, supported: ["pt-BR", "en-US", "es-ES", "it-IT"] }, null, 2) : localeResult.error };
+  const args: string[] = [];
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index]!;
+    if (arg === "--locale") { index += 1; continue; }
+    if (arg.startsWith("--locale=") || arg.startsWith("--")) continue;
+    args.push(arg);
+  }
   if (argv.includes("--version")) return { exitCode: 0, output: VERSION };
   const command = args[0] ?? "help";
-  if (command === "help" || command === "--help") return { exitCode: 0, output: help };
-  if (command === "welcome") return { exitCode: 0, output: renderLogo(argv.includes("--no-color") ? false : argv.includes("--color") ? true : undefined) };
+  if (command === "help" || command === "--help") return { exitCode: 0, output: `${renderLogo(argv.includes("--no-color") ? false : argv.includes("--color") ? true : undefined, welcomeTagline(localeResult.locale))}\n\n${renderHelp(localeResult.locale)}` };
+  if (command === "welcome") return { exitCode: 0, output: renderLogo(argv.includes("--no-color") ? false : argv.includes("--color") ? true : undefined, welcomeTagline(localeResult.locale)) };
   if (command === "dashboard") {
     try {
       const productId = optionValues(argv, "--product")[0];
@@ -674,6 +640,6 @@ export async function run(argv: string[]): Promise<CommandResult> {
     const pathArg = args.slice(2).find((arg) => !flags.includes(arg));
     return explainConfigCommand(pathArg, json, flags);
   }
-  return { exitCode: 1, output: json ? JSON.stringify({ code: "ASES_COMMAND_UNKNOWN", command }) : `Comando desconhecido: ${command}\n\n${help}` };
+  return { exitCode: 1, output: json ? JSON.stringify({ code: "ASES_COMMAND_UNKNOWN", command }) : `Comando desconhecido: ${command}\n\n${renderHelp(localeResult.locale)}` };
 }
 

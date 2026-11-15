@@ -24,7 +24,9 @@
           "type": "string",
           "enum": [
             "pt-BR",
-            "en-US"
+            "en-US",
+            "es-ES",
+            "it-IT"
           ]
         },
         "mode": {

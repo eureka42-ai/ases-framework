@@ -60,6 +60,8 @@
     "dist/architecture-contracts.d.ts",
     "dist/team-policy.js",
     "dist/team-policy.d.ts",
+    "dist/i18n.js",
+    "dist/i18n.d.ts",
     "dist/tracker-exchange.js",
     "dist/tracker-exchange.d.ts",
     "dist/rag.js",

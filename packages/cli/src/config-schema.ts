@@ -8,7 +8,7 @@ export const asesConfigSchema = z.object({
     name: z.string({ error: "project.name é obrigatório" })
       .min(1, { error: "project.name é obrigatório" })
       .regex(/\S/, { error: "project.name é obrigatório" }),
-    locale: z.enum(["pt-BR", "en-US"], { error: "project.locale inválido" }),
+    locale: z.enum(["pt-BR", "en-US", "es-ES", "it-IT"], { error: "project.locale inválido" }),
     mode: z.enum(["host", "standalone", "headless", "offline"], { error: "project.mode inválido" }),
     privacy: z.literal("local-only", { error: "project.privacy deve ser 'local-only' nesta versão" }),
   }, { error: "project deve ser um objeto" }).strict(),

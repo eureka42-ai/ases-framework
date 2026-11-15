@@ -246,6 +246,8 @@ Os demais comandos do documento-mestre são contratos planejados, não funcional
 
 Para intercâmbio local de tarefas com trackers, consulte [exportação e importação](docs/trackers.md). A exportação gera bundle JSON; importação é prévia por padrão e `--apply` grava apenas uma cópia local.
 
+A ajuda e a identidade do CLI estão disponíveis em pt-BR, en-US, es-ES e it-IT com `ases help --locale es-ES`, `ASES_LOCALE=it-IT ases help` ou equivalente. Guias de instalação traduzidos: [español](docs/i18n/es-ES.md) e [italiano](docs/i18n/it-IT.md).
+
 Para marcar um requisito como `VERIFIED`, associe uma evidência local e registre como foi produzida com `--execution-context`; veja [vínculo de evidências e validade](docs/requirements/evidence-linking.md).
 
 O engine de políticas é default-deny; ferramentas e planos de comando exigem autorização explícita. O SDK permite declarar capabilities e descobrir/rankear candidatos compatíveis antes da autorização, sem executar ferramentas automaticamente. A API de benchmark de providers exige opt-in, aplica limites e reporta métricas sem incluir prompts/respostas. Veja [política de segurança e comandos](docs/security/policy-engine.md), [benchmarks reproduzíveis](docs/benchmarking.md) e [logging com redaction](docs/security/safe-logging.md).
