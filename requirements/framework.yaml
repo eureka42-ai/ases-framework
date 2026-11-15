@@ -830,26 +830,26 @@ requirements:
     priority: P1
     milestone: "M9"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "RAG indexar Markdown e texto em modo offline."
     acceptanceCriteria:
       - id: AC-AFR-069-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: RAG indexar Markdown e texto em modo offline."
+        description: "indexRagSources indexa arquivos .md, .markdown e .txt locais sem rede e sem depender de embeddings; recusa arquivos especiais, symlinks e fontes fora do workspace."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/rag.ts"]
+    tests: ["packages/cli/src/rag.test.ts :: offline RAG indexes Markdown/text, retrieves requirement citations and preserves provenance"]
   - id: AFR-070
     priority: P1
     milestone: "M9"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "RAG recuperar requisito por ID e citar fonte."
     acceptanceCriteria:
       - id: AC-AFR-070-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: RAG recuperar requisito por ID e citar fonte."
+        description: "retrieveRequirement localiza IDs REQ-000/AFR-000 no índice e retorna texto com caminho, intervalo de linhas e hashes da fonte e do chunk; sem correspondência retorna lista vazia."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/rag.ts"]
+    tests: ["packages/cli/src/rag.test.ts :: offline RAG indexes Markdown/text, retrieves requirement citations and preserves provenance"]
   - id: AFR-071
     priority: P1
     milestone: "M9"
@@ -878,14 +878,14 @@ requirements:
     priority: P1
     milestone: "M9"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "RAG manter origem e hashes por chunk."
     acceptanceCriteria:
       - id: AC-AFR-073-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: RAG manter origem e hashes por chunk."
+        description: "Cada chunk mantém origem relativa, linha inicial/final, SHA-256 do arquivo e SHA-256 do conteúdo normalizado do chunk."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/rag.ts"]
+    tests: ["packages/cli/src/rag.test.ts :: offline RAG indexes Markdown/text, retrieves requirement citations and preserves provenance"]
   - id: AFR-074
     priority: P1
     milestone: "M9"
@@ -902,26 +902,26 @@ requirements:
     priority: P1
     milestone: "M9"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "RAG falha sem fonte retornar sem inventar texto."
     acceptanceCriteria:
       - id: AC-AFR-075-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: RAG falha sem fonte retornar sem inventar texto."
+        description: "Busca lexical sem chunks ou sem token coincidente e recuperação de ID ausente retornam listas vazias; a API não gera conteúdo sintético."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/rag.ts"]
+    tests: ["packages/cli/src/rag.test.ts :: offline RAG returns no invented answer when no indexed source matches"]
   - id: AFR-076
     priority: P1
     milestone: "M9"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Vector embeddings serem módulo opcional, não obrigatório."
     acceptanceCriteria:
       - id: AC-AFR-076-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Vector embeddings serem módulo opcional, não obrigatório."
+        description: "O índice offline lexical tem zero dependências de embedding; o modo declara embeddings como optional-not-configured."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/rag.ts"]
+    tests: ["packages/cli/src/rag.test.ts :: offline RAG indexes Markdown/text, retrieves requirement citations and preserves provenance"]
   - id: AFR-077
     priority: P1
     milestone: "M10"

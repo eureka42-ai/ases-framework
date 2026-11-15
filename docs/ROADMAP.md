@@ -9,10 +9,11 @@
 - M6 — IMPLEMENTED: provider probe opt-in, SPI tipada, mock determinístico, catálogo com proveniência, roteamento por capacidade, fallback restrito, classificação de custo, budget concorrente, controle de modelo declarado e bloqueio remoto em `offline` concluídos localmente (AFR-041..050); o probe não foi executado contra serviço real.
 - M7 — IMPLEMENTED_LOCALLY: declarações, limites, seleção de contexto, execução serial, prevenção de conflitos de escrita, revisão independente, Skills e tools com policy/path guard; integração real com hosts segue pendente.
 - M8 — IMPLEMENTED_LOCALLY: DSL valida grafo; checkpoints retomam com hash correspondente; etapas têm timeout/cancelamento/retry, dry-run puro, gate de aprovação independente e chave de idempotência para side effects (AFR-061..068); workflow de feature executa análise, plano, implementação, teste, evidência hashada e falha fechado sem revisão independente.
-- M9–M13 — PLANNED: RAG/memória, evals, segurança, observabilidade e hardening.
+- M9 — IN_PROGRESS: indexação local lexical de Markdown/texto, recuperação por ID com citações, hashes/proveniência, retorno vazio sem fonte e embeddings opcionais concluídos (AFR-069/070/073/075/076); faltam filtros de licença/versão/ACL, invalidação automática e isolamento cross-project.
+- M10–M13 — PLANNED: memória, ContextBundle, evals, segurança, observabilidade e hardening.
 - M14 — BLOCKED_ON_APPROVAL: release candidate e gate v1 dependem das decisões de licença, homologação e critérios de lançamento.
 
-Backlog estruturado atual: 64/140 requisitos `IMPLEMENTED`, 76/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
+Backlog estruturado atual: 69/140 requisitos `IMPLEMENTED`, 71/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
 
 Distribuição dos 76 pendentes no registro atual:
 
@@ -23,12 +24,12 @@ Distribuição dos 76 pendentes no registro atual:
 | M6 | 0 | M6 concluído localmente; provider live opcional não foi testado |
 | M7 | 0 | M7 concluído localmente; integração com hosts reais ainda não foi homologada |
 | M8 | 0 | Workflow de feature testado localmente; chave de idempotência implementada em AFR-065 |
-| M9 | 8 | RAG offline, proveniência, ACL e integridade |
+| M9 | 3 | Filtros de licença/versão/ACL, invalidação e isolamento cross-project |
 | M10 | 7 | Memória e ContextBundle |
 | M11 | 12 | Evidências, segurança, MCP remoto, observabilidade e evals |
 | M12 | 5 | SDK, registry e ciclo de vida de plugins |
 | M13 | 10 | E2E, CI, release, documentação, TUI, backup e migrações |
 | M15+ | 30 | Capacidades avançadas opcionais; não fazem parte do primeiro gate v1 |
 
-O gate M14 não está representado por um requisito AFR separado; a autorização do release continua uma decisão humana conforme AFR-104. Os 76 itens pendentes são a contagem do backlog AFR, não uma previsão exata de rodadas até DONE. Aprovação de licença, homologação de fontes e validação de hosts são gates separados.
+O gate M14 não está representado por um requisito AFR separado; a autorização do release continua uma decisão humana conforme AFR-104. Os 71 itens pendentes são a contagem do backlog AFR, não uma previsão exata de rodadas até DONE. Aprovação de licença, homologação de fontes e validação de hosts são gates separados.
 
