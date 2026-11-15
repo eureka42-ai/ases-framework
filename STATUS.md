@@ -53,17 +53,18 @@ Atualizado em: 2026-11-15
 - Ajuda e identidade CLI selecionam pt-BR, en-US, es-ES ou it-IT com `--locale`/`ASES_LOCALE`; config/schema aceitam os quatro locales e há guias de instalação em espanhol e italiano. Resultados operacionais existentes permanecem pt-BR. Ver `docs/i18n/` e evidência M15 progress 9.
 - `ases template list|show|apply` lista e provisiona três starters para Node/TypeScript, Python/FastAPI e React/Vite. Prévia é padrão, `--apply` exige destino novo e o CLI não instala dependências nem executa código gerado. Ver `docs/templates.md` e evidência M15 progress 10.
 - `ases knowledge list|validate|install` entrega pack original de conhecimento ASES sob Apache-2.0, com proveniência/citações/hash por fonte, validação e indexação local filtrável por licença/versão. Instalação exige `--apply` e rejeita `.ases` symlinkado. Ver `docs/knowledge-libraries.md` e evidência M15 progress 11.
+- Observabilidade exporta traces no padrão OTLP/HTTP JSON em `createOtlpTraceExport`/`sendOtlpTelemetry`; IDs/timestamps normalizados, atributos limitados e sanitizados, envio explícito somente com consentimento atual rechecado a cada request. Ver evidência M15 progress 12.
 - Leitura de catálogo agora rejeita arquivo catalog symlinkado ou cujo caminho canonicalizado saia do workspace.
 - Hosts locais detectados nesta sessão: Codex 0.169.0, Claude Code 2.1.323, Kimi 2.5.3 e Gemini 0.42.0.
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes automatizados: PASS (146/146; inclui pack de conhecimento, templates, locale, intercâmbio de trackers e policy-as-code), schema sync, dashboard, benchmark, ranking de capabilities, HTTP local e E2E do CLI. Integrações validadas. CI de tracker, locale e templates passou em Node.js 22/24 e audit/licenças/SBOM/proveniência (runs `43733719847`, `43734235205` e `43734785438`); CI do conhecimento aguarda push.
+- Testes automatizados: PASS (147/147; inclui OTLP, pack de conhecimento, templates, locale, intercâmbio de trackers e policy-as-code), schema sync, dashboard, benchmark, ranking de capabilities, HTTP local e E2E do CLI. Integrações validadas. CI de tracker, locale, templates e conhecimento passou em Node.js 22/24 e audit/licenças/SBOM/proveniência (runs `43733719847`, `43734235205`, `43734785438`, `43735432022`); CI OTLP aguarda push.
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 6 Skills sincronizadas).
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; tarball RC1 instalado em workspace temporário; `ases --version` e `ases welcome --color`: PASS. A primeira instalação revelou módulos ausentes e foi corrigida antes do segundo empacotamento.
-- Backlog AFR-001..140: 116 requisitos IMPLEMENTED e ligados a código/testes/evidência; 24 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 117 requisitos IMPLEMENTED e ligados a código/testes/evidência; 23 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -208,6 +209,7 @@ Atualizado em: 2026-11-15
 - `evidence/M15-2026-11-15-progress-9.md`
 - `evidence/M15-2026-11-15-progress-10.md`
 - `evidence/M15-2026-11-15-progress-11.md`
+- `evidence/M15-2026-11-15-progress-12.md`
 - `evidence/M12-2026-11-15-progress-1.md`
 - `evidence/M12-2026-11-15-progress-2.md`
 - `evidence/M13-2026-11-15-progress-1.md`

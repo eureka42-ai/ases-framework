@@ -258,7 +258,7 @@ Para marcar um requisito como `VERIFIED`, associe uma evidência local e registr
 
 O engine de políticas é default-deny; ferramentas e planos de comando exigem autorização explícita. O SDK permite declarar capabilities e descobrir/rankear candidatos compatíveis antes da autorização, sem executar ferramentas automaticamente. A API de benchmark de providers exige opt-in, aplica limites e reporta métricas sem incluir prompts/respostas. Veja [política de segurança e comandos](docs/security/policy-engine.md), [benchmarks reproduzíveis](docs/benchmarking.md) e [logging com redaction](docs/security/safe-logging.md).
 
-Observabilidade local, consentimento revogável para telemetria remota e evals com fixtures versionadas estão documentados em [observabilidade e avaliações](docs/security/observability.md).
+Observabilidade local, exportação OpenTelemetry/OTLP e consentimento revogável para telemetria remota, além de evals com fixtures versionadas, estão documentados em [observabilidade e avaliações](docs/security/observability.md).
 
 O SDK de plugins inclui template, validação de manifesto/integridade/fonte/compatibilidade, aprovação de permissões extras e contract tests. Consulte [SDK e contrato do registry](docs/plugins/sdk.md).
 
