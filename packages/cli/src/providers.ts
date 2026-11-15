@@ -40,6 +40,38 @@ export function selectCapableProvider(providers: readonly Provider[], required: 
   return provider;
 }
 
+export type DataClassification = "public" | "internal" | "sensitive" | "restricted";
+
+export interface FallbackCandidate {
+  provider: Provider;
+  maxDataClassification: DataClassification;
+  maxCostUsd: number;
+}
+
+export interface FallbackConstraints {
+  dataClassification: DataClassification;
+  maxCostUsd: number;
+}
+
+/** Chooses a fallback only when it preserves the original data and cost limits. */
+export function selectSafeFallback(
+  primaryProviderId: string,
+  candidates: readonly FallbackCandidate[],
+  constraints: FallbackConstraints,
+): Provider {
+  const rank: Record<DataClassification, number> = { public: 0, internal: 1, sensitive: 2, restricted: 3 };
+  if (!(constraints.dataClassification in rank) || !Number.isFinite(constraints.maxCostUsd) || constraints.maxCostUsd < 0) {
+    throw new ProviderError("INVALID_REQUEST", "fallback data classification and cost limit are invalid");
+  }
+  const selected = candidates.find(({ provider, maxDataClassification, maxCostUsd }) =>
+    provider.id !== primaryProviderId &&
+    maxDataClassification in rank && rank[maxDataClassification] >= rank[constraints.dataClassification] &&
+    Number.isFinite(maxCostUsd) && maxCostUsd >= 0 && maxCostUsd <= constraints.maxCostUsd,
+  );
+  if (!selected) throw new ProviderError("UNAVAILABLE", "no fallback provider satisfies the original data and cost limits");
+  return selected.provider;
+}
+
 export interface ProviderCatalogEntry {
   providerId: string;
   modelId: string;

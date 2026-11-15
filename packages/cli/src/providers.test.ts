@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createProviderCatalogEntry, generate, generateForMode, getModelControl, MockProvider, ProviderError, selectCapableProvider, type Provider } from "./providers.js";
+import { createProviderCatalogEntry, generate, generateForMode, getModelControl, MockProvider, ProviderError, selectCapableProvider, selectSafeFallback, type Provider } from "./providers.js";
 
 test("mock provider gives deterministic offline responses", async () => {
   const provider = new MockProvider();
@@ -59,6 +59,21 @@ test("host mode reports model selection as host-managed", () => {
   assert.deepEqual(getModelControl("host"), { controller: "host", selection: "host-managed", canSelectModel: false });
   assert.deepEqual(getModelControl("offline"), { controller: "ases-mock", selection: "fixed-mock", canSelectModel: false });
   assert.deepEqual(getModelControl("standalone"), { controller: "ases-provider", selection: "provider-managed", canSelectModel: true });
+});
+
+test("fallback preserves the requested data classification and cost ceiling", () => {
+  const primary = new MockProvider();
+  const restrictedProvider: Provider = { id: "low-clearance", capabilities: ["text"], generate: primary.generate.bind(primary) };
+  const expensiveProvider: Provider = { id: "expensive", capabilities: ["text"], generate: primary.generate.bind(primary) };
+  const safeProvider: Provider = { id: "safe", capabilities: ["text"], generate: primary.generate.bind(primary) };
+  const candidates = [
+    { provider: restrictedProvider, maxDataClassification: "internal" as const, maxCostUsd: 0.01 },
+    { provider: expensiveProvider, maxDataClassification: "restricted" as const, maxCostUsd: 0.5 },
+    { provider: primary, maxDataClassification: "restricted" as const, maxCostUsd: 0.01 },
+    { provider: safeProvider, maxDataClassification: "restricted" as const, maxCostUsd: 0.05 },
+  ];
+  assert.equal(selectSafeFallback(primary.id, candidates, { dataClassification: "sensitive", maxCostUsd: 0.1 }).id, "safe");
+  assert.throws(() => selectSafeFallback(primary.id, candidates.slice(0, 2), { dataClassification: "sensitive", maxCostUsd: 0.1 }), (error: unknown) => error instanceof ProviderError && error.code === "UNAVAILABLE");
 });
 
 test("provider SPI rejects invalid input and normalizes failures", async () => {

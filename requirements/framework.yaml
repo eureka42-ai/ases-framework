@@ -554,14 +554,14 @@ requirements:
     priority: P1
     milestone: "M6"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Fallback manter restrições de dados e orçamento."
     acceptanceCriteria:
       - id: AC-AFR-046-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Fallback manter restrições de dados e orçamento."
+        description: "O seletor de fallback exclui o provider primário e candidatos sem classificação de dados suficiente ou cujo custo máximo ultrapasse o limite original; se nenhum candidato satisfizer ambas as restrições, falha com `UNAVAILABLE`."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/providers.ts"]
+    tests: ["packages/cli/src/providers.test.ts :: fallback preserves the requested data classification and cost ceiling"]
   - id: AFR-047
     priority: P1
     milestone: "M6"
