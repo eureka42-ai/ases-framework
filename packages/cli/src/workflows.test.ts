@@ -3,7 +3,7 @@ import test from "node:test";
 import { mkdtemp } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createWorkflowCheckpoint, loadWorkflowCheckpoint, resumeWorkflow, saveWorkflowCheckpoint, validateWorkflow, WorkflowValidationError } from "./workflows.js";
+import { createWorkflowCheckpoint, loadWorkflowCheckpoint, resumeWorkflow, runStepWithRetry, saveWorkflowCheckpoint, validateWorkflow, WorkflowExecutionError, WorkflowValidationError } from "./workflows.js";
 
 test("workflow validator returns a deterministic dependency order", () => {
   assert.deepEqual(validateWorkflow({
@@ -42,4 +42,24 @@ test("workflow checkpoints persist and resume only against the same definition",
   const changed = { ...workflow, steps: [...workflow.steps, { id: "verify", kind: "tool" as const, dependsOn: ["implement"] }] };
   assert.throws(() => resumeWorkflow(changed, loaded), WorkflowValidationError);
   assert.equal(await loadWorkflowCheckpoint(workspace, "missing-flow"), undefined);
+});
+
+test("workflow retry obeys the attempt limit, timeout and cancellation", async () => {
+  let attempts = 0;
+  const result = await runStepWithRetry(async () => {
+    attempts += 1;
+    if (attempts < 2) throw new Error("transient");
+    return "done";
+  }, { maxAttempts: 2, timeoutMs: 100 });
+  assert.equal(result, "done");
+  assert.equal(attempts, 2);
+
+  await assert.rejects(runStepWithRetry(async () => { throw new Error("always fails"); }, { maxAttempts: 2, timeoutMs: 100 }), (error: unknown) => error instanceof WorkflowExecutionError && error.code === "RETRIES_EXHAUSTED");
+  await assert.rejects(runStepWithRetry(() => new Promise(() => {}), { maxAttempts: 1, timeoutMs: 5 }), (error: unknown) => error instanceof WorkflowExecutionError && error.code === "RETRIES_EXHAUSTED");
+
+  const controller = new AbortController();
+  controller.abort();
+  let cancelledAttempts = 0;
+  await assert.rejects(runStepWithRetry(async () => { cancelledAttempts += 1; return "never"; }, { maxAttempts: 3, timeoutMs: 100, signal: controller.signal }), (error: unknown) => error instanceof WorkflowExecutionError && error.code === "CANCELLED");
+  assert.equal(cancelledAttempts, 0);
 });

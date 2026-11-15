@@ -22,6 +22,57 @@ export class WorkflowValidationError extends Error {
   }
 }
 
+export type WorkflowExecutionErrorCode = "CANCELLED" | "TIMEOUT" | "RETRIES_EXHAUSTED";
+
+export class WorkflowExecutionError extends Error {
+  constructor(readonly code: WorkflowExecutionErrorCode, message: string, options?: ErrorOptions) {
+    super(message, options);
+    this.name = "WorkflowExecutionError";
+  }
+}
+
+export interface WorkflowRetryOptions {
+  maxAttempts: number;
+  timeoutMs: number;
+  signal?: AbortSignal;
+}
+
+/** Runs a workflow step with bounded attempts, per-attempt timeout, and caller cancellation. */
+export async function runStepWithRetry<T>(handler: (signal: AbortSignal) => Promise<T>, options: WorkflowRetryOptions): Promise<T> {
+  if (!Number.isSafeInteger(options.maxAttempts) || options.maxAttempts < 1 || !Number.isFinite(options.timeoutMs) || options.timeoutMs <= 0) {
+    throw new WorkflowValidationError("retry attempts and timeout must be positive limits");
+  }
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= options.maxAttempts; attempt += 1) {
+    if (options.signal?.aborted) throw new WorkflowExecutionError("CANCELLED", "workflow step was cancelled");
+    const controller = new AbortController();
+    let abortError: WorkflowExecutionError | undefined;
+    let rejectAbort!: (error: WorkflowExecutionError) => void;
+    const aborted = new Promise<never>((_, reject) => { rejectAbort = reject; });
+    const cancel = () => {
+      abortError = new WorkflowExecutionError("CANCELLED", "workflow step was cancelled");
+      controller.abort();
+      rejectAbort(abortError);
+    };
+    options.signal?.addEventListener("abort", cancel, { once: true });
+    const timer = setTimeout(() => {
+      abortError = new WorkflowExecutionError("TIMEOUT", `workflow step exceeded ${options.timeoutMs}ms`);
+      controller.abort();
+      rejectAbort(abortError);
+    }, options.timeoutMs);
+    try {
+      return await Promise.race([handler(controller.signal), aborted]);
+    } catch (error) {
+      if (abortError?.code === "CANCELLED") throw abortError;
+      lastError = abortError ?? error;
+    } finally {
+      clearTimeout(timer);
+      options.signal?.removeEventListener("abort", cancel);
+    }
+  }
+  throw new WorkflowExecutionError("RETRIES_EXHAUSTED", `workflow step failed after ${options.maxAttempts} attempts`, { cause: lastError });
+}
+
 export interface WorkflowCheckpoint {
   workflowId: string;
   definitionHash: string;

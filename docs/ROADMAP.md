@@ -8,13 +8,13 @@
 - M5 — IN_PROGRESS: plugins/Skills experimentais e manifestos validados; lifecycle local `host apply/update/uninstall` implementado com propriedade por hash e backups; sessão real Claude/hosts e decisões de distribuição permanecem pendentes.
 - M6 — IMPLEMENTED: provider probe opt-in, SPI tipada, mock determinístico, catálogo com proveniência, roteamento por capacidade, fallback restrito, classificação de custo, budget concorrente, controle de modelo declarado e bloqueio remoto em `offline` concluídos localmente (AFR-041..050); o probe não foi executado contra serviço real.
 - M7 — IMPLEMENTED_LOCALLY: declarações, limites, seleção de contexto, execução serial, prevenção de conflitos de escrita, revisão independente, Skills e tools com policy/path guard; integração real com hosts segue pendente.
-- M8 — IN_PROGRESS: DSL valida grafo; checkpoints persistem estado e retomam apenas com hash de definição correspondente (AFR-061..063); retry, cancelamento e execução seguem pendentes.
+- M8 — IN_PROGRESS: DSL valida grafo; checkpoints persistem estado e retomam apenas com hash correspondente; etapas têm timeout, cancelamento e retry limitado (AFR-061..064); execução, compensação e approvals seguem pendentes.
 - M9–M13 — PLANNED: RAG/memória, evals, segurança, observabilidade e hardening.
 - M14 — BLOCKED_ON_APPROVAL: release candidate e gate v1 dependem das decisões de licença, homologação e critérios de lançamento.
 
-Backlog estruturado atual: 59/140 requisitos `IMPLEMENTED`, 81/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
+Backlog estruturado atual: 60/140 requisitos `IMPLEMENTED`, 80/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
 
-Distribuição dos 81 pendentes no registro atual:
+Distribuição dos 80 pendentes no registro atual:
 
 | Marco | Pendentes | Observação |
 |---|---:|---|
@@ -22,7 +22,7 @@ Distribuição dos 81 pendentes no registro atual:
 | M5 | 4 | Claude, Codex, Kimi e Gemini em sessões reais |
 | M6 | 0 | M6 concluído localmente; provider live opcional não foi testado |
 | M7 | 0 | M7 concluído localmente; integração com hosts reais ainda não foi homologada |
-| M8 | 5 | Retry, execução e approvals |
+| M8 | 4 | Execução, compensação e approvals |
 | M9 | 8 | RAG offline, proveniência, ACL e integridade |
 | M10 | 7 | Memória e ContextBundle |
 | M11 | 12 | Evidências, segurança, MCP remoto, observabilidade e evals |
