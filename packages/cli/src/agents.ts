@@ -55,3 +55,11 @@ export function selectAgentContext(declaration: AgentDeclaration, availableFiles
   }
   return selected;
 }
+
+/** Uses parallel execution only when explicitly available; otherwise preserves order and stops on failure. */
+export async function runAgentTasks<T>(tasks: readonly (() => Promise<T>)[], parallelismAvailable: boolean): Promise<T[]> {
+  if (parallelismAvailable) return Promise.all(tasks.map((task) => task()));
+  const results: T[] = [];
+  for (const task of tasks) results.push(await task());
+  return results;
+}

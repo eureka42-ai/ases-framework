@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { AgentDeclarationError, createAgentDeclaration, selectAgentContext } from "./agents.js";
+import { AgentDeclarationError, createAgentDeclaration, runAgentTasks, selectAgentContext } from "./agents.js";
 
 test("agent declarations require explicit permissions and bounded budgets", () => {
   const declaration = createAgentDeclaration({
@@ -28,4 +28,15 @@ test("agents receive only allowlisted context files", () => {
     ".env": "must never enter context",
   });
   assert.deepEqual(context, { "README.md": "public overview", "src/index.ts": "source file" });
+});
+
+test("agent tasks run serially in order when parallelism is unavailable", async () => {
+  const sequence: number[] = [];
+  const results = await runAgentTasks([
+    async () => { sequence.push(1); await new Promise((resolve) => setTimeout(resolve, 5)); return "one"; },
+    async () => { sequence.push(2); return "two"; },
+    async () => { sequence.push(3); return "three"; },
+  ], false);
+  assert.deepEqual(results, ["one", "two", "three"]);
+  assert.deepEqual(sequence, [1, 2, 3]);
 });
