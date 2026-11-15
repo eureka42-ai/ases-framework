@@ -56,7 +56,7 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases doctor` | Implementado localmente | Node, plataforma, Git, npm, pnpm, workspace/config e ações corretivas |
 | `ases config validate` | Implementado no schema inicial | Configuração JSON bootstrap |
 | `ases config explain` | Implementado no schema inicial | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Em andamento | 81 implementados; 59 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
+| Backlog AFR-001..140 | Em andamento | 83 implementados; 57 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
 | Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |
@@ -216,6 +216,8 @@ ASES_PROJECT_MODE=offline ases config explain ./meu-projeto/.ases/config.json --
 Os demais comandos do documento-mestre são contratos planejados, não funcionalidades existentes. Eles somente serão documentados como disponíveis depois de implementados e testados.
 
 Para marcar um requisito como `VERIFIED`, associe uma evidência local e registre como foi produzida com `--execution-context`; veja [vínculo de evidências e validade](docs/requirements/evidence-linking.md).
+
+O engine de políticas é default-deny; ferramentas e planos de comando exigem autorização explícita. Veja [política de segurança e comandos](docs/security/policy-engine.md).
 
 ### Códigos de saída
 
@@ -449,7 +451,7 @@ Resultados reais e limitações ficam em [`evidence/`](evidence/). Uma funcional
 | M6–M8 | Providers, agents, skills e workflows | Implementados localmente; homologação em sessões reais dos hosts segue pendente |
 | M9 | RAG | Implementado localmente: busca offline, citação, ACL, filtros e invalidação |
 | M10 | Memória e ContextBundle | Implementado localmente; import seguro exige preview e rejeita conflitos |
-| M11 | Evidências, segurança e evals | Em andamento; vínculo verificável de evidências implementado |
+| M11 | Evidências, segurança e evals | Em andamento; evidências, default-deny e guardas de comando/path implementados |
 | M12–M13 | SDK, registry, observabilidade e hardening | Planejado |
 | M14 | Release candidate e gate de v1 | Não autorizado |
 

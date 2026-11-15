@@ -1034,26 +1034,26 @@ requirements:
     priority: P1
     milestone: "M11"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Security Policy Engine aplicar default deny."
     acceptanceCriteria:
       - id: AC-AFR-086-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Security Policy Engine aplicar default deny."
+        description: "SecurityPolicyEngine nega por padrão, exige correspondência de ator/ação/recurso para permitir, e qualquer regra deny correspondente prevalece sobre allow. Runtime tools exigem decisão explícita antes de executar."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/policy.ts", "packages/cli/src/tools.ts"]
+    tests: ["packages/cli/src/policy.test.ts :: security policy defaults to deny and explicit deny overrides every allow", "packages/cli/src/tools.test.ts :: every tool requires an explicit policy decision before running"]
   - id: AFR-087
     priority: P1
     milestone: "M11"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Path traversal, symlink e comando hostil serem bloqueados."
     acceptanceCriteria:
       - id: AC-AFR-087-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Path traversal, symlink e comando hostil serem bloqueados."
+        description: "authorizeCommand exige regra allow para assinatura executável+argv, rejeita shells e flags de avaliação dinâmica, traversal nos argumentos e cwd que escape por path ou symlink. Não executa o comando."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/policy.ts", "packages/cli/src/workspace-path.ts"]
+    tests: ["packages/cli/src/policy.test.ts :: command policy requires an exact command signature and a workspace-contained cwd", "packages/cli/src/policy.test.ts :: command policy blocks shells and dynamic interpreter evaluation even with exact allow rules", "packages/cli/src/policy.test.ts :: command policy rejects traversal arguments and symlinked working directories"]
   - id: AFR-088
     priority: P1
     milestone: "M11"

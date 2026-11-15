@@ -20,6 +20,8 @@ export { createContextBundle, forgetMemory, inspectMemory, remember, verifyConte
 export type { ContextBundle, ContextBundleInput, ContextBundleItem, MemoryEntry, MemoryOrigin, MemoryScope } from "./memory.js";
 export { BundleArchiveError, importBundleArchive, previewBundleArchive } from "./bundle-archive.js";
 export type { BundleArchivePreview } from "./bundle-archive.js";
+export { authorizeCommand, commandPolicyResource, PolicyAccessError, SecurityPolicyEngine } from "./policy.js";
+export type { AuthorizedCommandPlan, CommandRequest, PolicyDecision, PolicyEffect, SecurityAction, SecurityPolicyRequest, SecurityPolicyRule } from "./policy.js";
 
 export interface CommandResult {
   exitCode: number;
