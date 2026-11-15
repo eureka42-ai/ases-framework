@@ -19,6 +19,7 @@ import { generateAsesConfigJsonSchema, validateAsesConfig } from "./config-schem
 import { checkArchitectureContracts } from "./architecture-contracts.js";
 import { createTeamPolicyEngine, isSecurityAction, readTeamPolicyFile, teamPolicyTemplate, validateTeamPolicy } from "./team-policy.js";
 import { exportTrackerTasks, importTrackerTasks } from "./tracker-exchange.js";
+import { applyProjectTemplate, getProjectTemplate, listProjectTemplates } from "./templates.js";
 import { renderHelp, resolveLocale, welcomeTagline } from "./i18n.js";
 
 export { VERSION } from "./version.js";
@@ -59,6 +60,8 @@ export { exportTrackerTasks, importTrackerTasks } from "./tracker-exchange.js";
 export type { TrackerBundle, TrackerTask } from "./tracker-exchange.js";
 export { renderHelp, resolveLocale } from "./i18n.js";
 export type { Locale } from "./i18n.js";
+export { applyProjectTemplate, getProjectTemplate, listProjectTemplates } from "./templates.js";
+export type { ProjectTemplate } from "./templates.js";
 
 export interface CommandResult {
   exitCode: number;
@@ -432,6 +435,23 @@ export async function run(argv: string[]): Promise<CommandResult> {
       const message = error instanceof Error ? error.message : String(error);
       return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_TRACKER_IMPORT", error: message }, null, 2) : `Falha ao importar tarefas: ${message}` };
     }
+  }
+  if (command === "template" && args[1] === "list") return { exitCode: 0, output: json ? JSON.stringify(listProjectTemplates(), null, 2) : listProjectTemplates().map((item) => `${item.id} — ${item.name}\n  ${item.stack}\n  Arquivos: ${item.files.join(", ")}`).join("\n") };
+  if (command === "template" && args[1] === "show") {
+    try {
+      const template = getProjectTemplate(args[2] ?? "");
+      return { exitCode: 0, output: json ? JSON.stringify({ ...template, files: template.files.map((file) => ({ path: file.path, bytes: Buffer.byteLength(file.content) })) }, null, 2) : `${template.name}\nID: ${template.id}\nStack: ${template.stack}\nArquivos: ${template.files.map((file) => file.path).join(", ")}` };
+    } catch (error) { const message = error instanceof Error ? error.message : String(error); return { exitCode: 2, output: json ? JSON.stringify({ code: "ASES_TEMPLATE_UNKNOWN", error: message }) : message }; }
+  }
+  if (command === "template" && args[1] === "apply") {
+    try {
+      const templateId = args[2] ?? "";
+      const target = args[3] ?? "";
+      const projectName = args[4] ?? basename(resolve(target || "ases-project"));
+      if (!target) return { exitCode: 2, output: "Uso: ases template apply <template-id> <diretório-novo> [nome] [--apply]" };
+      const result = await applyProjectTemplate(templateId, target, projectName, argv.includes("--apply") && !dryRun);
+      return { exitCode: 0, output: json ? JSON.stringify(result, null, 2) : `${result.status === "planned" ? "PLANO (nenhum arquivo escrito)" : "CRIADO"}: ${result.template} em ${result.root}\n${result.files.map((path) => `  ${path}`).join("\n")}` };
+    } catch (error) { const message = error instanceof Error ? error.message : String(error); return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_TEMPLATE_APPLY", error: message }) : `Falha ao aplicar template: ${message}` }; }
   }
   if (command === "requirements" && args[1] === "graph") {
     try {

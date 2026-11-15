@@ -35,6 +35,28 @@ test("CLI help and welcome support Portuguese, English, Spanish and Italian loca
   assert.equal(JSON.parse(invalid.output).code, "ASES_LOCALE_UNSUPPORTED");
 });
 
+test("project templates preview cleanly and create three language/stack starters only with apply", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ases-template-"));
+  const listed = await run(["template", "list", "--json"]);
+  const templates = JSON.parse(listed.output);
+  assert.deepEqual(new Set(templates.map((item: { id: string }) => item.id)), new Set(["node-ts-api", "python-fastapi", "react-vite-ts"]));
+  const target = join(root, "my-api");
+  const preview = await run(["template", "apply", "node-ts-api", target, "My API", "--json"]);
+  assert.equal(JSON.parse(preview.output).status, "planned");
+  await assert.rejects(readFile(join(target, "package.json"), "utf8"));
+  const applied = await run(["template", "apply", "node-ts-api", target, "My API", "--apply", "--json"]);
+  assert.equal(JSON.parse(applied.output).status, "created");
+  assert.match(await readFile(join(target, "package.json"), "utf8"), /"name": "my-api"/);
+  assert.match(await readFile(join(target, "src/index.ts"), "utf8"), /service: "my-api"/);
+  assert.equal((await run(["template", "apply", "python-fastapi", target, "Changed", "--apply", "--json"])).exitCode, 5);
+  const pythonTarget = join(root, "python-app");
+  assert.equal(JSON.parse((await run(["template", "apply", "python-fastapi", pythonTarget, "Python App", "--apply", "--json"])).output).status, "created");
+  assert.ok(await readFile(join(pythonTarget, "tests/test_health.py"), "utf8"));
+  const reactTarget = join(root, "react-app");
+  assert.equal(JSON.parse((await run(["template", "apply", "react-vite-ts", reactTarget, "React App", "--apply", "--json"])).output).status, "created");
+  assert.ok(await readFile(join(reactTarget, "src/main.tsx"), "utf8"));
+});
+
 test("init dry-run does not write", async () => {
   const root = await mkdtemp(join(tmpdir(), "ases-dry-"));
   const result = await run(["init", root, "--dry-run", "--json"]);

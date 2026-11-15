@@ -43,3 +43,5 @@ La importación de tareas muestra una vista previa por defecto. `--apply` guarda
 El idioma del CLI puede configurarse por comando (`--locale es-ES`) o mediante la variable `ASES_LOCALE`. `.ases/config.json` también admite estos valores como metadatos del proyecto, pero no reemplaza el selector de idioma del CLI. Los valores admitidos son `pt-BR`, `en-US`, `es-ES` e `it-IT`. Las salidas JSON y los códigos de error permanecen estables para automatización.
 
 El modo local no envía código, prompts, requisitos ni credenciales. Las integraciones con servicios externos requieren configuración y autorización adicionales.
+
+Los scaffolds de lenguaje y stack se describen en la [guía de templates](../templates.md); usa `ases template list` para consultarlos y añade `--apply` después de revisar la previsualización.

@@ -43,3 +43,5 @@ L'importazione delle attività mostra un'anteprima per impostazione predefinita.
 La lingua della CLI si configura per comando (`--locale it-IT`) oppure con la variabile `ASES_LOCALE`. `.ases/config.json` accetta gli stessi valori come metadati del progetto, ma non sostituisce il selettore della lingua CLI. I valori supportati sono `pt-BR`, `en-US`, `es-ES` e `it-IT`. Output JSON e codici di errore restano stabili per l'automazione.
 
 La modalità locale non invia codice, prompt, requisiti o credenziali. Le integrazioni con servizi esterni richiedono configurazione e autorizzazioni aggiuntive.
+
+Gli starter per linguaggio e stack sono descritti nella [guida ai template](../templates.md); usa `ases template list` e aggiungi `--apply` dopo aver esaminato l'anteprima.
