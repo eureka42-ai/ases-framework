@@ -1154,62 +1154,62 @@ requirements:
     priority: P1
     milestone: "M11"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Observability fornecer trace, erros e custos locais."
     acceptanceCriteria:
       - id: AC-AFR-096-01
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Observability fornecer trace, erros e custos locais."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/observability.ts"]
+    tests: ["packages/cli/src/observability.test.ts :: local traces persist errors, parent spans and explicit costs without estimating"]
   - id: AFR-097
     priority: P1
     milestone: "M11"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Telemetria remota ser opt-in e revogável."
     acceptanceCriteria:
       - id: AC-AFR-097-01
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Telemetria remota ser opt-in e revogável."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/observability.ts"]
+    tests: ["packages/cli/src/observability.test.ts :: remote telemetry is disabled by default and explicit consent is revocable"]
   - id: AFR-098
     priority: P1
     milestone: "M11"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Métricas de agentes diferenciarem sucesso medido e relato."
     acceptanceCriteria:
       - id: AC-AFR-098-01
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Métricas de agentes diferenciarem sucesso medido e relato."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/observability.ts"]
+    tests: ["packages/cli/src/observability.test.ts :: agent metrics distinguish measured outcomes from reported outcomes"]
   - id: AFR-099
     priority: P1
     milestone: "M11"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Relatório auditável indicar PASS/FAIL/BLOCKED/SKIPPED."
     acceptanceCriteria:
       - id: AC-AFR-099-01
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Relatório auditável indicar PASS/FAIL/BLOCKED/SKIPPED."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/observability.ts"]
+    tests: ["packages/cli/src/observability.test.ts :: versioned RAG and agent fixtures produce auditable PASS/FAIL/BLOCKED/SKIPPED report counts"]
   - id: AFR-100
     priority: P1
     milestone: "M11"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Evals de RAG e agente rodarem sobre fixtures versionadas."
     acceptanceCriteria:
       - id: AC-AFR-100-01
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Evals de RAG e agente rodarem sobre fixtures versionadas."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["evals/fixtures/v1.json", "packages/cli/src/observability.ts"]
+    tests: ["packages/cli/src/observability.test.ts :: versioned RAG and agent fixtures produce auditable PASS/FAIL/BLOCKED/SKIPPED report counts"]
   - id: AFR-101
     priority: P1
     milestone: "M13"

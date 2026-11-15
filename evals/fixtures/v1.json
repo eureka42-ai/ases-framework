@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1",
+  "fixtureVersion": "1.0.0",
+  "cases": [
+    { "id": "rag-cache-hit", "kind": "rag", "query": "cache", "expectedAny": ["TTL"], "fixtureVersion": "1.0.0" },
+    { "id": "rag-no-match", "kind": "rag", "query": "unindexed", "expectedAny": ["not-present"], "fixtureVersion": "1.0.0" },
+    { "id": "agent-safe-completion", "kind": "agent", "query": "safe completion", "expectedStatus": "PASS", "fixtureVersion": "1.0.0" },
+    { "id": "agent-denied-action", "kind": "agent", "query": "unauthorized write", "expectedStatus": "BLOCKED", "fixtureVersion": "1.0.0" }
+  ]
+}

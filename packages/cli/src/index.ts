@@ -25,6 +25,8 @@ export type { AuthorizedCommandPlan, CommandRequest, PolicyDecision, PolicyEffec
 export { createSafeLogRecord, writeSafeLog } from "./logging.js";
 export type { SafeLogRecord, SafeLogResult } from "./logging.js";
 export { redactSensitiveText } from "./memory.js";
+export { appendLocalTrace, createTraceEvent, readLocalTraces, readTelemetryConsent, runEvaluations, sendRemoteTelemetry, setTelemetryConsent, summarizeAgentMetrics, writeEvaluationReport } from "./observability.js";
+export type { AgentMetric, EvaluationCase, EvaluationResult, EvaluationStatus, TelemetryConsent, TraceEvent } from "./observability.js";
 
 export interface CommandResult {
   exitCode: number;

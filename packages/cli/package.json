@@ -50,6 +50,8 @@
     "dist/policy.d.ts",
     "dist/logging.js",
     "dist/logging.d.ts",
+    "dist/observability.js",
+    "dist/observability.d.ts",
     "dist/config-resolution.js",
     "dist/config-resolution.d.ts",
     "dist/agents.js",
