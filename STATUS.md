@@ -82,6 +82,7 @@ Atualizado em: 2026-11-15
 - Validação host nesta rodada: Claude schema PASS, mas sessão impedida por falta de login; Gemini extension PASS, mas sem provider autenticado; Kimi validação estrutural PASS e sessão falhou com `EMFILE`; smoke de startup Codex passou em sessão real read-only, embora auto-descoberta da Skill/MCP ainda esteja pendente.
 - Validação continuada anterior: `git diff --check` PASS; `kimi doctor` PASS para configuração local (não é validação do plugin).
 - CI GitHub Actions observado em execução remota: PASS nos jobs Node.js 22 e 24, instalação congelada e `pnpm test`; AFR-028 atualizado para IMPLEMENTED. Ver `evidence/CI-2026-11-14.md`.
+- CI do editor visual: PASS no run `43740785064` para o commit `d86bb04` (Node.js 22/24, suíte completa e supply chain).
 - AFR-027 coberto por preservação idempotente no `init`, recusa de sobrescrita da entrevista sem `--resume` explícito e plano de instalação host somente leitura.
 - Matriz local de versões e contratos de integração dos quatro hosts registrada; hosts sem prova de carga/execução da Skill continuam `NOT_TESTED`, como cobre o teste de `host list`.
 - Claude Code: plugin validado com `claude plugin validate --strict`, marketplace do repositório validado, instalação isolada e inventário confirmaram duas Skills carregadas. Smoke em conversa segue pendente porque não há login; distribuição oficial depende da revisão dos direitos dos assets.
@@ -219,6 +220,7 @@ Atualizado em: 2026-11-15
 - `evidence/M15-2026-11-15-progress-12.md`
 - `evidence/M15-2026-11-15-progress-13.md`
 - `evidence/M15-2026-11-15-progress-14.md`
+- `evidence/M15-2026-11-15-progress-20.md`
 - `evidence/M12-2026-11-15-progress-1.md`
 - `evidence/M12-2026-11-15-progress-2.md`
 - `evidence/M13-2026-11-15-progress-1.md`
