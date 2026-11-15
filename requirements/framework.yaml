@@ -1622,14 +1622,14 @@ requirements:
     priority: P3
     milestone: "M15+"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Versionamento e descoberta de agentes comunitários."
     acceptanceCriteria:
       - id: AC-AFR-135-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Versionamento e descoberta de agentes comunitários."
+        description: "createCommunityAgentCatalog valida releases SemVer e metadados, lista agentes por texto/categoria/capability, informa trust por origem exata e compatibilidade de API, ordena versões corretamente e retorna apenas a última versão compatível; descoberta não instala nem executa código."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/community-agents.ts", "docs/security/community-agents.md"]
+    tests: ["packages/cli/src/community-agents.test.ts :: community agent catalog discovers releases by metadata and runtime compatibility", "packages/cli/src/community-agents.test.ts :: community agent catalog rejects duplicate releases and malformed metadata"]
   - id: AFR-136
     priority: P3
     milestone: "M15+"

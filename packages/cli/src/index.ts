@@ -36,6 +36,8 @@ export { AgentAclError, createAgentMessageBus } from "./agent-protocol.js";
 export type { A2AMessage, AgentAclRule, AgentMessageType, ReceivedA2AMessage } from "./agent-protocol.js";
 export { createRepositoryRegistry } from "./multi-repo.js";
 export type { AuthorizedRepository, RepositoryDefinition, RepositoryMembership, RepositoryOperation, RepositoryRole } from "./multi-repo.js";
+export { createCommunityAgentCatalog } from "./community-agents.js";
+export type { CommunityAgentCatalogOptions, CommunityAgentQuery, CommunityAgentRelease, DiscoveredCommunityAgent } from "./community-agents.js";
 export { createSafeLogRecord, writeSafeLog } from "./logging.js";
 export type { SafeLogRecord, SafeLogResult } from "./logging.js";
 export { redactSensitiveText } from "./memory.js";
