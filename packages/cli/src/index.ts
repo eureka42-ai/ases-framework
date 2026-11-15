@@ -14,6 +14,8 @@ import { createHostPlan, HOSTS, type HostId } from "./host-plan.js";
 import { applyHostIntegration, uninstallHostIntegration, updateHostIntegration } from "./host-install.js";
 
 export { VERSION } from "./version.js";
+export { indexRagSources, RagAccessError, refreshRagIndex, retrieveRequirement, searchRag } from "./rag.js";
+export type { RagIndex, RagQueryAccess, RagQueryFilters, RagQueryOptions, RagResult, RagSourceMetadata } from "./rag.js";
 
 export interface CommandResult {
   exitCode: number;

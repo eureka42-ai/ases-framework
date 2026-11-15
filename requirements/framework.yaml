@@ -854,26 +854,26 @@ requirements:
     priority: P1
     milestone: "M9"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "RAG permitir filtros de licença, versão e ACL."
     acceptanceCriteria:
       - id: AC-AFR-071-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: RAG permitir filtros de licença, versão e ACL."
+        description: "Busca e recuperação aceitam filtros explícitos de licença/versão; ACL por principal restringe fontes, e rag:acl:bypass é necessário para ignorar essa lista."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/rag.ts"]
+    tests: ["packages/cli/src/rag.test.ts :: offline RAG enforces license, version and source ACL filters"]
   - id: AFR-072
     priority: P1
     milestone: "M9"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "RAG reindexar/invalidar fonte alterada/removida."
     acceptanceCriteria:
       - id: AC-AFR-072-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: RAG reindexar/invalidar fonte alterada/removida."
+        description: "refreshRagIndex relê cada fonte registrada, atualiza conteúdo e hashes alterados e remove fontes que não existem mais; erro de acesso ou tipo inseguro falha fechado."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/rag.ts"]
+    tests: ["packages/cli/src/rag.test.ts :: offline RAG refresh reindexes changed sources and invalidates removed sources"]
   - id: AFR-073
     priority: P1
     milestone: "M9"
@@ -890,14 +890,14 @@ requirements:
     priority: P1
     milestone: "M9"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "RAG bloquear acesso cross-project sem permissão."
     acceptanceCriteria:
       - id: AC-AFR-074-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: RAG bloquear acesso cross-project sem permissão."
+        description: "Consultas cujo projectId difere do índice lançam RagAccessError, salvo quando o host fornece a permissão explícita rag:cross-project."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/rag.ts"]
+    tests: ["packages/cli/src/rag.test.ts :: offline RAG denies cross-project reads unless explicit permission is present"]
   - id: AFR-075
     priority: P1
     milestone: "M9"

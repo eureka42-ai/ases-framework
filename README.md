@@ -56,12 +56,12 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases doctor` | Implementado localmente | Node, plataforma, Git, npm, pnpm, workspace/config e ações corretivas |
 | `ases config validate` | Implementado no schema inicial | Configuração JSON bootstrap |
 | `ases config explain` | Implementado no schema inicial | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Em andamento | 63 implementados; 77 pendentes. Critérios de aceite ainda precisam ser refinados em parte do backlog |
+| Backlog AFR-001..140 | Em andamento | 72 implementados; 68 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
 | Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |
 | Providers | SPI e mock local implementados | Sem provider remoto, credenciais ou inferência conectada |
-| Agents, RAG e ContextBundle | Planejado | Não declarar suporte antes de implementação e evidência |
+| Agents e RAG offline | Implementado localmente | Workflows com gate independente; índice lexical com citações, ACL, hashes e refresh. [Guia RAG](docs/rag/offline-index.md); ContextBundle segue planejado |
 
 O estado operacional detalhado está em [`STATUS.md`](STATUS.md) e as evidências executadas ficam em [`evidence/`](evidence/).
 O plano e os gates da candidata npm estão em [`docs/RELEASE.md`](docs/RELEASE.md).
@@ -444,8 +444,9 @@ Resultados reais e limitações ficam em [`evidence/`](evidence/). Uma funcional
 | M2 | Catálogo ASES-300 e requirements engine | Engine local implementada; revisão estrutural e visual amostral concluídas, homologação integral pendente |
 | M3 | Entrevista ASES-500 e geração de spec | Fluxo inicial implementado; AFR-001..020 concluídos localmente |
 | M4–M5 | MCP e adapters de hosts | MCP stdio, plano e lifecycle local seguro implementados; conexão em sessões reais dos hosts pendente |
-| M6–M8 | Providers, agents, skills e workflows | M6 parcial: SPI tipada e mock offline implementados; 8/10 AFRs M6 pendentes; agents/workflows seguem planejados |
-| M9–M10 | RAG, memória e ContextBundle | Planejado |
+| M6–M8 | Providers, agents, skills e workflows | Implementados localmente; homologação em sessões reais dos hosts segue pendente |
+| M9 | RAG | Implementado localmente: busca offline, citação, ACL, filtros e invalidação |
+| M10 | Memória e ContextBundle | Planejado |
 | M11–M13 | Evals, segurança, observabilidade e hardening | Planejado |
 | M14 | Release candidate e gate de v1 | Não autorizado |
 

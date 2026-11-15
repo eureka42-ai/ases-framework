@@ -40,6 +40,8 @@
     "dist/brand.d.ts",
     "dist/catalog.js",
     "dist/catalog.d.ts",
+    "dist/rag.js",
+    "dist/rag.d.ts",
     "dist/config-resolution.js",
     "dist/config-resolution.d.ts",
     "dist/agents.js",
