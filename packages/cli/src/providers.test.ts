@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createProviderCatalogEntry, generate, generateForMode, MockProvider, ProviderError, selectCapableProvider, type Provider } from "./providers.js";
+import { createProviderCatalogEntry, generate, generateForMode, getModelControl, MockProvider, ProviderError, selectCapableProvider, type Provider } from "./providers.js";
 
 test("mock provider gives deterministic offline responses", async () => {
   const provider = new MockProvider();
@@ -53,6 +53,12 @@ test("capability router selects a compatible provider and rejects unsupported re
   assert.equal(selectCapableProvider([textOnly, withTools], ["text", "tools"]).id, "tools");
   assert.throws(() => selectCapableProvider([textOnly], ["text", "vision"]), (error: unknown) => error instanceof ProviderError && error.code === "UNAVAILABLE");
   assert.throws(() => selectCapableProvider([textOnly], []), (error: unknown) => error instanceof ProviderError && error.code === "INVALID_REQUEST");
+});
+
+test("host mode reports model selection as host-managed", () => {
+  assert.deepEqual(getModelControl("host"), { controller: "host", selection: "host-managed", canSelectModel: false });
+  assert.deepEqual(getModelControl("offline"), { controller: "ases-mock", selection: "fixed-mock", canSelectModel: false });
+  assert.deepEqual(getModelControl("standalone"), { controller: "ases-provider", selection: "provider-managed", canSelectModel: true });
 });
 
 test("provider SPI rejects invalid input and normalizes failures", async () => {

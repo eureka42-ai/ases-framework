@@ -451,6 +451,8 @@ Consulte [`docs/ROADMAP.md`](docs/ROADMAP.md) e [`STATUS.md`](STATUS.md) para o 
 
 ## Compatibilidade com hosts
 
+No modo `host`, o CLI hospedeiro controla a escolha e a configuração do modelo; o ASES declara esse controle como `host-managed` e não afirma que consegue substituí-lo. Nos modos `standalone` e `headless`, a escolha pertence ao provider explicitamente configurado. Em `offline`, é usado o mock determinístico local.
+
 | Host | Estado atual |
 |---|---|
 | OpenAI Codex | `NOT_TESTED` |

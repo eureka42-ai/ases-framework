@@ -71,6 +71,19 @@ export interface GenerateOptions {
 
 export type ExecutionMode = "host" | "standalone" | "headless" | "offline";
 
+export interface ModelControl {
+  controller: "host" | "ases-provider" | "ases-mock";
+  selection: "host-managed" | "provider-managed" | "fixed-mock";
+  canSelectModel: boolean;
+}
+
+/** Describes who controls model selection; host mode never claims host control. */
+export function getModelControl(mode: ExecutionMode): ModelControl {
+  if (mode === "host") return { controller: "host", selection: "host-managed", canSelectModel: false };
+  if (mode === "offline") return { controller: "ases-mock", selection: "fixed-mock", canSelectModel: false };
+  return { controller: "ases-provider", selection: "provider-managed", canSelectModel: true };
+}
+
 /** Selects a provider without allowing an offline project to reach a remote adapter. */
 export async function generateForMode(
   mode: ExecutionMode,
