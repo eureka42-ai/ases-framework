@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { AgentDeclarationError, createAgentDeclaration, runAgentTasks, selectAgentContext } from "./agents.js";
+import { AgentDeclarationError, assertIndependentReviewer, createAgentDeclaration, runAgentTasks, selectAgentContext } from "./agents.js";
 
 test("agent declarations require explicit permissions and bounded budgets", () => {
   const declaration = createAgentDeclaration({
@@ -39,4 +39,10 @@ test("agent tasks run serially in order when parallelism is unavailable", async 
   ], false);
   assert.deepEqual(results, ["one", "two", "three"]);
   assert.deepEqual(sequence, [1, 2, 3]);
+});
+
+test("review approval requires an identity independent from the author", () => {
+  assert.deepEqual(assertIndependentReviewer("agent-17", "reviewer-4"), { authorId: "agent-17", reviewerId: "reviewer-4" });
+  assert.throws(() => assertIndependentReviewer("Alice", " alice "), AgentDeclarationError);
+  assert.throws(() => assertIndependentReviewer("agent-17", " "), AgentDeclarationError);
 });

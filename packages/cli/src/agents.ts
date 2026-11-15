@@ -63,3 +63,14 @@ export async function runAgentTasks<T>(tasks: readonly (() => Promise<T>)[], par
   for (const task of tasks) results.push(await task());
   return results;
 }
+
+/** Requires a distinct non-empty reviewer identity before approval can be recorded. */
+export function assertIndependentReviewer(authorId: string, reviewerId: string): { authorId: string; reviewerId: string } {
+  const author = authorId.trim();
+  const reviewer = reviewerId.trim();
+  if (!author || !reviewer) throw new AgentDeclarationError("author and reviewer identities are required");
+  if (author.toLocaleLowerCase("en-US") === reviewer.toLocaleLowerCase("en-US")) {
+    throw new AgentDeclarationError("a change author cannot approve their own review");
+  }
+  return { authorId: author, reviewerId: reviewer };
+}

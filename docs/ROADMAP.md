@@ -10,16 +10,16 @@
 - M7–M13 — PLANNED: agents/workflows, RAG/memória, evals, segurança, observabilidade e hardening.
 - M14 — BLOCKED_ON_APPROVAL: release candidate e gate v1 dependem das decisões de licença, homologação e critérios de lançamento.
 
-Backlog estruturado atual: 49/140 requisitos `IMPLEMENTED`, 91/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
+Backlog estruturado atual: 50/140 requisitos `IMPLEMENTED`, 90/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
 
-Distribuição dos 91 pendentes no registro atual:
+Distribuição dos 90 pendentes no registro atual:
 
 | Marco | Pendentes | Observação |
 |---|---:|---|
 | M1 | 0 | AFR-028 passou no CI remoto Node.js 22/24 |
 | M5 | 4 | Claude, Codex, Kimi e Gemini em sessões reais |
 | M6 | 0 | M6 concluído localmente; provider live opcional não foi testado |
-| M7 | 7 | Escritas concorrentes, review independente, Skills e tools |
+| M7 | 6 | Escritas concorrentes, Skills e tools |
 | M8 | 8 | DSL e execução de workflows |
 | M9 | 8 | RAG offline, proveniência, ACL e integridade |
 | M10 | 7 | Memória e ContextBundle |
