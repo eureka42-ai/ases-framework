@@ -1010,26 +1010,26 @@ requirements:
     priority: P1
     milestone: "M11"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Evidence linking exigir hashes e contexto da execução."
     acceptanceCriteria:
       - id: AC-AFR-084-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Evidence linking exigir hashes e contexto da execução."
+        description: "VERIFIED exige arquivo de evidência local, hash SHA-256 e --execution-context; o registro também guarda Node, plataforma e referências de teste."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/catalog.ts", "packages/cli/src/index.ts"]
+    tests: ["packages/cli/src/index.test.ts :: catalog status requires evidence for VERIFIED and rationale for N_A"]
   - id: AFR-085
     priority: P1
     milestone: "M11"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Evidência expirada ou obsoleta não aprovar requisito."
     acceptanceCriteria:
       - id: AC-AFR-085-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Evidência expirada ou obsoleta não aprovar requisito."
+        description: "readCatalog recalcula hash; requisitos VERIFIED sem pelo menos uma evidência CURRENT com contexto são marcados verificationEligibility=false com motivo stale/missing/unverifiable, refletido em show/list/trace."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/catalog.ts", "packages/cli/src/index.ts"]
+    tests: ["packages/cli/src/index.test.ts :: catalog status requires evidence for VERIFIED and rationale for N_A"]
   - id: AFR-086
     priority: P1
     milestone: "M11"

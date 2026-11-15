@@ -58,7 +58,7 @@ Comandos disponíveis:
   catalog import-ases300 <md> Importa e valida a fonte ASES-300 local
   catalog import-product <id> <md> [workspace] Importa requisitos específicos separados
   requirements list|show|trace  Consulta catálogo e trilha de evidências [--product id]
-  requirements set-status <workspace> <REQ-ID> <status> [--product id|--evidence arquivo|--decision DEC|--test ref|--na-reason texto|--blocked-by ref --reason texto]
+  requirements set-status <workspace> <REQ-ID> <status> [--product id|--evidence arquivo --execution-context texto [--evidence-expires-at ISO]|--decision DEC|--test ref|--na-reason texto|--blocked-by ref --reason texto]
   requirements set-decision <workspace> <REQ-ID> <state> [--product id|--ref ADR --reason texto]
   help                    Exibe esta ajuda
 
@@ -405,22 +405,23 @@ export async function run(argv: string[]): Promise<CommandResult> {
       const selected = requirementId ? catalog.requirements.filter((item) => item.id === requirementId) : catalog.requirements;
       if (requirementId && selected.length === 0) return { exitCode: 2, output: json ? JSON.stringify({ code: "ASES_REQUIREMENT_NOT_FOUND", id: requirementId }) : `Requisito não encontrado: ${requirementId}` };
       const requirements = selected.map((item) => {
-        if (action === "list") return { id: item.id, title: item.title, status: item.status, evidenceIntegrity: item.evidence?.map((evidence) => evidence.integrity) ?? [] };
+        if (action === "list") return { id: item.id, title: item.title, status: item.status, verificationEligibility: item.verificationEligibility, evidenceIntegrity: item.evidence?.map((evidence) => evidence.integrity) ?? [] };
         if (action === "trace") return {
           id: item.id,
           status: item.status,
+          verificationEligibility: item.verificationEligibility,
           decision: item.decision ?? { status: "UNDECIDED", history: [] },
           decisions: item.traceability?.decisionRefs ?? [],
           tests: item.traceability?.testRefs ?? [],
           blocker: item.blocker ?? null,
-          evidence: item.evidence?.map((evidence) => ({ ref: evidence.description, integrity: evidence.integrity ?? "UNVERIFIABLE", sha256: evidence.sha256 })) ?? []
+          evidence: item.evidence?.map((evidence) => ({ ref: evidence.description, integrity: evidence.integrity ?? "UNVERIFIABLE", sha256: evidence.sha256, ...(evidence.expiresAt ? { expiresAt: evidence.expiresAt } : {}) })) ?? []
         };
         return item;
       });
       const result = { catalog: catalog.catalog, ...(catalog.productId ? { productId: catalog.productId } : {}), status: catalog.status, source: catalog.source, requirements };
       return { exitCode: 0, output: json ? JSON.stringify(result, null, 2) : selected.map((item) => action === "trace"
-        ? `${item.id} [implementação: ${item.status}; decisão: ${item.decision?.status ?? "UNDECIDED"}]\n  Referências de decisão: ${(item.traceability?.decisionRefs ?? []).join(", ") || "pendente"}\n  Testes: ${(item.traceability?.testRefs ?? []).join(", ") || "pendente"}\n  Bloqueio: ${item.blocker ? `${item.blocker.dependency} — ${item.blocker.reason}` : "nenhum"}\n  Evidências: ${(item.evidence ?? []).map((evidence) => `${evidence.description} (${evidence.integrity ?? "UNVERIFIABLE"})`).join(", ") || "pendente"}`
-        : `${item.id} — ${item.title} [${item.status}]${item.evidence?.length ? ` [evidência: ${item.evidence.map((evidence) => evidence.integrity ?? "UNVERIFIABLE").join(", ")}]` : ""}${action === "show" ? `\n${item.acceptanceCriteria ?? item.sourceText}` : ""}`).join("\n") };
+        ? `${item.id} [implementação: ${item.status}; elegível: ${item.verificationEligibility?.eligible ? "sim" : "não"}; decisão: ${item.decision?.status ?? "UNDECIDED"}]\n  Referências de decisão: ${(item.traceability?.decisionRefs ?? []).join(", ") || "pendente"}\n  Testes: ${(item.traceability?.testRefs ?? []).join(", ") || "pendente"}\n  Bloqueio: ${item.blocker ? `${item.blocker.dependency} — ${item.blocker.reason}` : "nenhum"}\n  Evidências: ${(item.evidence ?? []).map((evidence) => `${evidence.description} (${evidence.integrity ?? "UNVERIFIABLE"})`).join(", ") || "pendente"}`
+        : `${item.id} — ${item.title} [${item.status}]${item.verificationEligibility?.eligible === false && item.status === "VERIFIED" ? ` [não apto: ${item.verificationEligibility.reason}]` : ""}${item.evidence?.length ? ` [evidência: ${item.evidence.map((evidence) => evidence.integrity ?? "UNVERIFIABLE").join(", ")}]` : ""}${action === "show" ? `\n${item.acceptanceCriteria ?? item.sourceText}` : ""}`).join("\n") };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       return { exitCode: 5, output: json ? JSON.stringify({ code: "ASES_CATALOG_UNAVAILABLE", error: message }, null, 2) : `Catálogo não disponível: ${message}\nImporte a fonte ASES-300 localmente primeiro.` };
@@ -432,12 +433,16 @@ export async function run(argv: string[]): Promise<CommandResult> {
       const allowed = ["PENDING", "READY", "IN_PROGRESS", "IMPLEMENTED", "VERIFIED", "FAILED", "BLOCKED", "N_A"];
       if (!allowed.includes(status)) return { exitCode: 2, output: `Status inválido; use: ${allowed.join(", ")}` };
       const evidenceIndex = argv.indexOf("--evidence");
+      const executionContext = optionValues(argv, "--execution-context").join(" ");
+      const evidenceExpiresAt = optionValues(argv, "--evidence-expires-at")[0];
       const naIndex = argv.indexOf("--na-reason");
       const naReason = naIndex >= 0 ? optionValues(argv, "--na-reason").join(" ") : undefined;
       const blockedBy = optionValues(argv, "--blocked-by")[0];
       const blockedReason = optionValues(argv, "--reason").join(" ");
       const requirement = await updateRequirement(args[2]!, args[3]!, status, {
         ...(evidenceIndex >= 0 ? { evidence: argv[evidenceIndex + 1] } : {}),
+        ...(executionContext ? { executionContext } : {}),
+        ...(evidenceExpiresAt ? { evidenceExpiresAt } : {}),
         ...(naReason ? { naReason } : {}),
         ...(blockedBy ? { blockedBy } : {}),
         ...(blockedReason ? { blockedReason } : {}),

@@ -12,7 +12,8 @@ export interface GeneralRequirement {
   acceptanceCriteria?: string;
   source: { path: string; sha256: string };
   status: "PENDING" | "READY" | "IN_PROGRESS" | "IMPLEMENTED" | "VERIFIED" | "FAILED" | "BLOCKED" | "N_A";
-  evidence?: Array<{ id: string; kind: string; description: string; sha256?: string; createdAt: string; integrity?: "CURRENT" | "STALE" | "MISSING" | "OUTSIDE_WORKSPACE" | "UNVERIFIABLE" }>;
+  evidence?: Array<{ id: string; kind: string; description: string; sha256?: string; createdAt: string; expiresAt?: string; context?: { runDescription: string; nodeVersion: string; platform: string; testRefs: string[] }; integrity?: "CURRENT" | "STALE" | "MISSING" | "EXPIRED" | "OUTSIDE_WORKSPACE" | "UNVERIFIABLE" }>;
+  verificationEligibility?: { eligible: boolean; reason?: string };
   traceability?: { decisionRefs: string[]; testRefs: string[] };
   blocker?: { dependency: string; reason: string; createdAt: string };
   decision?: {
@@ -112,21 +113,34 @@ export async function readCatalog(workspace: string, productId?: string): Promis
           continue;
         }
         const currentHash = createHash("sha256").update(await readFile(canonicalPath)).digest("hex");
-        evidence.integrity = currentHash === evidence.sha256 ? "CURRENT" : "STALE";
+        if (currentHash !== evidence.sha256) evidence.integrity = "STALE";
+        else if (evidence.expiresAt && (!Number.isFinite(Date.parse(evidence.expiresAt)) || Date.parse(evidence.expiresAt) <= Date.now())) evidence.integrity = "EXPIRED";
+        else evidence.integrity = "CURRENT";
       } catch (error) {
         evidence.integrity = (error as NodeJS.ErrnoException).code === "ENOENT" ? "MISSING" : "UNVERIFIABLE";
       }
+    }
+    if (requirement.status === "VERIFIED") {
+      const current = requirement.evidence?.find((evidence) => evidence.integrity === "CURRENT" && evidence.kind === "workspace-file" && Boolean(evidence.context?.runDescription.trim()));
+      requirement.verificationEligibility = current ? { eligible: true } : {
+        eligible: false,
+        reason: !requirement.evidence?.length ? "evidence-required" : requirement.evidence.some((evidence) => evidence.integrity === "STALE") ? "evidence-stale" : requirement.evidence.some((evidence) => evidence.integrity === "EXPIRED") ? "evidence-expired" : requirement.evidence.some((evidence) => evidence.integrity === "MISSING") ? "evidence-missing" : "evidence-unverifiable-or-context-missing",
+      };
+    } else {
+      requirement.verificationEligibility = { eligible: false, reason: "requirement-not-verified" };
     }
   }
   return catalog;
 }
 
-export async function updateRequirement(workspace: string, id: string, status: GeneralRequirement["status"], options: { evidence?: string; naReason?: string; decisionRefs?: string[]; testRefs?: string[]; blockedBy?: string; blockedReason?: string; productId?: string }): Promise<GeneralRequirement> {
+export async function updateRequirement(workspace: string, id: string, status: GeneralRequirement["status"], options: { evidence?: string; executionContext?: string; evidenceExpiresAt?: string; naReason?: string; decisionRefs?: string[]; testRefs?: string[]; blockedBy?: string; blockedReason?: string; productId?: string }): Promise<GeneralRequirement> {
   const path = catalogPath(workspace, options.productId);
   const catalog = JSON.parse(await readFile(path, "utf8")) as CatalogFile;
   const requirement = catalog.requirements.find((item) => item.id === id);
   if (!requirement) throw new Error(`Requisito inexistente: ${id}`);
   if (status === "VERIFIED" && !options.evidence?.trim()) throw new Error("VERIFIED exige --evidence com caminho de arquivo existente dentro do workspace");
+  if (status === "VERIFIED" && !options.executionContext?.trim()) throw new Error("VERIFIED exige --execution-context para registrar como a evidência foi produzida");
+  if (status === "VERIFIED" && options.evidenceExpiresAt && (!Number.isFinite(Date.parse(options.evidenceExpiresAt)) || Date.parse(options.evidenceExpiresAt) <= Date.now())) throw new Error("--evidence-expires-at precisa indicar uma data futura válida");
   if (status === "N_A" && !options.naReason?.trim()) throw new Error("N_A exige --na-reason");
   if (status === "BLOCKED" && (!options.blockedBy?.trim() || !options.blockedReason?.trim())) throw new Error("BLOCKED exige --blocked-by e --reason");
   if (status === "VERIFIED") {
@@ -140,7 +154,16 @@ export async function updateRequirement(workspace: string, id: string, status: G
     }
     if (!(await stat(canonicalEvidencePath)).isFile()) throw new Error("A evidência precisa ser um arquivo regular");
     const evidenceBytes = await readFile(canonicalEvidencePath);
-    requirement.evidence = [...(requirement.evidence ?? []), { id: `EVD-${Date.now()}`, kind: "workspace-file", description: options.evidence!.trim(), sha256: createHash("sha256").update(evidenceBytes).digest("hex"), createdAt: new Date().toISOString() }];
+    requirement.evidence = [...(requirement.evidence ?? []), {
+      id: `EVD-${Date.now()}`,
+      kind: "workspace-file",
+      description: options.evidence!.trim(),
+      sha256: createHash("sha256").update(evidenceBytes).digest("hex"),
+      createdAt: new Date().toISOString(),
+      ...(options.evidenceExpiresAt ? { expiresAt: new Date(options.evidenceExpiresAt).toISOString() } : {}),
+      context: { runDescription: options.executionContext!.trim(), nodeVersion: process.version, platform: `${process.platform}-${process.arch}`, testRefs: [...new Set((options.testRefs ?? []).map((ref) => ref.trim()).filter(Boolean))] },
+      integrity: "CURRENT",
+    }];
   }
   if (status === "N_A") requirement.waiver = { justification: options.naReason!.trim(), createdAt: new Date().toISOString() };
   if (status === "BLOCKED") requirement.blocker = { dependency: options.blockedBy!.trim(), reason: options.blockedReason!.trim(), createdAt: new Date().toISOString() };

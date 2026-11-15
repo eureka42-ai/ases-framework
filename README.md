@@ -56,7 +56,7 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases doctor` | Implementado localmente | Node, plataforma, Git, npm, pnpm, workspace/config e ações corretivas |
 | `ases config validate` | Implementado no schema inicial | Configuração JSON bootstrap |
 | `ases config explain` | Implementado no schema inicial | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Em andamento | 79 implementados; 61 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
+| Backlog AFR-001..140 | Em andamento | 81 implementados; 59 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
 | Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |
@@ -210,10 +210,12 @@ ASES_PROJECT_MODE=offline ases config explain ./meu-projeto/.ases/config.json --
 | `ases requirements list [workspace] [--product id]` | Lista requisitos gerais ou específicos | Nenhum |
 | `ases requirements show [workspace] <REQ-ID> [--product id]` | Exibe origem, texto e critério de aceite | Nenhum |
 | `ases requirements trace [workspace] [REQ-ID] [--product id]` | Mostra decisão → requisito → testes → evidências e integridade | Nenhum |
-| `ases requirements set-status <workspace> <REQ-ID> <status> [--product id]` | Atualiza estado e referências de rastreabilidade | Grava catálogo local |
+| `ases requirements set-status <workspace> <REQ-ID> <status> [--product id]` | Atualiza estado e rastreabilidade; `VERIFIED` exige evidência hashada e contexto | Grava catálogo local |
 | `ases requirements set-decision <workspace> <REQ-ID> <state> [--product id]` | Atualiza decisão sem alterar estado da implementação | Grava catálogo local |
 
 Os demais comandos do documento-mestre são contratos planejados, não funcionalidades existentes. Eles somente serão documentados como disponíveis depois de implementados e testados.
+
+Para marcar um requisito como `VERIFIED`, associe uma evidência local e registre como foi produzida com `--execution-context`; veja [vínculo de evidências e validade](docs/requirements/evidence-linking.md).
 
 ### Códigos de saída
 
@@ -255,7 +257,7 @@ Estados podem ser atualizados com `PENDING`, `READY`, `IN_PROGRESS`, `IMPLEMENTE
 ```bash
 ases requirements set-status ./meu-projeto REQ-001 IMPLEMENTED
 ases requirements set-status ./meu-projeto REQ-001 IMPLEMENTED --decision ADR-001 --test "packages/api/test/records.test.ts"
-ases requirements set-status ./meu-projeto REQ-001 VERIFIED --evidence "evidence/resultado-teste.txt" --decision ADR-001 --test "packages/api/test/records.test.ts"
+ases requirements set-status ./meu-projeto REQ-001 VERIFIED --evidence "evidence/resultado-teste.txt" --execution-context "pnpm test no Node 22" --decision ADR-001 --test "packages/api/test/records.test.ts"
 ases requirements set-status ./meu-projeto REQ-002 N_A --na-reason "Capacidade fora do escopo aprovado nesta versão"
 ases requirements set-status ./meu-projeto REQ-003 BLOCKED --blocked-by "credencial OIDC" --reason "A equipe ainda não recebeu o client secret de homologação."
 ases requirements set-decision ./meu-projeto REQ-001 ACCEPTED --ref ADR-001 --reason "Alternativa aprovada pelo responsável técnico."
@@ -447,7 +449,8 @@ Resultados reais e limitações ficam em [`evidence/`](evidence/). Uma funcional
 | M6–M8 | Providers, agents, skills e workflows | Implementados localmente; homologação em sessões reais dos hosts segue pendente |
 | M9 | RAG | Implementado localmente: busca offline, citação, ACL, filtros e invalidação |
 | M10 | Memória e ContextBundle | Implementado localmente; import seguro exige preview e rejeita conflitos |
-| M11–M13 | Evals, segurança, observabilidade e hardening | Planejado |
+| M11 | Evidências, segurança e evals | Em andamento; vínculo verificável de evidências implementado |
+| M12–M13 | SDK, registry, observabilidade e hardening | Planejado |
 | M14 | Release candidate e gate de v1 | Não autorizado |
 
 Consulte [`docs/ROADMAP.md`](docs/ROADMAP.md) e [`STATUS.md`](STATUS.md) para o próximo incremento seguro.
