@@ -21,6 +21,10 @@ const skillFiles = [
   "integrations/codex/skills/ases-project-start/SKILL.md"
 ];
 const cliPackage = JSON.parse(await readFile(resolve(root, "packages/cli/package.json"), "utf8"));
+const vscodePackage = JSON.parse(await readFile(resolve(root, "integrations/vscode/package.json"), "utf8"));
+const vscodeEntry = await readFile(resolve(root, "integrations/vscode/extension.js"), "utf8");
+if (vscodePackage.publisher !== "eureka42" || vscodePackage.name !== "eureka42-ases" || vscodePackage.version !== cliPackage.version || vscodePackage.main !== "./extension.js" || !vscodePackage.contributes?.commands?.some((command) => command.command === "ases.startProject")) throw new Error("Manifest da extensão VS Code inválido ou com versão divergente");
+if (!vscodeEntry.includes('"ases welcome --color && ases interview"') || !vscodeEntry.includes("workspace.uri.fsPath")) throw new Error("A extensão VS Code precisa exibir a marca e iniciar a entrevista no workspace aberto");
 const versionSource = await readFile(resolve(root, "packages/cli/src/version.ts"), "utf8");
 const sourceVersion = versionSource.match(/VERSION\s*=\s*"([^"]+)"/)?.[1];
 if (!sourceVersion || sourceVersion !== cliPackage.version) throw new Error("Versão da CLI diverge de packages/cli/package.json");
@@ -64,5 +68,5 @@ if (existsSync(resolve(root, "integrations/claude-code/.claude-plugin/plugin.jso
   if (validation.status !== null && validation.status !== 0) throw new Error(`Claude plugin validator failed: ${validation.stderr || validation.stdout}`);
   if (validation.error?.code === "ENOENT") console.log("SKIP Claude Code CLI não está instalado; validação estrutural local executada");
 }
-console.log(`PASS ${jsonFiles.length} manifests, 2 marketplaces e ${skillFiles.length} Skills validados`);
+console.log(`PASS ${jsonFiles.length} manifests CLI, extensão VS Code, 2 marketplaces e ${skillFiles.length} Skills validados`);
 

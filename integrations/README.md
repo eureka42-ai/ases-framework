@@ -10,6 +10,7 @@ O EUREKA42 ASES possui um núcleo portátil e artefatos separados por host. Eles
 | Claude Code | Plugin em `.claude-plugin/`, duas Skills e marketplace do repositório | `claude plugin marketplace add eureka42-ai/ases-framework --scope local`; depois `claude plugin install eureka42-ases@eureka42-ases-plugins --scope local` | Strict validation e descoberta por instalação isolada passaram; invocação da Skill em conversa pendente |
 | Kimi Code CLI | Skill auto-descoberta em `.agents/skills/` e pacote Beta `kimi.plugin.json` | revisar `ases host plan kimi-code <workspace>` e executar `ases host apply kimi-code <workspace> --apply`; pacote Beta só em versão que exponha `/plugins` | `--skills-dir` presente; shell local não lista `plugin`; sessão pendente |
 | Gemini CLI | `gemini-extension.json`, contexto, Skill, command e tema | `gemini extensions link integrations/gemini-cli` em checkout de desenvolvimento | `gemini extensions validate` PASS; sessão funcional pendente |
+| Visual Studio Code | Extensão local `integrations/vscode/` com comando na Command Palette | `cd integrations/vscode && vsce package && code --install-extension eureka42-ases-0.1.0-rc.1.vsix` | Manifesto e sequência de startup validados; VSIX/instalação ainda não homologados |
 
 ## Matriz de versões e capacidades observadas
 

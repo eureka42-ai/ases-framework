@@ -1,0 +1,18 @@
+{
+  "name": "eureka42-ases",
+  "displayName": "Eureka42 ASES",
+  "description": "Start a project with the ASES interview in the integrated terminal.",
+  "version": "0.1.0-rc.1",
+  "publisher": "eureka42",
+  "license": "Apache-2.0",
+  "engines": { "vscode": "^1.85.0" },
+  "categories": ["Other"],
+  "icon": "assets/eureka42-logo.png",
+  "main": "./extension.js",
+  "activationEvents": ["onCommand:ases.startProject"],
+  "contributes": {
+    "commands": [
+      { "command": "ases.startProject", "title": "ASES: Start Project", "category": "Eureka42" }
+    ]
+  }
+}
