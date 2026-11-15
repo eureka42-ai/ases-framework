@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createProviderCatalogEntry, generate, generateForMode, getModelControl, MockProvider, ProviderError, selectCapableProvider, selectSafeFallback, type Provider } from "./providers.js";
+import { createCostRecord, createProviderCatalogEntry, generate, generateForMode, getModelControl, MockProvider, ProviderError, selectCapableProvider, selectSafeFallback, type Provider } from "./providers.js";
 
 test("mock provider gives deterministic offline responses", async () => {
   const provider = new MockProvider();
@@ -74,6 +74,14 @@ test("fallback preserves the requested data classification and cost ceiling", ()
   ];
   assert.equal(selectSafeFallback(primary.id, candidates, { dataClassification: "sensitive", maxCostUsd: 0.1 }).id, "safe");
   assert.throws(() => selectSafeFallback(primary.id, candidates.slice(0, 2), { dataClassification: "sensitive", maxCostUsd: 0.1 }), (error: unknown) => error instanceof ProviderError && error.code === "UNAVAILABLE");
+});
+
+test("cost records distinguish estimated, provider-reported and unknown amounts", () => {
+  assert.deepEqual(createCostRecord({ status: "estimated", amountUsd: 0.03, source: "local rate table" }), { status: "estimated", amountUsd: 0.03, source: "local rate table" });
+  assert.deepEqual(createCostRecord({ status: "reported", amountUsd: 0.02, source: "provider usage response" }), { status: "reported", amountUsd: 0.02, source: "provider usage response" });
+  assert.deepEqual(createCostRecord({ status: "unknown", reason: "provider omitted usage cost" }), { status: "unknown", reason: "provider omitted usage cost" });
+  assert.throws(() => createCostRecord({ status: "estimated", amountUsd: -1, source: "rate table" }), (error: unknown) => error instanceof ProviderError && error.code === "INVALID_REQUEST");
+  assert.throws(() => createCostRecord({ status: "unknown", reason: " " }), (error: unknown) => error instanceof ProviderError && error.code === "INVALID_REQUEST");
 });
 
 test("provider SPI rejects invalid input and normalizes failures", async () => {

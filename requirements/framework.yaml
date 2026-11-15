@@ -566,14 +566,14 @@ requirements:
     priority: P1
     milestone: "M6"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Custos distinguirem estimado, reportado e desconhecido."
     acceptanceCriteria:
       - id: AC-AFR-047-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Custos distinguirem estimado, reportado e desconhecido."
+        description: "A API de custo representa os estados discriminados `estimated`, `reported` e `unknown`; valores conhecidos exigem valor não negativo e fonte, enquanto desconhecidos exigem justificativa."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/providers.ts"]
+    tests: ["packages/cli/src/providers.test.ts :: cost records distinguish estimated, provider-reported and unknown amounts"]
   - id: AFR-048
     priority: P1
     milestone: "M6"

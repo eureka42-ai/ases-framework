@@ -20,6 +20,22 @@ export interface ProviderResponse {
   usage: { inputTokens?: number; outputTokens?: number };
 }
 
+export type CostRecord =
+  | { status: "estimated"; amountUsd: number; source: string }
+  | { status: "reported"; amountUsd: number; source: string }
+  | { status: "unknown"; reason: string };
+
+export function createCostRecord(record: CostRecord): CostRecord {
+  if (record.status === "unknown") {
+    if (!record.reason.trim()) throw new ProviderError("INVALID_REQUEST", "unknown cost requires a reason");
+    return { status: "unknown", reason: record.reason.trim() };
+  }
+  if (!Number.isFinite(record.amountUsd) || record.amountUsd < 0 || !record.source.trim()) {
+    throw new ProviderError("INVALID_REQUEST", "known cost requires a non-negative amount and source");
+  }
+  return { ...record, source: record.source.trim() };
+}
+
 export interface ProviderContext {
   signal: AbortSignal;
 }
