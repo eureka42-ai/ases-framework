@@ -45,17 +45,18 @@ Atualizado em: 2026-11-15
 - `ases requirements graph [workspace] [--product id] [--json]` exporta Mermaid determinístico para requisitos, decisões, testes, evidências e bloqueios; labels são escapadas, IDs são hashados e não há dependência gráfica no CLI. Ver `evidence/M15-2026-11-15-progress-1.md`.
 - `ases dashboard [workspace] [--product id] [--json]` gera snapshot HTML/JSON offline com status REQ, checkpoints de workflows, integridade de evidências e custos explicitamente medidos/reportados; lê somente arquivos locais regulares, não estima valores e não inicia servidor. Ver `evidence/M15-2026-11-15-progress-2.md`.
 - `rankToolsByCapabilities` descobre e ordena ferramentas por cobertura de capabilities de forma determinística, revela cobertura parcial e não executa nem autoriza as ferramentas. `executeTool` mantém o gate de policy explícita; ver `docs/security/policy-engine.md` e evidência M15 progress 3.
+- `runModelBenchmark` compara providers em fixtures versionadas, sequencialmente e com limites. Requer `enabled: true`; o relatório mantém hash de prompts/settings sem conteúdo, latência/tokens reportados e erros sanitizados; não calcula custo nem inclui prompt/resposta. Ver `docs/benchmarking.md` e evidência M15 progress 4.
 - Leitura de catálogo agora rejeita arquivo catalog symlinkado ou cujo caminho canonicalizado saia do workspace.
 - Hosts locais detectados nesta sessão: Codex 0.169.0, Claude Code 2.1.323, Kimi 2.5.3 e Gemini 0.42.0.
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes automatizados: PASS (128/128; inclui dashboard, ranking de capabilities, execução HTTP local e E2E do CLI). `pnpm integrations:validate`: PASS. CI Node.js 22/24 e audit/licenças/SBOM/proveniência: PASS para AFR-115 no run `43730687132`.
+- Testes automatizados: PASS (131/131; inclui benchmark, dashboard, ranking de capabilities, execução HTTP local e E2E do CLI). `pnpm integrations:validate`: PASS. CI Node.js 22/24 e audit/licenças/SBOM/proveniência passaram para AFR-115 no run `43730687132`; CI do AFR-116 segue após o push.
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 6 Skills sincronizadas).
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; tarball RC1 instalado em workspace temporário; `ases --version` e `ases welcome --color`: PASS. A primeira instalação revelou módulos ausentes e foi corrigida antes do segundo empacotamento.
-- Backlog AFR-001..140: 108 requisitos IMPLEMENTED e ligados a código/testes/evidência; 32 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 109 requisitos IMPLEMENTED e ligados a código/testes/evidência; 31 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -192,7 +193,7 @@ Atualizado em: 2026-11-15
 - `evidence/M15-2026-11-15-progress-1.md`
 - `evidence/M15-2026-11-15-progress-2.md`
 - `evidence/M15-2026-11-15-progress-3.md`
-- `evidence/M15-2026-11-15-progress-3.md`
+- `evidence/M15-2026-11-15-progress-4.md`
 - `evidence/M12-2026-11-15-progress-1.md`
 - `evidence/M12-2026-11-15-progress-2.md`
 - `evidence/M13-2026-11-15-progress-1.md`

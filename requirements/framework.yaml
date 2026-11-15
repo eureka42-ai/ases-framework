@@ -1394,14 +1394,14 @@ requirements:
     priority: P2
     milestone: "M15+"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Benchmark de modelo com comparação reproduzível."
     acceptanceCriteria:
       - id: AC-AFR-116-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Benchmark de modelo com comparação reproduzível."
+        description: "`runModelBenchmark` compara providers sobre fixtures versionadas em ordem estável, com repetições e limite total de chamadas; exige `enabled: true`, timeout por chamada e não envia requests por padrão. O relatório preserva hash do conjunto, status de avaliação, latência, tokens informados e erros sanitizados sem prompt/resposta ou preço estimado. Critérios de saída ausentes são SKIPPED, erros não entram na taxa de sucesso, e sumários agregam por provider/modelo observado."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/benchmark.ts", "packages/cli/src/benchmark.test.ts", "packages/cli/src/index.ts", "docs/benchmarking.md"]
+    tests: ["packages/cli/src/benchmark.test.ts :: model benchmark is opt-in, fingerprinted and excludes prompts and model output", "packages/cli/src/benchmark.test.ts :: model benchmark keeps provider failures sanitized and missing evaluation criteria unscored", "packages/cli/src/benchmark.test.ts :: model benchmark bounds provider calls and validates fixture identity"]
   - id: AFR-117
     priority: P2
     milestone: "M15+"

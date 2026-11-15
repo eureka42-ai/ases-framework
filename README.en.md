@@ -107,6 +107,7 @@ The CI dependency audit, license allowlist, SPDX SBOM, and GitHub provenance wor
 - Memory requires consent and supports inspection/deletion.
 - Remote telemetry is disabled by default and requires explicit, revocable HTTPS consent; nothing sends automatically.
 - Tool and command execution require explicit policy authorization.
+- Provider benchmarks use versioned fixtures and require explicit opt-in before calls; reports omit prompts/responses and do not estimate prices. See the [benchmarking guide](docs/benchmarking.md).
 - Do not treat model suggestions, imported requirements, or a `VERIFIED` label as external certification. Evidence and source homologation remain reviewable gates.
 - Database choices for the generated application are advisory; the framework itself has no database migration system yet. See the [data and migration boundary](docs/architecture/data-migrations.md).
 

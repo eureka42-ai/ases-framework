@@ -52,6 +52,8 @@
     "dist/traceability-graph.d.ts",
     "dist/dashboard.js",
     "dist/dashboard.d.ts",
+    "dist/benchmark.js",
+    "dist/benchmark.d.ts",
     "dist/rag.js",
     "dist/rag.d.ts",
     "dist/memory.js",

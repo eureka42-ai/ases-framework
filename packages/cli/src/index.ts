@@ -40,6 +40,10 @@ export { readDashboardData, renderDashboardHtml } from "./dashboard.js";
 export type { DashboardData, DashboardTrace, DashboardWorkflow } from "./dashboard.js";
 export { rankToolsByCapabilities } from "./tools.js";
 export type { ToolCapabilityMatch } from "./tools.js";
+export { runModelBenchmark } from "./benchmark.js";
+export type { ModelBenchmarkFixture, ModelBenchmarkOptions, ModelBenchmarkReport, ModelBenchmarkSample, ModelBenchmarkStatus, ModelBenchmarkSummary } from "./benchmark.js";
+export { ProviderError } from "./providers.js";
+export type { GenerateOptions, Provider, ProviderCapability, ProviderContext, ProviderErrorCode, ProviderRequest, ProviderResponse } from "./providers.js";
 
 export interface CommandResult {
   exitCode: number;
