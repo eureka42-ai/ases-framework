@@ -51,7 +51,7 @@ Atualizado em: 2026-11-14
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; tarball RC1 instalado em workspace temporário; `ases --version` e `ases welcome --color`: PASS. A primeira instalação revelou módulos ausentes e foi corrigida antes do segundo empacotamento.
-- Backlog AFR-001..140: 102 requisitos IMPLEMENTED e ligados a código/testes/evidência; 38 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 103 requisitos IMPLEMENTED e ligados a código/testes/evidência; 37 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -192,5 +192,6 @@ Atualizado em: 2026-11-14
 - `evidence/M13-2026-11-15-progress-4.md`
 - `evidence/M13-2026-11-15-progress-5.md`
 - `evidence/M13-2026-11-15-progress-6.md`
+- `evidence/M13-2026-11-15-progress-7.md`
 - `evidence/M9-2026-11-14-progress-2.md`
 

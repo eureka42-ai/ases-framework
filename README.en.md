@@ -104,6 +104,7 @@ For structured failure codes and recovery steps, see the [CLI error reference](d
 - Remote telemetry is disabled by default and requires explicit, revocable HTTPS consent; nothing sends automatically.
 - Tool and command execution require explicit policy authorization.
 - Do not treat model suggestions, imported requirements, or a `VERIFIED` label as external certification. Evidence and source homologation remain reviewable gates.
+- Database choices for the generated application are advisory; the framework itself has no database migration system yet. See the [data and migration boundary](docs/architecture/data-migrations.md).
 
 ## Development and contribution
 
