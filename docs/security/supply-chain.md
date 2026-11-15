@@ -1,6 +1,6 @@
 # Dependency audit, licenses, SBOM, and provenance
 
-The dedicated CI supply-chain job runs `pnpm audit --prod --audit-level high`, checks installed dependency license metadata against the project's allowed SPDX identifiers, generates an SPDX 2.3 SBOM, packs the CLI, and uploads the package/SBOM artifacts. On non-PR runs it asks GitHub Actions to sign an artifact provenance and SBOM attestation for the package.
+The dedicated CI supply-chain job runs `pnpm audit --prod --audit-level high`, checks installed dependency license metadata against the project's allowed SPDX identifiers, generates an SPDX 2.3 SBOM, packs the CLI, and uploads the package/SBOM artifacts. On non-PR runs it creates separate signed SLSA build-provenance and SPDX SBOM attestations for the package.
 
 Run the local license/SBOM step with:
 

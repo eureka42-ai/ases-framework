@@ -75,14 +75,19 @@ jobs:
           ASES_SBOM_OUTPUT: ${{ runner.temp }}/eureka42-ases-framework.spdx.json
       - name: Pack CLI release artifact
         run: npm pack ./packages/cli --pack-destination "${{ runner.temp }}"
-      - name: Attest package provenance and SBOM
+      - name: Attest package build provenance
+        if: github.event_name != 'pull_request'
+        uses: actions/attest@v4
+        with:
+          subject-path: ${{ runner.temp }}/eureka42-ases-cli-0.1.0-rc.1.tgz
+      - name: Attest SBOM for package
         if: github.event_name != 'pull_request'
         uses: actions/attest@v4
         with:
           subject-path: ${{ runner.temp }}/eureka42-ases-cli-0.1.0-rc.1.tgz
           sbom-path: ${{ runner.temp }}/eureka42-ases-framework.spdx.json
       - name: Upload SBOM and package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ases-cli-sbom-and-package
           path: |
