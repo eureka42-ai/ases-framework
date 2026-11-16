@@ -18,7 +18,7 @@ ases host apply kimi-code ./meu-projeto --apply
 
 `kimi.plugin.json` empacota o fluxo e indica a Skill `ases-project-start` para início de sessão. A documentação oficial descreve plugins como Beta e oferece instalação por gerenciador `/plugins` ou CLI em versões compatíveis: [Plugins do Kimi Code](https://moonshotai.github.io/kimi-cli/en/customization/plugins.html).
 
-O executável local reporta Kimi Code 2.5.3 e lista `--skills-dir`, mas seu `kimi --help` não expõe comandos `plugin`. Por isso o pacote plugin permanece experimental e não é declarado funcional neste ambiente; não execute instalação até confirmar que a versão/instalação local possui o gerenciador.
+O executável local reporta Kimi Code 2.5.3 e lista `--skills-dir` e `kimi login` (device-code), mas seu `kimi --help` não expõe comandos `plugin`. Por isso o pacote plugin permanece experimental e não é declarado funcional neste ambiente; não execute instalação até confirmar que a versão/instalação local possui o gerenciador.
 
 ## Limites
 
