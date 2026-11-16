@@ -37,5 +37,7 @@ An empty `allowedPrincipals` list makes a source available within its project. A
 Use `refreshRagIndex(workspace, oldIndex)` after source changes. It recomputes hashes and chunks for changed files and omits removed files. Access and extension errors fail closed. The index is currently in-memory; callers can persist it if needed, but should validate hashes and access metadata before loading persisted data.
 
 `license` defaults to `NOASSERTION` and `version` to `unversioned`; set accurate metadata when indexing. Filtering by license or version is exact-match and opt-in. Vector embeddings remain optional and are not loaded by this module.
+
+For vector-backed retrieval with local memory, pgvector, Qdrant, or Cloudflare Vectorize, see [vector store adapters](vector-stores.md). That API accepts vectors produced by the caller and does not initialize a model or remote connection by itself.
 # Curated knowledge packs
 The built-in ASES Foundations pack can be validated and installed as a local lexical index. Its manifest records authorship, Apache-2.0 licensing, version, source citations and SHA-256 hashes. See [curated knowledge libraries](../knowledge-libraries.md).

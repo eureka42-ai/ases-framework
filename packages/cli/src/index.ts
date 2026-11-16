@@ -23,6 +23,7 @@ import { applyProjectTemplate, getProjectTemplate, listProjectTemplates } from "
 import { installKnowledgeLibrary, knowledgeLibraryManifest, listKnowledgeLibraries, validateKnowledgeLibrary } from "./knowledge.js";
 import { renderHelp, resolveLocale, welcomeTagline } from "./i18n.js";
 import { analyzeCodeImpact } from "./code-impact.js";
+import { createCloudflareVectorizeStore, createLocalVectorStore, createPgVectorStore, createQdrantVectorStore } from "./vector-store.js";
 
 export { VERSION } from "./version.js";
 export { indexRagSources, RagAccessError, refreshRagIndex, retrieveRequirement, searchRag } from "./rag.js";
@@ -79,6 +80,8 @@ export type { GitHubTrackerOptions, GitLabTrackerOptions, RemoteTrackerImport, R
 export { renderHelp, resolveLocale } from "./i18n.js";
 export { analyzeCodeImpact } from "./code-impact.js";
 export type { CodeImpactOptions, CodeImpactReport } from "./code-impact.js";
+export { createCloudflareVectorizeStore, createLocalVectorStore, createPgVectorStore, createQdrantVectorStore };
+export type { PgVectorQuery, QdrantOptions, VectorDocument, VectorDocumentMetadata, VectorMatch, VectorQuery, VectorStoreAdapter, VectorizeBinding } from "./vector-store.js";
 export type { Locale } from "./i18n.js";
 export { applyProjectTemplate, getProjectTemplate, listProjectTemplates } from "./templates.js";
 export type { ProjectTemplate } from "./templates.js";

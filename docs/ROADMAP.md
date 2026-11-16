@@ -16,9 +16,9 @@
 - M13 — IN_PROGRESS: E2E do CLI (AFR-101), CI (AFR-102), audit/license/SBOM/provenance (AFR-103), docs pt-BR/EN (AFR-105/106), saída/TTY (AFR-107), erros (AFR-108), restore hashado (AFR-109) e limites de migração (AFR-110) implementados; CI Node 22/24 e as duas atestações passaram no run 43728310089; autorização do release segue pendente.
 - M14 — BLOCKED_ON_APPROVAL: release candidate e gate v1 dependem das decisões de licença, homologação e critérios de lançamento.
 
-Backlog estruturado atual: 130/140 requisitos `IMPLEMENTED`, 10/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
+Backlog estruturado atual: 131/140 requisitos `IMPLEMENTED`, 9/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
 
-Distribuição dos 10 pendentes no registro atual:
+Distribuição dos 9 pendentes no registro atual:
 
 | Marco | Pendentes | Observação |
 |---|---:|---|
@@ -32,13 +32,15 @@ Distribuição dos 10 pendentes no registro atual:
 | M11 | 0 | MCP HTTP autenticado testado localmente; falta validação com um Authorization Server real |
 | M12 | 0 | SDK e lifecycle de plugins concluídos localmente |
 | M13 | 1 | Aprovação do release |
-| M15+ | 6 | Capacidades avançadas opcionais; não fazem parte do primeiro gate v1 |
+| M15+ | 5 | Capacidades avançadas opcionais; não fazem parte do primeiro gate v1 |
 
 AFR-126 (intercâmbio local de tarefas com trackers) exporta JSON neutro e importa com prévia, persistindo somente mediante `--apply`; veja `evidence/M15-2026-11-15-progress-8.md`. AFR-117 acrescenta importadores opt-in somente de leitura para GitHub Issues/PRs e GitLab Issues/MRs; não fazem sincronização ou escrita remota. Veja `docs/trackers.md` e `evidence/M15-2026-11-15-progress-24.md`.
 
 AFR-118 registra o escopo e os achados da revisão interna dos marketplaces e fixa os hashes dos manifests, Skills e entrypoints publicados; `pnpm integrations:validate` falha se houver mudança não revisada. O registro explicita os limites da revisão interna. Veja `docs/security/marketplace-review.md`.
 
 AFR-121 adiciona `ases code impact`: análise AST offline de imports JS/TS e seleção de testes candidatos com limites de leitura, contenção no workspace e sem execução de fontes. Veja `docs/code-impact.md`.
+
+AFR-111 acrescenta stores vetoriais local, pgvector, Qdrant e Cloudflare Vectorize com filtros de projeto/ACL/proveniência; embeddings são fornecidos pelo chamador e chamadas de rede não são iniciadas implicitamente. Veja `docs/rag/vector-stores.md`.
 
 AFR-127 entrega ajuda localizada e guias es-ES/it-IT; mensagens operacionais restantes continuam em pt-BR. Ver `evidence/M15-2026-11-15-progress-9.md`.
 

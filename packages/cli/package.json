@@ -60,6 +60,8 @@
     "dist/architecture-contracts.d.ts",
     "dist/code-impact.js",
     "dist/code-impact.d.ts",
+    "dist/vector-store.js",
+    "dist/vector-store.d.ts",
     "dist/team-policy.js",
     "dist/team-policy.d.ts",
     "dist/i18n.js",

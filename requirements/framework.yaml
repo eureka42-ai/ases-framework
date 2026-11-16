@@ -1334,14 +1334,17 @@ requirements:
     priority: P2
     milestone: "M15+"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Vetor local + pgvector/Qdrant/Vectorize via adapters."
     acceptanceCriteria:
       - id: AC-AFR-111-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Vetor local + pgvector/Qdrant/Vectorize via adapters."
+        description: "API comum implementa busca local cosine em memória e adapters pgvector, Qdrant e Cloudflare Vectorize para embeddings gerados pelo chamador; nenhum backend ou modelo é inicializado implicitamente."
+        verification: "automated"
+      - id: AC-AFR-111-02
+        description: "Adapters aplicam isolamento por projeto, ACL por principal e filtros de licença/versão; validações limitam dimensões, conteúdo, lote, IDs, tabela SQL, resposta e endpoint seguro; rede requer enabled: true e ocorre apenas ao invocar operações Qdrant."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/vector-store.ts", "packages/cli/src/vector-store.test.ts", "packages/cli/src/index.ts", "packages/cli/package.json", "docs/rag/vector-stores.md"]
+    tests: ["packages/cli/src/vector-store.test.ts"]
   - id: AFR-112
     priority: P2
     milestone: "M15+"
