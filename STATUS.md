@@ -6,7 +6,7 @@ Atualizado em: 2026-11-15
 
 - M0: IMPLEMENTED / PARTIALLY_VERIFIED
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
-- M5: IN_PROGRESS (6/10 AFRs formalmente implementados; smoke de startup Codex passou, mas auto-descoberta da Skill não foi confirmada; lifecycle local possui apply/update/uninstall explícitos)
+- M5: IN_PROGRESS (7/10 AFRs formalmente implementados; smoke Codex e smoke da Skill Kimi passaram; faltam as sessões Claude/Gemini e confirmação de auto-descoberta Codex; lifecycle local possui apply/update/uninstall explícitos)
 - M8: IMPLEMENTED_LOCALLY (AFR-061..068; workflow de feature testado com evidência hashada e aprovação independente)
 - M9: IMPLEMENTED_LOCALLY (RAG lexical offline com citações, proveniência, filtros de licença/versão/ACL, refresh/invalidação e permissão cross-project explícita)
 - M10: IMPLEMENTED_LOCALLY (memória local com consentimento/escopo/TTL/origem/inspect/delete, ContextBundle com integridade/redaction e import ZIP seguro com preview e contenção de caminhos)
@@ -66,7 +66,7 @@ Atualizado em: 2026-11-15
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; tarball RC1 instalado em workspace temporário; `ases --version` e `ases welcome --color`: PASS. A primeira instalação revelou módulos ausentes e foi corrigida antes do segundo empacotamento.
-- Backlog AFR-001..140: 136 requisitos IMPLEMENTED e ligados a código/testes/evidência; 4 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 137 requisitos IMPLEMENTED e ligados a código/testes/evidência; 3 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -79,7 +79,7 @@ Atualizado em: 2026-11-15
 - Regressões cobrem MCP stdio moderno/legado, isolamento de workspace, rejeição de symlinks e segredo em logs, plano host/diff e prevenção de symlink escape, análise de contradições e riscos, persistência de achados na SPEC, inspeção segura de manifestos e retomada de decisões na entrevista, separação de catálogos, ciclo de decisões, rastreabilidade, bloqueios justificados, integridade, piso Node.js, identidade da entrevista, configuração segura e desinstalação conservadora.
 - Parser ASES-300: classificação e prioridade agora são extraídas separadamente quando aparecem na mesma linha; regressão automatizada PASS.
 - Validadores de integração: PASS (4 manifests, 2 marketplaces, 6 Skills).
-- Validação host nesta rodada: Claude schema PASS, mas sessão impedida por falta de login; Gemini extension PASS, mas sem provider autenticado; Kimi validação estrutural PASS e sessão falhou com `EMFILE`; smoke de startup Codex passou em sessão real read-only, embora auto-descoberta da Skill/MCP ainda esteja pendente.
+- Validação host registrada na rodada anterior: Claude schema PASS, mas sessão impedida por falta de login; Gemini extension PASS, mas sem provider autenticado; Kimi validação estrutural PASS e sessão falhou com `EMFILE`; smoke de startup Codex passou em sessão real read-only, embora auto-descoberta da Skill/MCP ainda esteja pendente. O bloqueio Kimi foi resolvido para a sessão de smoke com override não persistente em progress 25.
 - Validação continuada anterior: `git diff --check` PASS; `kimi doctor` PASS para configuração local (não é validação do plugin).
 - CI GitHub Actions observado em execução remota: PASS nos jobs Node.js 22 e 24, instalação congelada e `pnpm test`; AFR-028 atualizado para IMPLEMENTED. Ver `evidence/CI-2026-11-14.md`.
 - CI do editor visual: PASS no run `43740785064` para o commit `d86bb04` (Node.js 22/24, suíte completa e supply chain).
@@ -89,14 +89,14 @@ Atualizado em: 2026-11-15
 - Guia Claude agora recomenda `--scope local`, explicita o padrão potencialmente global de `user` e usa `--keep-data` na desinstalação para preservar dados persistentes do plugin.
 - Instalação/listagem/desinstalação Claude repetidas em `CLAUDE_CONFIG_DIR` isolado com escopo `local`; marketplace removido no fim do ciclo. Ver `evidence/M5-2026-11-14-progress-5.md`.
 - Configuração MCP de projeto Claude gerada e conferida em workspace temporário; `claude mcp list` marcou `Pending approval`, sem inicializar o servidor.
-- Kimi 2.5.3: `--skills-dir` é suportado e o provider OAuth está configurado. O smoke read-only em workspace vazio falhou antes da sessão com `EMFILE: too many open files, watch`; repetiu em duas tentativas. Nenhuma instalação ou mudança de perfil ocorreu. AFR-032 segue pendente. Ver `evidence/M5-2026-11-15-progress-23.md`.
+- Kimi 2.5.3: as tentativas iniciais sem workaround falharam em `EMFILE: too many open files, watch`; progress 25 superou o bloqueio com `KIMI_CODE_WATCH=false` só no processo e validou a Skill portátil em sessão OAuth real e workspace temporário vazio. Nenhuma instalação per-user do plugin foi feita. Ver `evidence/M5-2026-11-15-progress-25.md`.
 - Codex CLI 0.169.0: marketplace e plugin RC1 instalados temporariamente; Skill descoberta em sessão `codex exec --ephemeral --sandbox read-only`, com `ases welcome --color` renderizando o logo verde antes da primeira pergunta. Configuração, cache e marketplace temporários removidos. MCP é conexão manual opcional e conserva testes read-only próprios. Ver `evidence/M5-2026-11-15-progress-22.md`.
 - SPI de providers implementada com erros tipados, timeout, cancelamento e provider mock determinístico; sem provider remoto ou credenciais.
 - Gemini: usuário autorizou confiança no workspace; recusou o aviso subsequente de instalação/injeção de instruções. `gemini extensions list` confirmou que nada foi instalado.
 - Claude Code oferece `--plugin-dir` para carga local temporária; smoke não interativo de AFR-031 foi tentado sem persistência/ferramentas, mas o CLI respondeu `Not logged in · Please run /login`; execução funcional continua pendente.
 - Claude `plugin test` não executou porque o adapter não está instalado; não houve instalação automática.
 - Validação Claude desta rodada: `claude plugin validate integrations/claude-code --strict` PASS; `claude auth status` reportou `loggedIn: false`, então não foi possível executar o comando `/eureka42-ases:ases-start` numa conversa autenticada. AFR-031 permanece pendente até smoke de sessão. Ver `evidence/M5-2026-11-15-progress-21.md`.
-- Validação local repetida: Claude plugin strict e Gemini extension validator PASS; Claude segue sem login e Gemini sem método de autenticação configurado. `kimi doctor` PASS, e `kimi --help` confirma device-code login, mas não há comando de plugin; smoke de sessão funcional ainda não foi obtido. AFR-031/032/034 seguem pendentes. Ver `evidence/M5-2026-11-15-progress-24.md`.
+- Validação local repetida: Claude plugin strict e Gemini extension validator PASS; Claude segue sem login e Gemini sem método de autenticação configurado. Kimi foi validado em sessão autenticada depois de desativar os watchers somente para a execução. AFR-031 e AFR-034 seguem pendentes. Ver `evidence/M5-2026-11-15-progress-24.md` e `evidence/M5-2026-11-15-progress-25.md`.
 - Guia geral Claude atualizado para recomendar `--scope local`; validação estrita do plugin e marketplace repetida com PASS e `pnpm integrations:validate` PASS. Ver `evidence/M5-2026-11-14-progress-6.md`.
 - Ciclo `host apply/uninstall` implementado para Claude, Codex, Kimi e Gemini; `--apply` explícito, conflitos interrompem antes de escrita, rollback após falha e remoção conservadora por hashes. Ver testes `host apply ...` em `packages/cli/src/index.test.ts`.
 - `ases host update <host> [workspace]` implementado: plano read-only por padrão, `--apply` explícito, backup de cada arquivo antes da substituição, detecção de alterações locais pelo hash, manifesto atualizado atomicamente, tentativa de rollback e backups preservados mesmo após uninstall. Ver testes `host update ...` em `packages/cli/src/index.test.ts` e `evidence/M5-2026-11-14-progress-9.md`.
@@ -146,8 +146,8 @@ Atualizado em: 2026-11-15
 
 ## Próximas tarefas READY
 
-1. Prioridade Claude Code: observar descoberta e executar `/eureka42-ases:ases-start` em sessão autenticada para completar AFR-031; em seguida validar Kimi (AFR-032) e Gemini (AFR-034) em sessões reais.
-2. Retomar Kimi (AFR-032) após resolver `EMFILE` no watcher; depois validar Gemini (AFR-034) em sessão real, respeitando a recusa anterior de instalação do usuário.
+1. Prioridade Claude Code: observar descoberta e executar `/eureka42-ases:ases-start` em sessão autenticada para completar AFR-031; Gemini (AFR-034) requer configurar um método de autenticação e validar a extensão sem repetir a instalação recusada.
+2. Para promover Kimi de Skill portátil validada a plugin nativo validado, instalar por decisão do owner via `/plugins` e repetir smoke em sessão; a instalação per-user permanece opcional e não foi executada.
 3. Prosseguir a entrevista com personas, autenticação, integrações, observabilidade e critérios de aceite.
 4. Validar o MCP HTTP com um Authorization Server de teste antes de declarar compatibilidade operacional de ponta a ponta; a implementação local AFR-088 já usa introspecção OAuth e metadados protegidos.
 

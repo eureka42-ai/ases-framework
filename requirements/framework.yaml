@@ -386,14 +386,14 @@ requirements:
     priority: P1
     milestone: "M5"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Kimi Code receber plugin/Skill compatível e testado."
     acceptanceCriteria:
       - id: AC-AFR-032-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Kimi Code receber plugin/Skill compatível e testado."
+        description: "Plugin compatível e Skill portátil são entregues; sessão real Kimi Code autenticada carrega ases-project-start com --skills-dir, executa ases welcome --color com logo verde antes da primeira pergunta e não altera o workspace de smoke."
         verification: "automated-or-reviewed"
-    artifacts: ["integrations/kimi-code/kimi.plugin.json", "integrations/kimi-code/README.md", "packages/cli/src/host-plan.ts"]
-    tests: ["packages/cli/src/index.test.ts :: Kimi project plan targets its auto-discovered shared Skill without copying the plugin manifest to the project root; Kimi session/plugin invocation pending"]
+    artifacts: ["integrations/kimi-code/kimi.plugin.json", "integrations/kimi-code/skills/ases-project-start/SKILL.md", "integrations/kimi-code/README.md", "packages/cli/src/host-plan.ts", "evidence/M5-2026-11-15-progress-25.md"]
+    tests: ["packages/cli/src/index.test.ts :: Kimi project plan targets its auto-discovered shared Skill without copying the plugin manifest to the project root", "Kimi Code 2.5.3 authenticated read-only session smoke :: Skill loaded via --skills-dir; ases welcome --color rendered RGB green and the first interview question was asked; KIMI_CODE_WATCH=false was scoped to this process; native per-user /plugins installation not performed"]
   - id: AFR-033
     priority: P1
     milestone: "M5"
