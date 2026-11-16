@@ -118,6 +118,7 @@ Atualizado em: 2026-11-15
 - CI do AFR-119: PASS no run `43787243432` para o commit `21d9700`, Node.js 22/24, testes, integração, smoke test CLI e supply-chain.
 - AFR-120 concluído com adapters Cloudflare Vectorize/R2 e pgvector, este último aplicável a Supabase PostgreSQL por função `query` injetada; documentação delimita o papel de RLS e da configuração da aplicação hospedeira. Ver `docs/rag/vector-stores.md` e `evidence/M15-2026-11-15-progress-29.md`.
 - AFR-124 implementado localmente: campanha AST limitada com regressão por impacto, baseline obrigatória e executor isolado injetado. Build, lint e 3 testes focados passaram; suíte completa e CI ainda serão registrados. Ver `docs/mutation-testing.md` e `evidence/M15-2026-11-15-progress-30.md`.
+- CI do AFR-124: PASS no run `43787895212` para o commit `9a2e312`, Node.js 22/24, testes, validação de integrações, smoke test CLI e supply-chain.
 - AFR-044 implementado: catálogo de provider/modelo valida capacidades e guarda a fonte e a data de observação sem alegar verificação live.
 - AFR-045 implementado: roteador escolhe provider que declara todas as capabilities exigidas e rejeita seleção impossível.
 - AFR-049 implementado: API reporta seleção `host-managed` no modo host e deixa claro que o ASES não escolhe o modelo do CLI hospedeiro.
