@@ -23,4 +23,4 @@ console.log(consoleServer.url);
 
 Não grave senhas em código ou no repositório. A função de hash deve ser usada no provisionamento e a saída guardada em configuração local protegida. O dashboard renderer precisa escapar os dados do projeto antes de gerar HTML.
 
-Este é um servidor local embutível, não um produto hospedado: contas/memberships vêm do host, não há fluxo de cadastro, SSO, armazenamento persistente de sessões, MFA, gestão central de políticas, execução de ações do dashboard, ou deploy público. Para uso fora de um ambiente single-user confiável, integre um Authorization Server e hospede a interface atrás de uma camada de identidade revisada.
+`startLocalConsole()` continua sendo um servidor local embutível com contas/memberships fornecidas pelo host; não ativa SSO, sessão persistente, MFA ou hospedagem pública por conta própria. Para compor um host Express hospedado atrás de um Authorization Server, use o adapter opt-in [OIDC SSO](oidc-sso.md), que aceita grupos/roles vindos da política central configurada pelo host.

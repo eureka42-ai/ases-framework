@@ -47,7 +47,7 @@ export type { CommunityAgentCatalogOptions, CommunityAgentQuery, CommunityAgentR
 export { createSupportLedger } from "./support-ledger.js";
 export type { IncidentSeverity, IncidentStatus, SlaPolicy, SlaTarget, SupportIncident, SupportIncidentEvent, SupportIncidentView } from "./support-ledger.js";
 export { createConsoleAuth, createLocalConsoleApp, hashConsolePassword, startLocalConsole } from "./console-auth.js";
-export type { ConsoleAction, ConsoleAuthOptions, ConsoleMembership, ConsoleRole, ConsoleSession, ConsoleUserRecord, LocalConsoleOptions } from "./console-auth.js";
+export type { ConsoleAction, ConsoleAuthOptions, ConsoleMembership, ConsoleRole, ConsoleSession, ConsoleUserRecord, LocalConsoleOptions, TrustedConsoleIdentity } from "./console-auth.js";
 export { createFeatureWorkflow, createWorkflowCheckpoint, executeFeatureWorkflow, executeWorkflow, isWorkflowApprovalSatisfied, loadWorkflowCheckpoint, resumeWorkflow, runStepWithRetry, saveWorkflowCheckpoint, validateWorkflow } from "./workflows.js";
 export type { FeatureWorkflowHandlers, WorkflowApproval, WorkflowDefinition, WorkflowExecutionContext, WorkflowPermission, WorkflowRetryOptions, WorkflowRunResult, WorkflowStep, WorkflowStepKind } from "./workflows.js";
 export { createSafeLogRecord, writeSafeLog } from "./logging.js";
@@ -84,6 +84,8 @@ export { analyzeCodeImpact } from "./code-impact.js";
 export type { CodeImpactOptions, CodeImpactReport } from "./code-impact.js";
 export { runMutationCampaign } from "./mutation-testing.js";
 export type { MutationCampaignOptions, MutationCampaignReport, MutationRunnerInput, MutationRunnerResult, MutationTestRunner } from "./mutation-testing.js";
+export { createOidcGroupMapper, createOidcSso, createOidcSsoRouter } from "./oidc-sso.js";
+export type { OidcClaims, OidcGroupMapperOptions, OidcGroupPolicy, OidcIdentity, OidcLoginStart, OidcRouterOptions, OidcSessionAuth, OidcSsoOptions } from "./oidc-sso.js";
 export { createCloudflareVectorizeStore, createLocalVectorStore, createPgVectorStore, createQdrantVectorStore };
 export type { PgVectorQuery, QdrantOptions, VectorDocument, VectorDocumentMetadata, VectorMatch, VectorQuery, VectorStoreAdapter, VectorizeBinding } from "./vector-store.js";
 export { createR2BackupObjectStore, decryptBackup, deleteEncryptedBackup, downloadEncryptedBackup, encryptBackup, uploadEncryptedBackup };

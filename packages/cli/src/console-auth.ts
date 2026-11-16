@@ -6,6 +6,7 @@ export type ConsoleRole = "reader" | "contributor" | "admin";
 export type ConsoleAction = "read" | "write" | "admin";
 export interface ConsoleMembership { organizationId: string; repositoryId: string; role: ConsoleRole }
 export interface ConsoleUserRecord { principalId: string; username: string; displayName: string; passwordHash: string; memberships: readonly ConsoleMembership[] }
+export type TrustedConsoleIdentity = Omit<Pick<ConsoleSession, "principalId" | "username" | "displayName" | "memberships">, "memberships"> & { memberships: readonly ConsoleMembership[] };
 export interface ConsoleSession { principalId: string; username: string; displayName: string; memberships: ConsoleMembership[]; expiresAt: string }
 export interface ConsoleAuthOptions { sessionTtlMs?: number; maxLoginAttempts?: number; loginWindowMs?: number }
 export interface LocalConsoleOptions extends ConsoleAuthOptions {
@@ -61,6 +62,22 @@ export function createConsoleAuth(users: readonly ConsoleUserRecord[], options: 
   if (!Number.isSafeInteger(sessionTtlMs) || sessionTtlMs < 60_000 || sessionTtlMs > 24 * 60 * 60 * 1000) throw new TypeError("console session TTL must be between one minute and 24 hours");
   const sessions = new Map<string, ConsoleSession>();
 
+  function createSession(identity: TrustedConsoleIdentity, now: number): { token: string; session: ConsoleSession } {
+    if (!ID.test(identity.principalId) || !/^[A-Za-z0-9][A-Za-z0-9._@+-]{1,127}$/.test(identity.username) || !identity.displayName.trim() || identity.displayName.length > 120 || !Array.isArray(identity.memberships) || identity.memberships.length > 500) throw new TypeError("trusted console identity is invalid");
+    const seen = new Set<string>();
+    const memberships = identity.memberships.map((membership) => {
+      const key = `${membership.organizationId}/${membership.repositoryId}`;
+      if (!ID.test(membership.organizationId) || !ID.test(membership.repositoryId) || !["reader", "contributor", "admin"].includes(membership.role) || seen.has(key)) throw new TypeError("trusted console memberships are invalid");
+      seen.add(key);
+      return { ...membership };
+    });
+    for (const [key, session] of sessions) if (Date.parse(session.expiresAt) <= now) sessions.delete(key);
+    const token = randomBytes(32).toString("base64url");
+    const session: ConsoleSession = { principalId: identity.principalId, username: identity.username, displayName: identity.displayName, memberships, expiresAt: new Date(now + sessionTtlMs).toISOString() };
+    sessions.set(createHash("sha256").update(token).digest("hex"), session);
+    return { token, session: copySession(session) };
+  }
+
   return Object.freeze({
     async login(username: string, password: string, now = Date.now()): Promise<{ token: string; session: ConsoleSession } | undefined> {
       if (typeof username !== "string" || typeof password !== "string" || username.length > 128 || password.length > 256) return undefined;
@@ -70,15 +87,10 @@ export function createConsoleAuth(users: readonly ConsoleUserRecord[], options: 
       const actual = await derive(password, salt);
       const valid = timingSafeEqual(actual, expected) && Boolean(record);
       if (!valid || !record) return undefined;
-      for (const [key, session] of sessions) if (Date.parse(session.expiresAt) <= now) sessions.delete(key);
-      const token = randomBytes(32).toString("base64url");
-      const session: ConsoleSession = {
-        principalId: record.principalId, username: record.username, displayName: record.displayName,
-        memberships: record.memberships.map((membership) => ({ ...membership })), expiresAt: new Date(now + sessionTtlMs).toISOString(),
-      };
-      sessions.set(createHash("sha256").update(token).digest("hex"), session);
-      return { token, session: copySession(session) };
+      return createSession(record, now);
     },
+    /** Creates a session only from identity data verified by a trusted upstream authentication adapter. */
+    createTrustedSession(identity: TrustedConsoleIdentity, now = Date.now()): { token: string; session: ConsoleSession } { return createSession(identity, now); },
     getSession(token: string | undefined, now = Date.now()): ConsoleSession | undefined {
       if (!token || !/^[A-Za-z0-9_-]{43}$/.test(token)) return undefined;
       const key = createHash("sha256").update(token).digest("hex");

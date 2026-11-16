@@ -59,7 +59,7 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases config validate` | Implementado | Valida config pela mesma definição Zod que gera o JSON Schema |
 | `ases config schema [--check path]` | Implementado | Gera o JSON Schema no stdout ou verifica o artefato sem escrever |
 | `ases config explain` | Implementado | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Em andamento | 134 implementados; 6 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
+| Backlog AFR-001..140 | Em andamento | 135 implementados; 5 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
 | Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |

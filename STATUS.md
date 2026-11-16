@@ -57,16 +57,16 @@ Atualizado em: 2026-11-15
 - `createAgentMessageBus` implementa protocolo A2A em memória, agente fixado por handle, ACL exata por projeto/par/tipo, default-deny, TTL e limites de payload/fila; recebimento é marcado como `untrusted-data`. Sem rede nem execução automática. Ver `docs/security/agent-messaging.md` e evidência M15 progress 13.
 - `createRepositoryRegistry` mantém repositórios disjuntos por organização, memberships exatos e papéis `reader`/`contributor`/`admin`; caminho é canonicalizado e contido no root do repo. É local, sem SSO ou execução remota. Ver `docs/security/multi-repo.md` e evidência M15 progress 14.
 - Leitura de catálogo agora rejeita arquivo catalog symlinkado ou cujo caminho canonicalizado saia do workspace.
-- Hosts locais detectados nesta sessão: Codex 0.169.0, Claude Code 2.1.323, Kimi 2.5.3 e Gemini 0.42.0.
+- Hosts locais detectados nesta sessão: Codex 0.169.0, Claude Code 2.1.325, Kimi 2.5.3 e Gemini 0.42.0.
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes automatizados: PASS (191/191; inclui 5 testes de backup cifrado), schema sync, dashboard, benchmark, ranking de capabilities, HTTP local e E2E do CLI. Integrações validadas. CI de tracker, locale, templates, conhecimento, OTLP e A2A passou em Node.js 22/24 e audit/licenças/SBOM/proveniência (runs `43733719847`, `43734235205`, `43734785438`, `43735432022`, `43735960930`, `43736222422`).
+- Testes automatizados: PASS (199/199; inclui backup cifrado, mutation campaigns e OIDC SSO), schema sync, dashboard, benchmark, ranking de capabilities, HTTP local e E2E do CLI. Integrações validadas. CI de tracker, locale, templates, conhecimento, OTLP e A2A passou em Node.js 22/24 e audit/licenças/SBOM/proveniência (runs `43733719847`, `43734235205`, `43734785438`, `43735432022`, `43735960930`, `43736222422`).
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 6 Skills sincronizadas).
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; tarball RC1 instalado em workspace temporário; `ases --version` e `ases welcome --color`: PASS. A primeira instalação revelou módulos ausentes e foi corrigida antes do segundo empacotamento.
-- Backlog AFR-001..140: 134 requisitos IMPLEMENTED e ligados a código/testes/evidência; 6 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 135 requisitos IMPLEMENTED e ligados a código/testes/evidência; 5 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -119,6 +119,7 @@ Atualizado em: 2026-11-15
 - AFR-120 concluído com adapters Cloudflare Vectorize/R2 e pgvector, este último aplicável a Supabase PostgreSQL por função `query` injetada; documentação delimita o papel de RLS e da configuração da aplicação hospedeira. Ver `docs/rag/vector-stores.md` e `evidence/M15-2026-11-15-progress-29.md`.
 - AFR-124 implementado localmente: campanha AST limitada com regressão por impacto, baseline obrigatória e executor isolado injetado. Build, lint e 3 testes focados passaram; suíte completa e CI ainda serão registrados. Ver `docs/mutation-testing.md` e `evidence/M15-2026-11-15-progress-30.md`.
 - CI do AFR-124: PASS no run `43787895212` para o commit `9a2e312`, Node.js 22/24, testes, validação de integrações, smoke test CLI e supply-chain.
+- AFR-134 implementado localmente: fluxo OIDC Authorization Code + PKCE S256, validação de ID token RS256/claims, mapping de grupos para memberships RBAC, router Express e cookies seguros. Suíte 199/199 passou; CI do commit publicado ainda pendente. Ver `docs/security/oidc-sso.md` e `evidence/M15-2026-11-15-progress-31.md`.
 - AFR-044 implementado: catálogo de provider/modelo valida capacidades e guarda a fonte e a data de observação sem alegar verificação live.
 - AFR-045 implementado: roteador escolhe provider que declara todas as capabilities exigidas e rejeita seleção impossível.
 - AFR-049 implementado: API reporta seleção `host-managed` no modo host e deixa claro que o ASES não escolhe o modelo do CLI hospedeiro.
