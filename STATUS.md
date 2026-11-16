@@ -109,6 +109,7 @@ Atualizado em: 2026-11-15
 - CI do agente AFR-114: PASS no run `43782605105` para o commit `b926905`.
 - AFR-117 implementado e publicado no commit `fb2a622`: importadores opt-in e read-only para GitHub/GitLab; 8 testes específicos. CI `43783305089` passou em Node.js 22/24, validação de integrações e supply-chain com SBOM/proveniência.
 - AFR-118 implementado localmente: revisão interna dos dois marketplaces públicos e dos manifests, Skills e entrypoints de host, com achados, limitações e hashes SHA-256 obrigatórios no gate de integração. O registro não afirma auditoria independente nem cobre releases futuras. Ver `docs/security/marketplace-review.md`.
+- CI do gate AFR-118: PASS no run `43783607315` para o commit `23e1d27`, Node.js 22/24, testes, validação de integrações e supply-chain.
 - AFR-044 implementado: catálogo de provider/modelo valida capacidades e guarda a fonte e a data de observação sem alegar verificação live.
 - AFR-045 implementado: roteador escolhe provider que declara todas as capabilities exigidas e rejeita seleção impossível.
 - AFR-049 implementado: API reporta seleção `host-managed` no modo host e deixa claro que o ASES não escolhe o modelo do CLI hospedeiro.
