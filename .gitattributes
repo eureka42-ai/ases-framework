@@ -1,0 +1,2 @@
+# Preserve source-bundle Markdown hard breaks and original source formatting.
+/FONTES_ASES_PARA_DESKTOP_FRAMEWORK/** whitespace=-blank-at-eol,-blank-at-eof

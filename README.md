@@ -14,11 +14,11 @@
   <code>VERSÃO: 0.1.0-rc.1 (candidata)</code> ·
   <code>PUBLICAÇÃO: não publicada</code> ·
   <code>CÓDIGO: Apache-2.0</code> ·
-  <code>MÉTODO E MARCA: direitos reservados; validação de titularidade pendente</code>
+  <code>MÉTODO E MARCA: distribuição autorizada pelo owner; conteúdos preservam seus estados de validação</code>
 </p>
 
 > [!IMPORTANT]
-> Este repositório é um projeto em desenvolvimento. O pacote ainda não foi publicado no npm, nenhum host foi declarado oficialmente suportado e o catálogo normativo ASES-300 não está presente neste repositório. Use a instalação local descrita abaixo.
+> Este repositório é um projeto em desenvolvimento. O pacote ainda não foi publicado no npm, nenhum host foi declarado oficialmente suportado e o catálogo ASES-300 presente em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/` ainda é uma conversão de trabalho não homologada. O ASES-500 está rotulado como reconstrução para validação. Use a instalação local descrita abaixo.
 
 Leia também o [guia em inglês](README.en.md).
 
@@ -538,7 +538,7 @@ Resultados reais e limitações ficam em [`evidence/`](evidence/). Uma funcional
 | M10 | Memória e ContextBundle | Implementado localmente; import seguro exige preview e rejeita conflitos |
 | M11 | Evidências, segurança e evals | Implementado localmente, incluindo MCP HTTP com OAuth introspection |
 | M12 | SDK e lifecycle seguro de plugins | Implementado localmente |
-| M13 | E2E, CI e documentação bilingue | CI Node 22/24 e supply-chain passam; publicação aguarda titularidade, acesso ao registry e autorização |
+| M13 | E2E, CI e documentação bilingue | CI Node 22/24 e supply-chain passam; publicação aguarda licença de contribuições, acesso ao registry e autorização explícita |
 | M14 | Release candidate e gate de v1 | Bloqueado pela aprovação humana e homologação de fontes/ativos |
 
 Consulte [`docs/ROADMAP.md`](docs/ROADMAP.md) e [`STATUS.md`](STATUS.md) para o próximo incremento seguro.
@@ -625,14 +625,14 @@ chore: manutenção interna
 
 Os assets utilizados foram organizados a partir da pasta de identidade visual do projeto Eureka42. A marca segue a paleta Noite e Teal; não deve ser distorcida, redesenhada com glifo de sistema, receber glow, sombra ou cores não previstas.
 
-Proveniência e hashes dos arquivos devem ser preservados. O código do software está sob Apache-2.0; a marca e os materiais metodológicos têm termos separados. Titularidade e autorização de distribuição dos ativos Eureka42 ainda precisam ser confirmadas antes da publicação de pacotes ou plugins.
+Proveniência e hashes dos arquivos devem ser preservados. O código do software está sob Apache-2.0; a marca e os materiais metodológicos têm termos separados. O owner confirmou a distribuição desses materiais com o projeto oficial; isso não altera a licença dos arquivos nem homologa sua validade metodológica.
 
 ## Governança, licença e publicação
 
 Permanecem pendentes de decisão e validação:
 
 - confirmação de que Eureka42 AI pode licenciar todas as contribuições do código sob Apache-2.0;
-- titularidade e autorização de distribuição da marca e dos materiais ASES-300/500;
+- revisão editorial da conversão ASES-300 e decisão sobre o uso do ASES-500 como reconstrução identificada;
 - acesso autorizado ao escopo npm `@eureka42`;
 - política de plugins comunitários;
 - hosts e plataformas oficialmente suportados;

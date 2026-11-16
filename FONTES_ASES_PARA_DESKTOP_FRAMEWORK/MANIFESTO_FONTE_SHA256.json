@@ -1,0 +1,66 @@
+{
+  "preparado_em": "2026-11-13",
+  "originais_preservados": true,
+  "status_ases500": "proposta; original independente ausente",
+  "verificacao": {
+    "ids_base_DOCX": 300,
+    "ids_base_MD": 300,
+    "ids_adicionais_no_corpo_DOCX_que_nao_sao_catalogo": [
+      301,
+      315,
+      327,
+      328,
+      329,
+      341,
+      347,
+      418
+    ],
+    "docx_tabelas": 12,
+    "docx_imagens_inline": 0,
+    "observacao_conversao": "Não garante preservação de paginação ou layout"
+  },
+  "arquivos": [
+    {
+      "arquivo": "originais/ASES-300_COMPLETO_Capitulos_1_a_25_ABNT.docx",
+      "fonte_local": "originais_ases/ASES-300_COMPLETO_Capitulos_1_a_25_ABNT.docx",
+      "status": "fonte primária (versão de trabalho)",
+      "bytes": 207322,
+      "sha256": "944b83104dab1224c4d43508cc04ef4b3029713a51f81c35e92278735ec5c240"
+    },
+    {
+      "arquivo": "markdown/ASES-300_DOCUMENTACAO_INTEGRAL.md",
+      "fonte_local": "ASES-300_DOCUMENTACAO_INTEGRAL.md",
+      "status": "conversão de trabalho DOCX->Markdown",
+      "bytes": 657701,
+      "sha256": "22e439ea514e1f365d3611a8644aac861f8c739054f8c35084a0e94e30302314"
+    },
+    {
+      "arquivo": "markdown/ASES-500_METODOLOGIA_CONSOLIDADA_PARA_VALIDACAO.md",
+      "fonte_local": "ASES-500_METODOLOGIA_CONSOLIDADA_PARA_VALIDACAO.md",
+      "status": "consolidação para validação, NÃO original homologado",
+      "bytes": 18711,
+      "sha256": "1a2b4619825233f6107e74d05d7171454c16d5841b476e4086e3d9287c7aa78c"
+    },
+    {
+      "arquivo": "referencia_especifica_eureka42/05_EUREKA42_REQUISITOS_500_CONSOLIDADOS.md",
+      "fonte_local": "originais_ases/05_EUREKA42_REQUISITOS_500_CONSOLIDADOS.md",
+      "status": "matriz específica Eureka42; REQ-301..500 são do portal",
+      "bytes": 316874,
+      "sha256": "12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1"
+    },
+    {
+      "arquivo": "referencia_especifica_eureka42/01_EUREKA42_MASTER_SPEC.md",
+      "fonte_local": "originais_ases/01_EUREKA42_MASTER_SPEC.md",
+      "status": "especificação de produto específica Eureka42",
+      "bytes": 37988,
+      "sha256": "6562ed55b68faedac4cee3899c157ca158fd0ddc3a389bbd2daf3bd9a32af639"
+    },
+    {
+      "arquivo": "referencia_especifica_eureka42/08_PROMPT_EXECUCAO_ASES500.md",
+      "fonte_local": "originais_ases/08_PROMPT_EXECUCAO_ASES500.md",
+      "status": "prompt de implementação específico Eureka42",
+      "bytes": 4556,
+      "sha256": "2abe5381f57445f922cde31568a9b8282285a32547938db1635194912d6b1b03"
+    }
+  ]
+}

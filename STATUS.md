@@ -18,7 +18,7 @@ Atualizado em: 2026-11-15
 - Fonte diretora: presente e lida
 - ASES-300: DOCX e conversão Markdown presentes localmente; revisão estrutural confirmou 300 IDs/títulos e hashes íntegros; as 303 páginas foram renderizadas, com inspeção visual amostral registrada em 14 páginas. Homologação editorial segue pendente: há placeholder de sumário, ajuste no pseudocódigo da p. 33 e revisão bibliográfica/editorial solicitada no encerramento do documento.
 - ASES-500 separado: consolidação presente como reconstrução para validação; original independente ausente e homologação pendente.
-- Repositório GitHub público; código licenciado em Apache-2.0 com escopo delimitado; release pública ainda depende de validação de titularidade da marca, assets e fontes metodológicas.
+- Repositório GitHub público; owner confirmou direitos de distribuição da marca e do pacote de fontes com o projeto oficial; arquivos-fonte continuam fora da licença Apache-2.0 e mantêm ressalvas editoriais.
 
 ## Implementação atual
 
@@ -156,10 +156,10 @@ Atualizado em: 2026-11-15
 - A conversão ASES-300 requer revisão contra o DOCX antes de declarar o catálogo homologado.
 - O original independente ASES-500 não foi localizado; a consolidação permanece reconstrução para validação.
 - Evidências são comparadas ao SHA-256 ao consultar o catálogo; a validade semântica do conteúdo e a relação automática com mudanças no código ainda não são avaliadas.
-- O escopo Apache-2.0 foi preparado para software; titularidade do código, ativos de marca e fontes metodológicas ainda requer confirmação antes da distribuição externa.
+- O owner confirmou distribuição dos materiais da marca e do pacote de fontes no projeto oficial. Ainda falta confirmar a autoridade para licenciar contribuições de código sob Apache-2.0.
 - Claude e Gemini seguem sem autenticação para smoke real. Codex/Kimi passaram smoke, mas auto-descoberta Codex e instalação per-user do plugin nativo Kimi ainda não foram verificadas.
-- M0/M2 e M14 mantêm gates editoriais e de publicação: homologação de ASES-300/500, titularidade de marca/ativos e decisão de release pelo owner.
-- Pacote npm `@eureka42/ases-cli@0.1.0-rc.1` revalidado com `npm pack --dry-run --json`: 128 arquivos, 8.2 MB e metadados/licenças no tarball; `pnpm supply-chain` PASS (152 dependências). Publicação ainda bloqueada por homologação de titularidade de marca/fontes, acesso ao escopo npm e aprovação do owner. Ver `evidence/LAUNCH-2026-11-15-progress-2.md`.
+- O pacote de fontes foi incluído no repositório com hashes preservados; ASES-300 continua sem homologação editorial e ASES-500 permanece rotulado como reconstrução, sem original independente.
+- Pacote npm `@eureka42/ases-cli@0.1.0-rc.1` revalidado com `npm pack --dry-run --json`: 128 arquivos, 8.2 MB e metadados/licenças no tarball; `pnpm supply-chain` PASS (152 dependências). `npm whoami` retorna `ENEEDAUTH`; publicação ainda exige acesso ao escopo e autorização explícita do owner. Ver `evidence/LAUNCH-2026-11-15-progress-2.md`.
 
 ## Evidências
 
