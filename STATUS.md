@@ -113,6 +113,7 @@ Atualizado em: 2026-11-15
 - AFR-121 implementado localmente: `ases code impact` calcula dependentes e testes candidatos por AST TypeScript/JavaScript, sem execução de código, com limites e contenção no workspace. Ver `docs/code-impact.md` e `evidence/M15-2026-11-15-progress-26.md`.
 - CI do AFR-121: PASS no run `43785146297` para o commit `34faf0c`, Node.js 22/24, testes, integração e supply-chain.
 - AFR-111 implementado localmente: store vetorial em memória e adapters pgvector, Qdrant e Cloudflare Vectorize com embeddings externos fornecidos pelo chamador, limites e ACL. Ver `docs/rag/vector-stores.md` e `evidence/M15-2026-11-15-progress-27.md`.
+- CI do AFR-111: PASS no run `43786505939` para o commit `2e77cf3`, Node.js 22/24, testes, integração e supply-chain.
 - AFR-044 implementado: catálogo de provider/modelo valida capacidades e guarda a fonte e a data de observação sem alegar verificação live.
 - AFR-045 implementado: roteador escolhe provider que declara todas as capabilities exigidas e rejeita seleção impossível.
 - AFR-049 implementado: API reporta seleção `host-managed` no modo host e deixa claro que o ASES não escolhe o modelo do CLI hospedeiro.
