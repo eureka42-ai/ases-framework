@@ -61,12 +61,12 @@ Atualizado em: 2026-11-15
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes automatizados: PASS (175/175; inclui oito novos casos de importação GitHub/GitLab), schema sync, dashboard, benchmark, ranking de capabilities, HTTP local e E2E do CLI. Integrações validadas. CI de tracker, locale, templates, conhecimento, OTLP e A2A passou em Node.js 22/24 e audit/licenças/SBOM/proveniência (runs `43733719847`, `43734235205`, `43734785438`, `43735432022`, `43735960930`, `43736222422`).
+- Testes automatizados: PASS (180/180; inclui análise de impacto AST e importação GitHub/GitLab), schema sync, dashboard, benchmark, ranking de capabilities, HTTP local e E2E do CLI. Integrações validadas. CI de tracker, locale, templates, conhecimento, OTLP e A2A passou em Node.js 22/24 e audit/licenças/SBOM/proveniência (runs `43733719847`, `43734235205`, `43734785438`, `43735432022`, `43735960930`, `43736222422`).
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 6 Skills sincronizadas).
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; tarball RC1 instalado em workspace temporário; `ases --version` e `ases welcome --color`: PASS. A primeira instalação revelou módulos ausentes e foi corrigida antes do segundo empacotamento.
-- Backlog AFR-001..140: 129 requisitos IMPLEMENTED e ligados a código/testes/evidência; 11 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 130 requisitos IMPLEMENTED e ligados a código/testes/evidência; 10 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -110,6 +110,7 @@ Atualizado em: 2026-11-15
 - AFR-117 implementado e publicado no commit `fb2a622`: importadores opt-in e read-only para GitHub/GitLab; 8 testes específicos. CI `43783305089` passou em Node.js 22/24, validação de integrações e supply-chain com SBOM/proveniência.
 - AFR-118 implementado localmente: revisão interna dos dois marketplaces públicos e dos manifests, Skills e entrypoints de host, com achados, limitações e hashes SHA-256 obrigatórios no gate de integração. O registro não afirma auditoria independente nem cobre releases futuras. Ver `docs/security/marketplace-review.md`.
 - CI do gate AFR-118: PASS no run `43783607315` para o commit `23e1d27`, Node.js 22/24, testes, validação de integrações e supply-chain.
+- AFR-121 implementado localmente: `ases code impact` calcula dependentes e testes candidatos por AST TypeScript/JavaScript, sem execução de código, com limites e contenção no workspace. Ver `docs/code-impact.md` e `evidence/M15-2026-11-15-progress-26.md`.
 - AFR-044 implementado: catálogo de provider/modelo valida capacidades e guarda a fonte e a data de observação sem alegar verificação live.
 - AFR-045 implementado: roteador escolhe provider que declara todas as capabilities exigidas e rejeita seleção impossível.
 - AFR-049 implementado: API reporta seleção `host-managed` no modo host e deixa claro que o ASES não escolhe o modelo do CLI hospedeiro.

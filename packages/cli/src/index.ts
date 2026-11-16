@@ -22,6 +22,7 @@ import { exportTrackerTasks, importTrackerTasks } from "./tracker-exchange.js";
 import { applyProjectTemplate, getProjectTemplate, listProjectTemplates } from "./templates.js";
 import { installKnowledgeLibrary, knowledgeLibraryManifest, listKnowledgeLibraries, validateKnowledgeLibrary } from "./knowledge.js";
 import { renderHelp, resolveLocale, welcomeTagline } from "./i18n.js";
+import { analyzeCodeImpact } from "./code-impact.js";
 
 export { VERSION } from "./version.js";
 export { indexRagSources, RagAccessError, refreshRagIndex, retrieveRequirement, searchRag } from "./rag.js";
@@ -76,6 +77,8 @@ export type { TrackerBundle, TrackerTask } from "./tracker-exchange.js";
 export { importGitHubWorkItems, importGitLabWorkItems } from "./tracker-providers.js";
 export type { GitHubTrackerOptions, GitLabTrackerOptions, RemoteTrackerImport, RemoteTrackerOptions } from "./tracker-providers.js";
 export { renderHelp, resolveLocale } from "./i18n.js";
+export { analyzeCodeImpact } from "./code-impact.js";
+export type { CodeImpactOptions, CodeImpactReport } from "./code-impact.js";
 export type { Locale } from "./i18n.js";
 export { applyProjectTemplate, getProjectTemplate, listProjectTemplates } from "./templates.js";
 export type { ProjectTemplate } from "./templates.js";
@@ -687,6 +690,17 @@ export async function run(argv: string[]): Promise<CommandResult> {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       return { exitCode: 2, output: json ? JSON.stringify({ code: "ASES_ARCHITECTURE_CHECK_FAILED", error: message }, null, 2) : `Não foi possível verificar os contratos de arquitetura: ${message}` };
+    }
+  }
+  if (command === "code" && args[1] === "impact") {
+    const workspace = args[2] ?? process.cwd();
+    const changedFiles = args.slice(3);
+    try {
+      const report = await analyzeCodeImpact(workspace, changedFiles);
+      return { exitCode: report.parseErrors.length ? 1 : 0, output: json ? JSON.stringify(report, null, 2) : `Impacto estático · ${report.scannedFiles} arquivos analisados · ${report.impactedFiles.length} dependentes · ${report.impactedTests.length} testes candidatos${report.parseErrors.length ? ` · ${report.parseErrors.length} arquivos com erros de sintaxe` : ""}\n${report.impactedTests.map((file) => `TEST ${file}`).join("\n")}${report.impactedFiles.filter((file) => !report.impactedTests.includes(file)).map((file) => `\nFILE ${file}`).join("")}` };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { exitCode: 2, output: json ? JSON.stringify({ code: "ASES_CODE_IMPACT_FAILED", error: message }, null, 2) : `Não foi possível analisar o impacto do código: ${message}` };
     }
   }
   if (command === "config" && args[1] === "explain") {
