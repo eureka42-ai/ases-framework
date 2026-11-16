@@ -66,7 +66,7 @@ Atualizado em: 2026-11-15
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; tarball RC1 instalado em workspace temporário; `ases --version` e `ases welcome --color`: PASS. A primeira instalação revelou módulos ausentes e foi corrigida antes do segundo empacotamento.
-- Backlog AFR-001..140: 128 requisitos IMPLEMENTED e ligados a código/testes/evidência; 12 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 129 requisitos IMPLEMENTED e ligados a código/testes/evidência; 11 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -108,6 +108,7 @@ Atualizado em: 2026-11-15
 - AFR-114 implementado localmente: agente determinístico sem permissões que analisa evidências Core Web Vitals de campo e sumários axe, sem executar scans ou acessar URLs. Lacunas de evidência impedem aprovação automática. Ver `docs/agents/frontend-quality.md` e `evidence/M15-2026-11-15-progress-23.md`.
 - CI do agente AFR-114: PASS no run `43782605105` para o commit `b926905`.
 - AFR-117 implementado e publicado no commit `fb2a622`: importadores opt-in e read-only para GitHub/GitLab; 8 testes específicos. CI `43783305089` passou em Node.js 22/24, validação de integrações e supply-chain com SBOM/proveniência.
+- AFR-118 implementado localmente: revisão interna dos dois marketplaces públicos e dos manifests, Skills e entrypoints de host, com achados, limitações e hashes SHA-256 obrigatórios no gate de integração. O registro não afirma auditoria independente nem cobre releases futuras. Ver `docs/security/marketplace-review.md`.
 - AFR-044 implementado: catálogo de provider/modelo valida capacidades e guarda a fonte e a data de observação sem alegar verificação live.
 - AFR-045 implementado: roteador escolhe provider que declara todas as capabilities exigidas e rejeita seleção impossível.
 - AFR-049 implementado: API reporta seleção `host-managed` no modo host e deixa claro que o ASES não escolhe o modelo do CLI hospedeiro.

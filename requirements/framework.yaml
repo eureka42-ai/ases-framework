@@ -1424,14 +1424,17 @@ requirements:
     priority: P2
     milestone: "M15+"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Marketplace público com revisão de segurança."
     acceptanceCriteria:
       - id: AC-AFR-118-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Marketplace público com revisão de segurança."
+        description: "Marketplaces públicos de primeira parte declaram decisão, escopo, responsável pela revisão, achados e limitações; os artefatos publicados são fixados por SHA-256."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+      - id: AC-AFR-118-02
+        description: "Validação de integração exige revisão aprovada de todos os manifests, marketplaces, Skills e entrypoints de host; mudanças nos hashes bloqueiam CI até nova revisão; achados HIGH/CRITICAL não podem ser aceitos sem mitigação."
+        verification: "automated"
+    artifacts: ["docs/security/marketplace-review.md", "docs/security/marketplace-review.json", "scripts/validate-integrations.mjs", ".claude-plugin/marketplace.json", ".agents/plugins/marketplace.json"]
+    tests: ["pnpm integrations:validate"]
   - id: AFR-119
     priority: P2
     milestone: "M15+"

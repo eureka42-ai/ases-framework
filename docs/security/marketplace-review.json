@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "reviewStatus": "APPROVED",
+  "reviewedAt": "2026-11-15",
+  "reviewedBy": "Eureka42 ASES maintainers",
+  "reviewScope": "First-party marketplace metadata and host plugin manifests in this repository; this is not a third-party code audit or guarantee about future releases.",
+  "decision": "Publish the first-party listing with the controls and limitations recorded below.",
+  "findings": [
+    {
+      "id": "MR-001",
+      "severity": "INFO",
+      "status": "DOCUMENTED",
+      "detail": "The first-party plugins distribute onboarding instructions and metadata. They do not bundle a background service, installer script, model provider, or credential collector. Host actions remain subject to user/host approval."
+    },
+    {
+      "id": "MR-002",
+      "severity": "LOW",
+      "status": "MITIGATED",
+      "detail": "Instructions may call the ASES CLI, which can read or write the selected workspace when the user invokes a command. The review requires clear disclosure, explicit apply flags for writes, and preservation of the green Eureka42 CLI welcome."
+    },
+    {
+      "id": "MR-003",
+      "severity": "MEDIUM",
+      "status": "ACCEPTED",
+      "detail": "Marketplace installation executes host-controlled plugin/extension behavior. Users must review the host's displayed permissions and install only from the canonical Eureka42 repository; this repository gate does not attest to host marketplace infrastructure."
+    }
+  ],
+  "artifacts": [
+    { "path": ".claude-plugin/marketplace.json", "sha256": "fbabc7b50f8b5a78ad0092309c9809fae61e76958b3dbfdd179c3191ac163f14" },
+    { "path": ".agents/plugins/marketplace.json", "sha256": "5f3c088418bf6f4c7888bf40700495dddb26b79b7f396f02ba9bb569e890efb1" },
+    { "path": "integrations/claude-code/.claude-plugin/plugin.json", "sha256": "dfaf5cda9d585029d68a0292a1173cba9c922744910684c293f0f8bfefab1e2b" },
+    { "path": "integrations/kimi-code/kimi.plugin.json", "sha256": "c352eb0694d6f04ca453e8c615d90fc398ae8191f8068c65d1b59f2121032a79" },
+    { "path": "integrations/gemini-cli/gemini-extension.json", "sha256": "5a1fb5f54682546e1e4d862f3c11e7894f3c0f08679482171f34d3541e994054" },
+    { "path": "integrations/codex/plugin.json", "sha256": "94f34d23cc24df290c62495fde61b1d6255677418734e92b7596fd27a773605c" },
+    { "path": ".agents/skills/ases-project-start/SKILL.md", "sha256": "93da9b7c164646fb5218c77f80cdbde89324e6cc0fb65c80bf0f18714c29942b" },
+    { "path": "integrations/claude-code/commands/ases-start.md", "sha256": "4227f37ee0721622be427bdb66e7c24758eeb3c465b1bbdf69fea796455217d5" },
+    { "path": "integrations/claude-code/skills/ases-project-start/SKILL.md", "sha256": "93da9b7c164646fb5218c77f80cdbde89324e6cc0fb65c80bf0f18714c29942b" },
+    { "path": "integrations/codex/AGENTS.md", "sha256": "4030a4eecad02cae019714eed0a8e39bce1b5bdcccad2eefa19eb3ee969e6740" },
+    { "path": "integrations/codex/skills/ases-project-start/SKILL.md", "sha256": "93da9b7c164646fb5218c77f80cdbde89324e6cc0fb65c80bf0f18714c29942b" },
+    { "path": "integrations/gemini-cli/GEMINI.md", "sha256": "d9e100db7f0563eb68b288e688ebcdb459a8526277598a862aa431970bd32a23" },
+    { "path": "integrations/gemini-cli/commands/ases/start.toml", "sha256": "0e171a3625c376d640afa018029bec2702466024887403228e23d6f75f0c11cc" },
+    { "path": "integrations/gemini-cli/skills/ases-project-start/SKILL.md", "sha256": "93da9b7c164646fb5218c77f80cdbde89324e6cc0fb65c80bf0f18714c29942b" },
+    { "path": "integrations/kimi-code/skills/ases-project-start/SKILL.md", "sha256": "93da9b7c164646fb5218c77f80cdbde89324e6cc0fb65c80bf0f18714c29942b" }
+  ]
+}

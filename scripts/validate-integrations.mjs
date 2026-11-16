@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
@@ -44,6 +45,21 @@ const codexEntry = codexMarketplace.plugins?.find((plugin) => plugin.name === "e
 if (codexMarketplace.name !== "eureka42-codex-plugins" || !codexEntry || codexEntry.policy?.installation !== "AVAILABLE" || codexEntry.policy?.authentication !== "ON_INSTALL") throw new Error(`Marketplace Codex inválido: ${codexMarketplaceFile}`);
 const codexManifest = JSON.parse(await readFile(resolve(root, "integrations/codex/plugin.json"), "utf8"));
 if (codexManifest.extensions?.["com.openai"]?.onboardingSkill !== "./skills/ases-project-start/SKILL.md") throw new Error("Onboarding Skill do plugin Codex inválido");
+const reviewFile = "docs/security/marketplace-review.json";
+const review = JSON.parse(await readFile(resolve(root, reviewFile), "utf8"));
+if (review.schemaVersion !== 1 || review.reviewStatus !== "APPROVED" || !review.reviewedAt || !review.reviewedBy || !Array.isArray(review.findings) || review.findings.length === 0) throw new Error(`Revisão de segurança inválida: ${reviewFile}`);
+const reviewedPaths = new Set((review.artifacts ?? []).map((artifact) => artifact.path));
+const requiredReviewPaths = [marketplaceFile, codexMarketplaceFile, ...jsonFiles, ".agents/skills/ases-project-start/SKILL.md", "integrations/claude-code/commands/ases-start.md", "integrations/claude-code/skills/ases-project-start/SKILL.md", "integrations/codex/AGENTS.md", "integrations/codex/skills/ases-project-start/SKILL.md", "integrations/gemini-cli/GEMINI.md", "integrations/gemini-cli/commands/ases/start.toml", "integrations/gemini-cli/skills/ases-project-start/SKILL.md", "integrations/kimi-code/skills/ases-project-start/SKILL.md"];
+for (const path of requiredReviewPaths) if (!reviewedPaths.has(path)) throw new Error(`Artefato publicado sem revisão de segurança: ${path}`);
+for (const artifact of review.artifacts ?? []) {
+  if (typeof artifact.path !== "string" || !/^[a-f0-9]{64}$/.test(artifact.sha256 ?? "")) throw new Error(`Artefato de revisão malformado: ${reviewFile}`);
+  const digest = createHash("sha256").update(await readFile(resolve(root, artifact.path))).digest("hex");
+  if (digest !== artifact.sha256) throw new Error(`Artefato do marketplace mudou desde a revisão; renovar ${reviewFile}: ${artifact.path}`);
+}
+for (const finding of review.findings) {
+  if (!/^MR-\d{3}$/.test(finding.id ?? "") || !["INFO", "LOW", "MEDIUM", "HIGH", "CRITICAL"].includes(finding.severity) || !["DOCUMENTED", "MITIGATED", "ACCEPTED"].includes(finding.status) || typeof finding.detail !== "string" || !finding.detail.trim()) throw new Error(`Achado de segurança inválido: ${reviewFile}`);
+  if (["HIGH", "CRITICAL"].includes(finding.severity) && finding.status === "ACCEPTED") throw new Error(`Achado HIGH/CRITICAL não pode ser aceito sem mitigação: ${finding.id}`);
+}
 let canonicalSkill;
 for (const relative of skillFiles) {
   const content = await readFile(resolve(root, relative), "utf8");
@@ -68,5 +84,5 @@ if (existsSync(resolve(root, "integrations/claude-code/.claude-plugin/plugin.jso
   if (validation.status !== null && validation.status !== 0) throw new Error(`Claude plugin validator failed: ${validation.stderr || validation.stdout}`);
   if (validation.error?.code === "ENOENT") console.log("SKIP Claude Code CLI não está instalado; validação estrutural local executada");
 }
-console.log(`PASS ${jsonFiles.length} manifests CLI, extensão VS Code, 2 marketplaces e ${skillFiles.length} Skills validados`);
+console.log(`PASS ${jsonFiles.length} manifests CLI, extensão VS Code, 2 marketplaces (${review.findings.length} achados de revisão hash-pinned) e ${skillFiles.length} Skills validados`);
 
