@@ -66,7 +66,7 @@ Atualizado em: 2026-11-15
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; tarball RC1 instalado em workspace temporário; `ases --version` e `ases welcome --color`: PASS. A primeira instalação revelou módulos ausentes e foi corrigida antes do segundo empacotamento.
-- Backlog AFR-001..140: 133 requisitos IMPLEMENTED e ligados a código/testes/evidência; 7 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 134 requisitos IMPLEMENTED e ligados a código/testes/evidência; 6 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -117,6 +117,7 @@ Atualizado em: 2026-11-15
 - AFR-119 implementado localmente: snapshot cifrado AES-GCM, R2 binding e upload/download/delete explícitos com `enabled: true`; só envelope cifrado é enviado. Ver `docs/backup-sync.md` e `evidence/M15-2026-11-15-progress-28.md`.
 - CI do AFR-119: PASS no run `43787243432` para o commit `21d9700`, Node.js 22/24, testes, integração, smoke test CLI e supply-chain.
 - AFR-120 concluído com adapters Cloudflare Vectorize/R2 e pgvector, este último aplicável a Supabase PostgreSQL por função `query` injetada; documentação delimita o papel de RLS e da configuração da aplicação hospedeira. Ver `docs/rag/vector-stores.md` e `evidence/M15-2026-11-15-progress-29.md`.
+- AFR-124 implementado localmente: campanha AST limitada com regressão por impacto, baseline obrigatória e executor isolado injetado. Build, lint e 3 testes focados passaram; suíte completa e CI ainda serão registrados. Ver `docs/mutation-testing.md` e `evidence/M15-2026-11-15-progress-30.md`.
 - AFR-044 implementado: catálogo de provider/modelo valida capacidades e guarda a fonte e a data de observação sem alegar verificação live.
 - AFR-045 implementado: roteador escolhe provider que declara todas as capabilities exigidas e rejeita seleção impossível.
 - AFR-049 implementado: API reporta seleção `host-managed` no modo host e deixa claro que o ASES não escolhe o modelo do CLI hospedeiro.

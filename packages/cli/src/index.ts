@@ -23,6 +23,7 @@ import { applyProjectTemplate, getProjectTemplate, listProjectTemplates } from "
 import { installKnowledgeLibrary, knowledgeLibraryManifest, listKnowledgeLibraries, validateKnowledgeLibrary } from "./knowledge.js";
 import { renderHelp, resolveLocale, welcomeTagline } from "./i18n.js";
 import { analyzeCodeImpact } from "./code-impact.js";
+import { runMutationCampaign } from "./mutation-testing.js";
 import { createCloudflareVectorizeStore, createLocalVectorStore, createPgVectorStore, createQdrantVectorStore } from "./vector-store.js";
 import { createR2BackupObjectStore, decryptBackup, deleteEncryptedBackup, downloadEncryptedBackup, encryptBackup, uploadEncryptedBackup } from "./encrypted-backup.js";
 
@@ -81,6 +82,8 @@ export type { GitHubTrackerOptions, GitLabTrackerOptions, RemoteTrackerImport, R
 export { renderHelp, resolveLocale } from "./i18n.js";
 export { analyzeCodeImpact } from "./code-impact.js";
 export type { CodeImpactOptions, CodeImpactReport } from "./code-impact.js";
+export { runMutationCampaign } from "./mutation-testing.js";
+export type { MutationCampaignOptions, MutationCampaignReport, MutationRunnerInput, MutationRunnerResult, MutationTestRunner } from "./mutation-testing.js";
 export { createCloudflareVectorizeStore, createLocalVectorStore, createPgVectorStore, createQdrantVectorStore };
 export type { PgVectorQuery, QdrantOptions, VectorDocument, VectorDocumentMetadata, VectorMatch, VectorQuery, VectorStoreAdapter, VectorizeBinding } from "./vector-store.js";
 export { createR2BackupObjectStore, decryptBackup, deleteEncryptedBackup, downloadEncryptedBackup, encryptBackup, uploadEncryptedBackup };

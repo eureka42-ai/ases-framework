@@ -16,9 +16,9 @@
 - M13 — IN_PROGRESS: E2E do CLI (AFR-101), CI (AFR-102), audit/license/SBOM/provenance (AFR-103), docs pt-BR/EN (AFR-105/106), saída/TTY (AFR-107), erros (AFR-108), restore hashado (AFR-109) e limites de migração (AFR-110) implementados; CI Node 22/24 e as duas atestações passaram no run 43728310089; autorização do release segue pendente.
 - M14 — BLOCKED_ON_APPROVAL: release candidate e gate v1 dependem das decisões de licença, homologação e critérios de lançamento.
 
-Backlog estruturado atual: 133/140 requisitos `IMPLEMENTED`, 7/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
+Backlog estruturado atual: 134/140 requisitos `IMPLEMENTED`, 6/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
 
-Distribuição dos 7 pendentes no registro atual:
+Distribuição dos 6 pendentes no registro atual:
 
 | Marco | Pendentes | Observação |
 |---|---:|---|
@@ -32,7 +32,7 @@ Distribuição dos 7 pendentes no registro atual:
 | M11 | 0 | MCP HTTP autenticado testado localmente; falta validação com um Authorization Server real |
 | M12 | 0 | SDK e lifecycle de plugins concluídos localmente |
 | M13 | 1 | Aprovação do release |
-| M15+ | 3 | Capacidades avançadas opcionais; não fazem parte do primeiro gate v1 |
+| M15+ | 2 | Capacidades avançadas opcionais; não fazem parte do primeiro gate v1 |
 
 AFR-126 (intercâmbio local de tarefas com trackers) exporta JSON neutro e importa com prévia, persistindo somente mediante `--apply`; veja `evidence/M15-2026-11-15-progress-8.md`. AFR-117 acrescenta importadores opt-in somente de leitura para GitHub Issues/PRs e GitLab Issues/MRs; não fazem sincronização ou escrita remota. Veja `docs/trackers.md` e `evidence/M15-2026-11-15-progress-24.md`.
 
@@ -43,6 +43,8 @@ AFR-121 adiciona `ases code impact`: análise AST offline de imports JS/TS e sel
 AFR-111 acrescenta stores vetoriais local, pgvector, Qdrant e Cloudflare Vectorize com filtros de projeto/ACL/proveniência; embeddings são fornecidos pelo chamador e chamadas de rede não são iniciadas implicitamente. Veja `docs/rag/vector-stores.md`.
 
 AFR-120 fecha a matriz de adapters para Cloudflare Vectorize/R2 e PostgreSQL/pgvector, documentando o uso com PostgreSQL gerenciado pelo Supabase via função `query` injetada. Credenciais, conexão, RLS e migrations seguem sob configuração da aplicação. Veja `docs/rag/vector-stores.md` e `docs/backup-sync.md`.
+
+AFR-124 combina testes candidatos derivados do grafo de imports AST com mutantes de operador/literais limitados e uma baseline. Execução é delegada a um runner isolado injetado, sem shell ou escrita implícita no workspace. Veja `docs/mutation-testing.md`.
 
 AFR-119 acrescenta backup AES-GCM com chave derivada localmente, adapter R2 e operações explícitas de upload/download/delete; apenas ciphertext sai do processo e nenhum sync em background é iniciado. Veja `docs/backup-sync.md`.
 

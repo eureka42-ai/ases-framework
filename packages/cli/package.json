@@ -60,6 +60,8 @@
     "dist/architecture-contracts.d.ts",
     "dist/code-impact.js",
     "dist/code-impact.d.ts",
+    "dist/mutation-testing.js",
+    "dist/mutation-testing.d.ts",
     "dist/vector-store.js",
     "dist/vector-store.d.ts",
     "dist/encrypted-backup.js",
