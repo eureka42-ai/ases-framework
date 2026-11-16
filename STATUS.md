@@ -66,7 +66,7 @@ Atualizado em: 2026-11-15
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; tarball RC1 instalado em workspace temporário; `ases --version` e `ases welcome --color`: PASS. A primeira instalação revelou módulos ausentes e foi corrigida antes do segundo empacotamento.
-- Backlog AFR-001..140: 125 requisitos IMPLEMENTED e ligados a código/testes/evidência; 15 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 126 requisitos IMPLEMENTED e ligados a código/testes/evidência; 14 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -90,7 +90,7 @@ Atualizado em: 2026-11-15
 - Instalação/listagem/desinstalação Claude repetidas em `CLAUDE_CONFIG_DIR` isolado com escopo `local`; marketplace removido no fim do ciclo. Ver `evidence/M5-2026-11-14-progress-5.md`.
 - Configuração MCP de projeto Claude gerada e conferida em workspace temporário; `claude mcp list` marcou `Pending approval`, sem inicializar o servidor.
 - Kimi: `host plan` agora prepara a Skill em `.agents/skills/`, que é auto-descoberta pelo projeto; `kimi --skills-dir <path> --help` reconheceu a opção. O plugin Beta não foi instalado e a sessão segue `NOT_TESTED`.
-- Codex CLI 0.169.0: plugin RC1 habilitado temporariamente em sessão autenticada; `codex exec` read-only executou `ases welcome --color` como primeira ação e confirmou ANSI verde. Plugin e marketplace temporários foram removidos depois. Auto-descoberta da Skill e MCP do host ainda não foram comprovados.
+- Codex CLI 0.169.0: marketplace e plugin RC1 instalados temporariamente; Skill descoberta em sessão `codex exec --ephemeral --sandbox read-only`, com `ases welcome --color` renderizando o logo verde antes da primeira pergunta. Configuração, cache e marketplace temporários removidos. MCP é conexão manual opcional e conserva testes read-only próprios. Ver `evidence/M5-2026-11-15-progress-22.md`.
 - SPI de providers implementada com erros tipados, timeout, cancelamento e provider mock determinístico; sem provider remoto ou credenciais.
 - Gemini: usuário autorizou confiança no workspace; recusou o aviso subsequente de instalação/injeção de instruções. `gemini extensions list` confirmou que nada foi instalado.
 - Claude Code oferece `--plugin-dir` para carga local temporária; smoke não interativo de AFR-031 foi tentado sem persistência/ferramentas, mas o CLI respondeu `Not logged in · Please run /login`; execução funcional continua pendente.
@@ -129,7 +129,7 @@ Atualizado em: 2026-11-15
 
 ## Próximas tarefas READY
 
-1. Prioridade Claude Code: observar descoberta e executar `/eureka42-ases:ases-start` em sessão real para completar a evidência de AFR-031; depois avançar Codex (AFR-033), Kimi (AFR-032) e Gemini (AFR-034) conforme permissões de instalação já registradas.
+1. Prioridade Claude Code: observar descoberta e executar `/eureka42-ases:ases-start` em sessão autenticada para completar AFR-031; em seguida validar Kimi (AFR-032) e Gemini (AFR-034) em sessões reais.
 2. Prosseguir a entrevista com personas, autenticação, integrações, observabilidade e critérios de aceite.
 3. Validar o MCP HTTP com um Authorization Server de teste antes de declarar compatibilidade operacional de ponta a ponta; a implementação local AFR-088 já usa introspecção OAuth e metadados protegidos.
 
@@ -223,6 +223,7 @@ Atualizado em: 2026-11-15
 - `evidence/M15-2026-11-15-progress-14.md`
 - `evidence/M15-2026-11-15-progress-20.md`
 - `evidence/M5-2026-11-15-progress-21.md`
+- `evidence/M5-2026-11-15-progress-22.md`
 - `evidence/M12-2026-11-15-progress-1.md`
 - `evidence/M12-2026-11-15-progress-2.md`
 - `evidence/M13-2026-11-15-progress-1.md`

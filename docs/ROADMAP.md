@@ -5,7 +5,7 @@
 - M2 — IN_PROGRESS: importador e engine ASES-300 implementados. Revisão estrutural e amostra visual concluídas; homologação integral da conversão segue pendente.
 - M3 — IN_PROGRESS: entrevista inicial de perfil e stack implementada, com recomendações propostas e revisão de riscos; refinamento restante do backlog continua.
 - M4 — IMPLEMENTED_LOCALLY / HOST_VALIDATION_PENDING: MCP read-only, planos e adapters de hosts têm evidência local; sessões reais ainda não comprovam todos os hosts.
-- M5 — IN_PROGRESS: plugins/Skills experimentais e manifestos validados; lifecycle local `host apply/update/uninstall` implementado com propriedade por hash e backups; sessão real Claude/hosts e decisões de distribuição permanecem pendentes.
+- M5 — IN_PROGRESS: plugins/Skills e ciclo local `host apply/update/uninstall` implementados; Codex 0.169.0 validado em sessão real efêmera com Skill e logo verde; Claude/Kimi/Gemini ainda aguardam sessões reais e decisões de distribuição.
 - M6 — IMPLEMENTED: provider probe opt-in, SPI tipada, mock determinístico, catálogo com proveniência, roteamento por capacidade, fallback restrito, classificação de custo, budget concorrente, controle de modelo declarado e bloqueio remoto em `offline` concluídos localmente (AFR-041..050); o probe não foi executado contra serviço real.
 - M7 — IMPLEMENTED_LOCALLY: declarações, limites, seleção de contexto, execução serial, prevenção de conflitos de escrita, revisão independente, Skills e tools com policy/path guard; integração real com hosts segue pendente.
 - M8 — IMPLEMENTED_LOCALLY: DSL valida grafo; checkpoints retomam com hash correspondente; etapas têm timeout/cancelamento/retry, dry-run puro, gate de aprovação independente e chave de idempotência para side effects (AFR-061..068); workflow de feature executa análise, plano, implementação, teste, evidência hashada e falha fechado sem revisão independente.
@@ -16,14 +16,14 @@
 - M13 — IN_PROGRESS: E2E do CLI (AFR-101), CI (AFR-102), audit/license/SBOM/provenance (AFR-103), docs pt-BR/EN (AFR-105/106), saída/TTY (AFR-107), erros (AFR-108), restore hashado (AFR-109) e limites de migração (AFR-110) implementados; CI Node 22/24 e as duas atestações passaram no run 43728310089; autorização do release segue pendente.
 - M14 — BLOCKED_ON_APPROVAL: release candidate e gate v1 dependem das decisões de licença, homologação e critérios de lançamento.
 
-Backlog estruturado atual: 125/140 requisitos `IMPLEMENTED`, 15/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
+Backlog estruturado atual: 126/140 requisitos `IMPLEMENTED`, 14/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
 
-Distribuição dos 15 pendentes no registro atual:
+Distribuição dos 14 pendentes no registro atual:
 
 | Marco | Pendentes | Observação |
 |---|---:|---|
 | M1 | 0 | AFR-028 passou no CI remoto Node.js 22/24 |
-| M5 | 4 | Claude, Codex, Kimi e Gemini em sessões reais |
+| M5 | 3 | Claude, Kimi e Gemini aguardam sessões reais; Codex passou smoke efêmero |
 | M6 | 0 | M6 concluído localmente; provider live opcional não foi testado |
 | M7 | 0 | M7 concluído localmente; integração com hosts reais ainda não foi homologada |
 | M8 | 0 | Workflow de feature testado localmente; chave de idempotência implementada em AFR-065 |
@@ -60,5 +60,5 @@ AFR-136 entrega editor visual local React/Vite para o grafo de workflows, com pa
 
 AFR-133 adiciona console web local multiusuário, autenticação scrypt, sessões revogáveis e memberships RBAC exatos por repo, fixo em loopback. Não inclui SSO, armazenamento de sessão persistente nem hospedagem pública. Ver `docs/security/multi-user-console.md`.
 
-O gate M14 não está representado por um requisito AFR separado; a autorização do release continua uma decisão humana conforme AFR-104. Os 15 itens pendentes são a contagem do backlog AFR, não uma previsão exata de rodadas até DONE. Aprovação de licença, homologação de fontes, validação de hosts e autenticação OAuth em provedor real são gates separados.
+O gate M14 não está representado por um requisito AFR separado; a autorização do release continua uma decisão humana conforme AFR-104. Os 14 itens pendentes são a contagem do backlog AFR, não uma previsão exata de rodadas até DONE. Aprovação de licença, homologação de fontes, validação de hosts e autenticação OAuth em provedor real são gates separados.
 
