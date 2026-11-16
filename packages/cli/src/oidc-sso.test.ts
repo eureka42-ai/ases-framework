@@ -72,7 +72,8 @@ test("OIDC SSO uses authorization code + PKCE and validates the signed ID token"
 test("OIDC SSO binds callback to the browser and consumes state before exchange", async () => {
   const testFixture = fixture();
   const { result, authUrl } = await testFixture.start();
-  await assert.rejects(testFixture.sso.completeLogin(authUrl.searchParams.get("state")!, `${result.browserBinding.slice(0, -1)}A`, "authorization-code", FIXED_NOW), /browser binding/);
+  const mismatchedBrowserBinding = `${result.browserBinding.slice(0, -1)}${result.browserBinding.endsWith("A") ? "B" : "A"}`;
+  await assert.rejects(testFixture.sso.completeLogin(authUrl.searchParams.get("state")!, mismatchedBrowserBinding, "authorization-code", FIXED_NOW), /browser binding/);
   assert.equal(testFixture.tokenCalls, 0);
   await assert.rejects(testFixture.sso.completeLogin(authUrl.searchParams.get("state")!, result.browserBinding, "authorization-code", FIXED_NOW), /expired or unknown/);
 });
