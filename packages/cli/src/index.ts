@@ -34,6 +34,8 @@ export { authorizeCommand, commandPolicyResource, PolicyAccessError, SecurityPol
 export type { AuthorizedCommandPlan, CommandRequest, PolicyDecision, PolicyEffect, SecurityAction, SecurityPolicyRequest, SecurityPolicyRule } from "./policy.js";
 export { AgentAclError, createAgentMessageBus } from "./agent-protocol.js";
 export type { A2AMessage, AgentAclRule, AgentMessageType, ReceivedA2AMessage } from "./agent-protocol.js";
+export { createFrontendQualityAgent, reviewFrontendQuality } from "./frontend-quality-agent.js";
+export type { AuditImpact, AuditSource, AxeViolationSummary, CoreWebVital, FrontendAuditEvidence, FrontendDevice, FrontendMetricResult, FrontendQualityFinding, FrontendQualityReport, MetricObservation } from "./frontend-quality-agent.js";
 export { createRepositoryRegistry } from "./multi-repo.js";
 export type { AuthorizedRepository, RepositoryDefinition, RepositoryMembership, RepositoryOperation, RepositoryRole } from "./multi-repo.js";
 export { createCommunityAgentCatalog } from "./community-agents.js";

@@ -1370,14 +1370,14 @@ requirements:
     priority: P2
     milestone: "M15+"
     owner: "UNASSIGNED"
-    status: "PENDING"
-    summary: "Agentes de performance e acessibilidade avançados."
+    status: "IMPLEMENTED"
+    summary: "Agente determinístico de revisão de evidências de Core Web Vitals e axe."
     acceptanceCriteria:
       - id: AC-AFR-114-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Agentes de performance e acessibilidade avançados."
+        description: "reviewFrontendQuality valida e normaliza evidências fornecidas, avalia LCP/INP/CLS de campo no p75 separadamente para mobile/desktop usando limites Web Vitals vigentes; trata dados Lighthouse de laboratório apenas como contexto; converte sumários axe em achados priorizados; requer axeAuditComplete, seis métricas de campo e manualReviewComplete para status clear; remove query/hash da URL; não faz scans, chamadas de rede ou alterações. createFrontendQualityAgent declara zero permissões e custo zero."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/frontend-quality-agent.ts", "docs/agents/frontend-quality.md", "evidence/M15-2026-11-15-progress-23.md"]
+    tests: ["packages/cli/src/frontend-quality-agent.test.ts :: frontend quality review clears complete good field metrics and removes URL query data", "packages/cli/src/frontend-quality-agent.test.ts :: frontend quality review prioritizes poor and needs-improvement Core Web Vitals by device", "packages/cli/src/frontend-quality-agent.test.ts :: lab metrics are context only and incomplete field coverage never reports a pass", "packages/cli/src/frontend-quality-agent.test.ts :: an empty axe result is insufficient unless the automated audit completed", "packages/cli/src/frontend-quality-agent.test.ts :: frontend quality review maps axe impact and orders findings deterministically", "packages/cli/src/frontend-quality-agent.test.ts :: frontend quality evidence rejects unsafe URLs, invalid field percentiles and duplicate rules", "packages/cli/src/frontend-quality-agent.test.ts :: frontend quality agent has no project permissions and no billable cost"]
   - id: AFR-115
     priority: P2
     milestone: "M15+"

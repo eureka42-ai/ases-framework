@@ -61,12 +61,12 @@ Atualizado em: 2026-11-15
 - `init` possui `--dry-run`, saída JSON e proteção contra sobrescrita.
 - Gerenciador de pacotes fixado em pnpm 10.20.0; `pnpm-lock.yaml` importado e instalação `--frozen-lockfile` validada.
 - Build TypeScript strict: PASS.
-- Testes automatizados: PASS (160/160; inclui multi-repo, A2A, OTLP, pack de conhecimento, templates, locale, intercâmbio de trackers, policy-as-code e console autenticado), schema sync, dashboard, benchmark, ranking de capabilities, HTTP local e E2E do CLI. Integrações validadas. CI de tracker, locale, templates, conhecimento, OTLP e A2A passou em Node.js 22/24 e audit/licenças/SBOM/proveniência (runs `43733719847`, `43734235205`, `43734785438`, `43735432022`, `43735960930`, `43736222422`).
+- Testes automatizados: PASS (167/167; inclui revisão determinística de evidências Core Web Vitals/axe, multi-repo, A2A, OTLP, pack de conhecimento, templates, locale, intercâmbio de trackers, policy-as-code e console autenticado), schema sync, dashboard, benchmark, ranking de capabilities, HTTP local e E2E do CLI. Integrações validadas. CI de tracker, locale, templates, conhecimento, OTLP e A2A passou em Node.js 22/24 e audit/licenças/SBOM/proveniência (runs `43733719847`, `43734235205`, `43734785438`, `43735432022`, `43735960930`, `43736222422`).
 - Manifests/Skills/marketplaces locais: PASS (4 manifests, 2 marketplaces, 6 Skills sincronizadas).
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; tarball RC1 instalado em workspace temporário; `ases --version` e `ases welcome --color`: PASS. A primeira instalação revelou módulos ausentes e foi corrigida antes do segundo empacotamento.
-- Backlog AFR-001..140: 126 requisitos IMPLEMENTED e ligados a código/testes/evidência; 14 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 127 requisitos IMPLEMENTED e ligados a código/testes/evidência; 13 seguem PENDING. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -89,7 +89,7 @@ Atualizado em: 2026-11-15
 - Guia Claude agora recomenda `--scope local`, explicita o padrão potencialmente global de `user` e usa `--keep-data` na desinstalação para preservar dados persistentes do plugin.
 - Instalação/listagem/desinstalação Claude repetidas em `CLAUDE_CONFIG_DIR` isolado com escopo `local`; marketplace removido no fim do ciclo. Ver `evidence/M5-2026-11-14-progress-5.md`.
 - Configuração MCP de projeto Claude gerada e conferida em workspace temporário; `claude mcp list` marcou `Pending approval`, sem inicializar o servidor.
-- Kimi: `host plan` agora prepara a Skill em `.agents/skills/`, que é auto-descoberta pelo projeto; `kimi --skills-dir <path> --help` reconheceu a opção. O plugin Beta não foi instalado e a sessão segue `NOT_TESTED`.
+- Kimi 2.5.3: `--skills-dir` é suportado e o provider OAuth está configurado. O smoke read-only em workspace vazio falhou antes da sessão com `EMFILE: too many open files, watch`; repetiu em duas tentativas. Nenhuma instalação ou mudança de perfil ocorreu. AFR-032 segue pendente. Ver `evidence/M5-2026-11-15-progress-23.md`.
 - Codex CLI 0.169.0: marketplace e plugin RC1 instalados temporariamente; Skill descoberta em sessão `codex exec --ephemeral --sandbox read-only`, com `ases welcome --color` renderizando o logo verde antes da primeira pergunta. Configuração, cache e marketplace temporários removidos. MCP é conexão manual opcional e conserva testes read-only próprios. Ver `evidence/M5-2026-11-15-progress-22.md`.
 - SPI de providers implementada com erros tipados, timeout, cancelamento e provider mock determinístico; sem provider remoto ou credenciais.
 - Gemini: usuário autorizou confiança no workspace; recusou o aviso subsequente de instalação/injeção de instruções. `gemini extensions list` confirmou que nada foi instalado.
@@ -105,6 +105,7 @@ Atualizado em: 2026-11-15
 - AFR-139 implementado localmente: ledger em memória com metas por severidade, prazos de resposta/resolução, eventos de transição e medição de violações. Persistência, alertas e operação gerenciada não estão incluídos. Ver `docs/security/support-ledger.md`.
 - AFR-133 implementado localmente: console web multiusuário com login scrypt, sessões em memória HttpOnly, RBAC por organização/repo, rate limit e bind obrigatório em loopback. SSO e hospedagem pública não estão incluídos. Ver `docs/security/multi-user-console.md`.
 - AFR-136 implementado localmente: editor visual de workflows React/Vite com grafo de dependências, painel de edição, save local, intercâmbio JSON e preview determinístico sem execução. Build React e verificação Chrome desktop/mobile passaram. Ver `packages/workflow-editor/README.md` e `evidence/M15-2026-11-15-progress-20.md`.
+- AFR-114 implementado localmente: agente determinístico sem permissões que analisa evidências Core Web Vitals de campo e sumários axe, sem executar scans ou acessar URLs. Lacunas de evidência impedem aprovação automática. Ver `docs/agents/frontend-quality.md` e `evidence/M15-2026-11-15-progress-23.md`.
 - AFR-044 implementado: catálogo de provider/modelo valida capacidades e guarda a fonte e a data de observação sem alegar verificação live.
 - AFR-045 implementado: roteador escolhe provider que declara todas as capabilities exigidas e rejeita seleção impossível.
 - AFR-049 implementado: API reporta seleção `host-managed` no modo host e deixa claro que o ASES não escolhe o modelo do CLI hospedeiro.
@@ -130,8 +131,9 @@ Atualizado em: 2026-11-15
 ## Próximas tarefas READY
 
 1. Prioridade Claude Code: observar descoberta e executar `/eureka42-ases:ases-start` em sessão autenticada para completar AFR-031; em seguida validar Kimi (AFR-032) e Gemini (AFR-034) em sessões reais.
-2. Prosseguir a entrevista com personas, autenticação, integrações, observabilidade e critérios de aceite.
-3. Validar o MCP HTTP com um Authorization Server de teste antes de declarar compatibilidade operacional de ponta a ponta; a implementação local AFR-088 já usa introspecção OAuth e metadados protegidos.
+2. Retomar Kimi (AFR-032) após resolver `EMFILE` no watcher; depois validar Gemini (AFR-034) em sessão real, respeitando a recusa anterior de instalação do usuário.
+3. Prosseguir a entrevista com personas, autenticação, integrações, observabilidade e critérios de aceite.
+4. Validar o MCP HTTP com um Authorization Server de teste antes de declarar compatibilidade operacional de ponta a ponta; a implementação local AFR-088 já usa introspecção OAuth e metadados protegidos.
 
 ## Bloqueios de conclusão integral
 
@@ -224,6 +226,8 @@ Atualizado em: 2026-11-15
 - `evidence/M15-2026-11-15-progress-20.md`
 - `evidence/M5-2026-11-15-progress-21.md`
 - `evidence/M5-2026-11-15-progress-22.md`
+- `evidence/M15-2026-11-15-progress-23.md`
+- `evidence/M5-2026-11-15-progress-23.md`
 - `evidence/M12-2026-11-15-progress-1.md`
 - `evidence/M12-2026-11-15-progress-2.md`
 - `evidence/M13-2026-11-15-progress-1.md`
