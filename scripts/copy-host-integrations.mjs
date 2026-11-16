@@ -6,6 +6,6 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const source = join(root, "integrations");
 const destination = join(root, "packages", "cli", "dist", "integrations");
 await mkdir(destination, { recursive: true });
-for (const host of ["codex", "claude-code", "kimi-code", "gemini-cli", "vscode"]) {
+for (const host of ["codex", "claude-code", "kimi-code", "gemini-cli", "antigravity-cli", "vscode"]) {
   await cp(join(source, host), join(destination, host), { recursive: true });
 }

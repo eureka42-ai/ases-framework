@@ -4,7 +4,7 @@ import { constants } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
-export const HOSTS = ["codex", "claude-code", "kimi-code", "gemini-cli"] as const;
+export const HOSTS = ["codex", "claude-code", "kimi-code", "gemini-cli", "antigravity-cli"] as const;
 export type HostId = (typeof HOSTS)[number];
 
 export interface HostPlanFile {
@@ -85,7 +85,9 @@ export async function createHostPlan(host: HostId, workspacePath: string): Promi
       ? ["AGENTS.md", ".agents/skills/ases-project-start/SKILL.md"].map((path) => ({ source: path, target: path }))
       : host === "kimi-code"
         ? [{ source: "skills/ases-project-start/SKILL.md", target: ".agents/skills/ases-project-start/SKILL.md" }]
-        : ["gemini-extension.json", "GEMINI.md", "commands/ases/start.toml", "skills/ases-project-start/SKILL.md"].map((path) => ({ source: path, target: join(".gemini", "extensions", "eureka42-ases", path) }));
+        : host === "gemini-cli"
+          ? ["gemini-extension.json", "GEMINI.md", "commands/ases/start.toml", "skills/ases-project-start/SKILL.md"].map((path) => ({ source: path, target: join(".gemini", "extensions", "eureka42-ases", path) }))
+          : ["plugin.json", "README.md", "assets/eureka42-logo.png", "skills/ases-project-start/SKILL.md", "skills/ases-project-start/scripts/welcome.mjs"].map((path) => ({ source: path, target: join(".agents", "plugins", "eureka42-ases", path) }));
   const files: HostPlanFile[] = [];
 
   for (const { source: path, target } of paths) {

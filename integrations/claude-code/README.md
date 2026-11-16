@@ -11,6 +11,8 @@ claude plugin validate ./integrations/claude-code --strict
 claude --plugin-dir ./integrations/claude-code
 ```
 
+O plugin inclui um script de boas-vindas independente da CLI npm em `scripts/welcome.mjs`. Assim, `/eureka42-ases:ases-start` consegue mostrar o logo em verde mesmo antes de instalar ou publicar o pacote `ases`. O comando tenta primeiro `ases welcome --color` e usa o script local do plugin como fallback.
+
 Para o smoke conversacional, o Claude Code precisa estar autenticado. Confira com `claude auth status`; se `loggedIn` for `false`, abra o Claude Code e execute `/login`. Depois inicie o checkout com `claude --plugin-dir ./integrations/claude-code`.
 
 Dentro do Claude Code, execute `/eureka42-ases:ases-project-start` ou `/eureka42-ases:ases-start`. O primeiro comando do plugin deve mostrar o logo verde Eureka42 no terminal antes da entrevista.
@@ -47,6 +49,6 @@ Isso grava configuração MCP no projeto. O servidor expõe apenas ferramentas d
 
 ## Limites conhecidos
 
-- Compatibilidade carregada em sessão só é confirmada após verificar a Skill e executar `/eureka42-ases:ases-start` dentro do Claude Code.
+- A compatibilidade em sessão e o logo verde ainda precisam ser confirmados executando `/eureka42-ases:ases-start` dentro de uma sessão autenticada do Claude Code.
 - A validação do manifesto não publica o plugin no diretório da Anthropic.
-- A licença de distribuição do projeto ainda aguarda decisão Eureka42.
+- O script local cobre somente a identidade visual; recursos de entrevista persistente continuam dependendo da CLI `ases`.

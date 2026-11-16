@@ -11,6 +11,7 @@ const jsonFiles = [
   "integrations/claude-code/.claude-plugin/plugin.json",
   "integrations/kimi-code/kimi.plugin.json",
   "integrations/gemini-cli/gemini-extension.json",
+  "integrations/antigravity-cli/plugin.json",
   "integrations/codex/plugin.json"
 ];
 const skillFiles = [
@@ -22,6 +23,17 @@ const skillFiles = [
   "integrations/codex/skills/ases-project-start/SKILL.md"
 ];
 const cliPackage = JSON.parse(await readFile(resolve(root, "packages/cli/package.json"), "utf8"));
+const antigravityPlugin = JSON.parse(await readFile(resolve(root, "integrations/antigravity-cli/plugin.json"), "utf8"));
+const antigravitySkill = await readFile(resolve(root, "integrations/antigravity-cli/skills/ases-project-start/SKILL.md"), "utf8");
+if (antigravityPlugin.displayName !== "EUREKA42 ASES" || antigravityPlugin.logo !== "assets/eureka42-logo.png" || !existsSync(resolve(root, "integrations/antigravity-cli", antigravityPlugin.logo)) || !antigravitySkill.includes("node scripts/welcome.mjs --color") || !antigravitySkill.includes("`PROPOSED`")) throw new Error("Plugin Antigravity sem logo ou onboarding ASES válidos");
+const antigravityWelcome = resolve(root, "integrations/antigravity-cli/skills/ases-project-start/scripts/welcome.mjs");
+if (!existsSync(antigravityWelcome)) throw new Error("Script welcome local do plugin Antigravity ausente");
+const welcomeSyntax = spawnSync(process.execPath, ["--check", antigravityWelcome], { cwd: root, encoding: "utf8" });
+if (welcomeSyntax.status !== 0) throw new Error(`Script welcome Antigravity inválido: ${welcomeSyntax.stderr}`);
+const antigravityValidator = spawnSync("agy", ["plugin", "validate", "--strict", "./integrations/antigravity-cli"], { cwd: root, encoding: "utf8" });
+if (antigravityValidator.error && antigravityValidator.error.code !== "ENOENT") throw antigravityValidator.error;
+if (antigravityValidator.status !== null && antigravityValidator.status !== 0) throw new Error(`Antigravity plugin validator failed: ${antigravityValidator.stderr || antigravityValidator.stdout}`);
+if (antigravityValidator.error?.code === "ENOENT") console.log("SKIP Antigravity CLI não está instalado; validação estrutural local executada");
 const vscodePackage = JSON.parse(await readFile(resolve(root, "integrations/vscode/package.json"), "utf8"));
 const vscodeEntry = await readFile(resolve(root, "integrations/vscode/extension.js"), "utf8");
 if (vscodePackage.publisher !== "eureka42" || vscodePackage.name !== "eureka42-ases" || vscodePackage.version !== cliPackage.version || vscodePackage.main !== "./extension.js" || !vscodePackage.contributes?.commands?.some((command) => command.command === "ases.startProject")) throw new Error("Manifest da extensão VS Code inválido ou com versão divergente");
@@ -49,7 +61,7 @@ const reviewFile = "docs/security/marketplace-review.json";
 const review = JSON.parse(await readFile(resolve(root, reviewFile), "utf8"));
 if (review.schemaVersion !== 1 || review.reviewStatus !== "APPROVED" || !review.reviewedAt || !review.reviewedBy || !Array.isArray(review.findings) || review.findings.length === 0) throw new Error(`Revisão de segurança inválida: ${reviewFile}`);
 const reviewedPaths = new Set((review.artifacts ?? []).map((artifact) => artifact.path));
-const requiredReviewPaths = [marketplaceFile, codexMarketplaceFile, ...jsonFiles, ".agents/skills/ases-project-start/SKILL.md", "integrations/claude-code/commands/ases-start.md", "integrations/claude-code/skills/ases-project-start/SKILL.md", "integrations/codex/AGENTS.md", "integrations/codex/skills/ases-project-start/SKILL.md", "integrations/gemini-cli/GEMINI.md", "integrations/gemini-cli/commands/ases/start.toml", "integrations/gemini-cli/skills/ases-project-start/SKILL.md", "integrations/kimi-code/skills/ases-project-start/SKILL.md"];
+const requiredReviewPaths = [marketplaceFile, codexMarketplaceFile, ...jsonFiles, ".agents/skills/ases-project-start/SKILL.md", "integrations/claude-code/commands/ases-start.md", "integrations/claude-code/skills/ases-project-start/SKILL.md", "integrations/codex/AGENTS.md", "integrations/codex/skills/ases-project-start/SKILL.md", "integrations/gemini-cli/GEMINI.md", "integrations/gemini-cli/commands/ases/start.toml", "integrations/gemini-cli/skills/ases-project-start/SKILL.md", "integrations/kimi-code/skills/ases-project-start/SKILL.md", "integrations/antigravity-cli/README.md", "integrations/antigravity-cli/assets/eureka42-logo.png", "integrations/antigravity-cli/skills/ases-project-start/SKILL.md", "integrations/antigravity-cli/skills/ases-project-start/scripts/welcome.mjs"];
 for (const path of requiredReviewPaths) if (!reviewedPaths.has(path)) throw new Error(`Artefato publicado sem revisão de segurança: ${path}`);
 for (const artifact of review.artifacts ?? []) {
   if (typeof artifact.path !== "string" || !/^[a-f0-9]{64}$/.test(artifact.sha256 ?? "")) throw new Error(`Artefato de revisão malformado: ${reviewFile}`);

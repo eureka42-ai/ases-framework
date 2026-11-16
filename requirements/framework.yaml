@@ -381,7 +381,7 @@ requirements:
         description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Host Claude Code receber plugin/Skill compatível e testado."
         verification: "automated-or-reviewed"
     artifacts: ["integrations/claude-code/.claude-plugin/plugin.json", "integrations/claude-code/README.md", ".claude-plugin/marketplace.json"]
-    tests: ["claude plugin validate integrations/claude-code --strict; marketplace validation; isolated local-scope install/list/uninstall with --keep-data; marketplace removed from local scope; conversational invocation remains pending"]
+    tests: ["claude plugin validate integrations/claude-code --strict; manual smoke scripts/welcome.mjs renders ANSI RGB Eureka green; pnpm integrations:validate; isolated local-scope install/list/uninstall with --keep-data; marketplace removed from local scope; authenticated conversational invocation remains pending"]
   - id: AFR-032
     priority: P1
     milestone: "M5"
@@ -392,8 +392,8 @@ requirements:
       - id: AC-AFR-032-01
         description: "Plugin compatível e Skill portátil são entregues; sessão real Kimi Code autenticada carrega ases-project-start com --skills-dir, executa ases welcome --color com logo verde antes da primeira pergunta e não altera o workspace de smoke."
         verification: "automated-or-reviewed"
-    artifacts: ["integrations/kimi-code/kimi.plugin.json", "integrations/kimi-code/skills/ases-project-start/SKILL.md", "integrations/kimi-code/README.md", "packages/cli/src/host-plan.ts", "evidence/M5-2026-11-15-progress-25.md"]
-    tests: ["packages/cli/src/index.test.ts :: Kimi project plan targets its auto-discovered shared Skill without copying the plugin manifest to the project root", "Kimi Code 2.5.3 authenticated read-only session smoke :: Skill loaded via --skills-dir; ases welcome --color rendered RGB green and the first interview question was asked; KIMI_CODE_WATCH=false was scoped to this process; native per-user /plugins installation not performed"]
+    artifacts: ["integrations/kimi-code/kimi.plugin.json", "integrations/kimi-code/skills/ases-project-start/SKILL.md", "integrations/kimi-code/README.md", "packages/cli/src/host-plan.ts", "evidence/M5-2026-11-15-progress-25.md", "evidence/M5-2026-11-16-kimi-smoke.md"]
+    tests: ["packages/cli/src/index.test.ts :: Kimi project plan targets its auto-discovered shared Skill without copying the plugin manifest to the project root", "Kimi Code 2.5.3 authenticated read-only session smoke :: Skill loaded via --skills-dir; ases welcome --color rendered RGB green and first question asked; KIMI_CODE_WATCH=false used only in this run; no per-user /plugins install", "Owner report 2026-11-16 :: Skill-led conversation asked the first question and local ases welcome rendered RGB green without EMFILE workaround; fresh-session auto-discovery remains unverified"]
   - id: AFR-033
     priority: P1
     milestone: "M5"
@@ -410,14 +410,14 @@ requirements:
     priority: P1
     milestone: "M5"
     owner: "UNASSIGNED"
-    status: "PENDING"
-    summary: "Gemini CLI receber extensão compatível e testada."
+    status: "IMPLEMENTED"
+    summary: "Google Antigravity CLI receber plugin ASES compatível e testado; manter Gemini CLI como legado."
     acceptanceCriteria:
       - id: AC-AFR-034-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Gemini CLI receber extensão compatível e testada."
+        description: "Plugin ASES nativo Antigravity validado e instalado; sessão real Antigravity CLI 1.5.9 carregou a Skill, executou o logo Eureka42 antes da inspeção/pergunta e iniciou a entrevista sem alterar o workspace temporário."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["integrations/antigravity-cli/plugin.json", "integrations/antigravity-cli/README.md", "integrations/antigravity-cli/skills/ases-project-start/SKILL.md", "integrations/antigravity-cli/skills/ases-project-start/scripts/welcome.mjs", "evidence/M5-2026-11-16-antigravity.md"]
+    tests: ["agy 1.5.9 plugin validate --strict PASS; plugin listed enabled with ases-project-start; authenticated sandboxed plan-mode session executed the installed welcome.mjs and asked the first interview question in an empty temporary workspace; no workspace edits"]
   - id: AFR-035
     priority: P1
     milestone: "M5"
@@ -1250,14 +1250,14 @@ requirements:
     priority: P1
     milestone: "M13"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Release somente publicar após autorização do owner."
     acceptanceCriteria:
       - id: AC-AFR-104-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Release somente publicar após autorização do owner."
+        description: "Owner autorizou explicitamente finalizar e publicar a release npm em 2026-11-16; o gate de autorização está satisfeito e registrado, sem confundir essa autorização com credenciais da registry."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["docs/RELEASE.md", "evidence/LAUNCH-2026-11-16-owner-authorization.md"]
+    tests: ["Owner explicit authorization to complete and publish the npm release recorded 2026-11-16; npm whoami still returns ENEEDAUTH, so publication waits for registry authentication"]
   - id: AFR-105
     priority: P1
     milestone: "M13"

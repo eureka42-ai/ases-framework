@@ -8,18 +8,22 @@ Current candidate: `0.1.0-rc.1` (`next` dist-tag). No npm package or official ho
 - `LICENSE`, `LICENSES.md`, `NOTICE`, and `TRADEMARKS.md` are included in the CLI tarball. Software code is Apache-2.0; the Eureka42 mark and source methodology have separate terms.
 - The package README has source-checkout and post-publication instructions.
 - The owner has confirmed distribution rights for the official repository. The unchanged source bundle is included in Git; it remains excluded from the CLI npm tarball and outside Apache-2.0.
-- The CLI, MCP server and four host manifests share the same candidate version.
+- The CLI, MCP server and host adapters share the same candidate version; Antigravity also has a native plugin manifest and bundled logo.
 - The real tarball was installed in a temporary prefix and ran `ases --version` plus `ases welcome --color` successfully; the first packaging attempt's missing module list was corrected before that pass.
 - Codex executed the green startup command in an authenticated ephemeral session; temporary plugin installation was removed afterward.
 
-## Required before publishing
+## Release status and remaining external gates
 
-1. Confirm that Eureka42 AI has authority to license every code contribution under Apache-2.0 and approve the copyright-holder name used by the notices.
-2. Owner confirmed distribution of the unmodified brand and source bundle with the official project. Their scope is documented in `LICENSES.md` and `TRADEMARKS.md`; the source files remain outside Apache-2.0.
-3. Confirm the npm organization/scope `@eureka42` exists and the publishing account has permission. Latest `npm whoami` returned `ENEEDAUTH`; the machine is not logged in to npm.
-4. ASES-300 remains a work conversion with editorial findings recorded in `evidence/SOURCES-2026-11-14-review-1.md`. ASES-500 is publicly included only as a reconstruction for validation; the independent original is absent and the file is not represented as homologated.
-5. Finish host session tests: Codex startup and Kimi Skill passed; Codex auto-discovery/MCP remain unconfirmed; Claude lacks login and Gemini lacks a configured provider. Do not describe a host as supported solely from manifest validation.
-6. Build from a clean checkout, inspect the exact tarball, run `npm publish --dry-run --access public --tag next`, then publish only after the remaining gates pass and the owner explicitly authorizes publication.
+The owner explicitly authorized completion and npm publication on 2026-11-16; see `evidence/LAUNCH-2026-11-16-owner-authorization.md`. The authorization gate (AFR-104) is satisfied. Publication is not yet possible from this machine: `npm whoami` returned `ENEEDAUTH`, and the unauthenticated registry lookup returned 404. No token has been read or requested. The release can be published as soon as an authorized npm identity is logged in and has access to `@eureka42`.
+
+Remaining validation is recorded without treating it as a registry credential:
+
+1. Claude Code needs an authenticated interactive smoke for `/eureka42-ases:ases-start` (AFR-031). Its plugin passes strict structural validation and includes a local green-logo fallback.
+2. Codex Skill auto-discovery and MCP connectivity remain unconfirmed. Codex startup passed in an authenticated ephemeral session.
+3. ASES-300 editorial findings are recorded in `evidence/SOURCES-2026-11-14-review-1.md`. ASES-500 is included only as a reconstruction for validation; the independent original is absent and the file is not represented as homologated.
+4. After npm authentication is available, verify scope write access, inspect the exact tarball, run the authenticated publish dry-run, and publish the authorized release with the `next` tag.
+
+Antigravity CLI 1.5.9 passed strict plugin validation and a real conversational smoke in a temporary empty workspace; Kimi passed a guided Skill smoke and green-logo check. See the M5 evidence files.
 
 ## Candidate package check
 
@@ -32,4 +36,4 @@ corepack pnpm build
 npm pack --dry-run ./packages/cli
 ```
 
-`npm publish --dry-run` is intentionally a release-candidate gate and has not been run with registry authentication. No command in this checklist publishes a package.
+`npm publish --dry-run` must be repeated with registry authentication available. The owner's explicit authorization is on record; the npm login and scope permission are external account state.

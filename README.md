@@ -30,7 +30,7 @@ O framework está sendo construído para operar em diferentes níveis:
 
 - como CLI local e offline;
 - como servidor MCP seguro via `stdio`;
-- como camada de Skills e instruções para hosts como Codex, Claude Code, Kimi Code CLI e Gemini CLI;
+- como camada de Skills e instruções para hosts como Codex, Claude Code, Kimi Code CLI e Google Antigravity (o adapter Gemini CLI permanece para instalações legadas);
 - como runtime standalone com providers opcionais;
 - como motor de requisitos ASES-300 e entrevista progressiva ASES-500;
 - como base para workflows, RAG, memória documentada, checkpoints e evidências.
@@ -59,10 +59,10 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases config validate` | Implementado | Valida config pela mesma definição Zod que gera o JSON Schema |
 | `ases config schema [--check path]` | Implementado | Gera o JSON Schema no stdout ou verifica o artefato sem escrever |
 | `ases config explain` | Implementado | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Em andamento | 137 implementados; 3 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
+| Backlog AFR-001..140 | Em andamento | 139 implementados; 1 pendente (smoke Claude). A publicação npm aguarda autenticação da conta. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) |
 | Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
-| MCP e integrações de hosts | Implementação local | Codex e Kimi passaram smoke real; Claude e Gemini aguardam autenticação; veja [`integrations/README.md`](integrations/README.md) |
+| MCP e integrações de hosts | Implementação local | Codex, Kimi e Antigravity passaram smoke real; Claude aguarda sessão autenticada; veja [`integrations/README.md`](integrations/README.md) |
 | Providers | SPI e mock local implementados | Sem provider remoto, credenciais ou inferência conectada |
 | Agents, RAG offline e ContextBundle | Implementados localmente | Workflows com gate independente; RAG com citações/ACL/refresh; memória local consentida; bundle com redaction/hash e import ZIP seguro. [Guia RAG](docs/rag/offline-index.md) · [Guia de memória](docs/context/memory-and-bundles.md) · [Guia de import](docs/context/bundle-import.md) |
 
@@ -226,7 +226,7 @@ ases config schema --check schemas/ases.config.schema.json
 | `ases code impact <workspace> <arquivo-alterado...> [--json]` | Analisa grafo de imports via AST TypeScript e lista dependentes/testes candidatos | Nenhum; análise local, sem executar fontes |
 | `ases policy template\|validate\|evaluate` | Gera template, valida regras versionadas ou simula uma decisão sem executar a ação | Nenhum |
 | `ases config explain [path] [--set chave=valor]` | Resolve defaults e overrides seguros com suas origens | Nenhum |
-| `ases host list` | Detecta Codex, Claude, Kimi e Gemini instalados | Nenhum |
+| `ases host list` | Detecta Codex, Claude, Kimi, Gemini legado e Antigravity (`agy`) instalados | Nenhum |
 | `ases host plan <host> [workspace]` | Mostra diffs de integração, conflitos e arquivos binários sem aplicar mudanças | Nenhum |
 | `ases host apply <host> [workspace]` | Mostra plano; `--apply` instala arquivos locais sem sobrescrever destinos | `.ases/host-install-<host>.json` |
 | `ases host update <host> [workspace]` | Mostra plano; `--apply` atualiza arquivos ASES intactos e faz backup antes de substituir | `.ases/backups/hosts/<host>/` e manifesto de propriedade |
@@ -383,13 +383,14 @@ Os adapters experimentais ficam em [`integrations/`](integrations/):
 | OpenAI Codex | `AGENTS.md` + Skill em `.agents/skills` | fluxo portátil de descoberta |
 | Claude Code | plugin, Skills `/eureka42-ases:ases-project-start` e `/eureka42-ases:ases-start` | marketplace do repositório Eureka42 |
 | Kimi Code CLI | `kimi.plugin.json` + `sessionStart.skill` | ativa o fluxo ao iniciar sessão |
-| Gemini CLI | extension, Skill, command e tema | tema `eureka42-teal` |
+| Google Antigravity CLI (`agy`) | plugin nativo com `plugin.json`, logo e Skill `/ases-project-start` | fallback local imprime o logo RGB verde sem exigir pacote npm |
+| Gemini CLI (legado) | extension, Skill, command e tema | tema `eureka42-teal`; mantido para instalações anteriores |
 
-O startup verde passou em uma sessão Codex autenticada; descoberta automática da Skill e integração MCP ainda não foram comprovadas. Claude Code também passou validação e instalação isolada, mas a invocação em conversa requer login. Kimi falhou ao iniciar com `EMFILE`; Gemini está sem provider autenticado. Consulte [`integrations/README.md`](integrations/README.md) antes de instalar.
+O startup verde passou em sessões Codex, Kimi e Antigravity; auto-descoberta Codex e integração MCP ainda precisam de confirmação. Claude passou validação e instalação isolada, mas aguarda smoke conversacional; consulte [`integrations/README.md`](integrations/README.md) e os guias específicos antes de instalar.
 
 O plugin Claude Code também possui marketplace no repositório: `claude plugin marketplace add eureka42-ai/ases-framework` e `claude plugin install eureka42-ases@eureka42-ases-plugins`. O manifesto e a instalação local foram validados; a invocação da Skill em conversa aguarda login. Publicação oficial requer revisão dos direitos dos assets de marca.
 
-Para revisar o que seria preparado para um workspace sem modificar arquivos, execute `ases host plan codex ./meu-projeto` (ou `claude-code`, `kimi-code`, `gemini-cli`). `ases host apply <host> ./meu-projeto` também é somente um plano; somente a opção explícita `--apply` grava arquivos dentro do workspace. Destinos divergentes interrompem toda a operação antes da escrita. `ases host update <host> <workspace>` mostra o plano sem gravar; com `--apply`, atualiza apenas arquivos regulares ainda iguais ao hash anteriormente instalado e grava uma cópia de cada versão substituída em `.ases/backups/hosts/<host>/`. Alterações locais geram conflito e nenhum arquivo é atualizado; os backups permanecem após uninstall. `ases host uninstall <host> <workspace>` também é somente leitura por padrão; com `--apply`, remove arquivos regulares cujo SHA-256 ainda corresponde ao manifesto ASES e preserva os que foram alterados. Arquivos compartilhados entre adapters são protegidos enquanto houver referência ativa; após remover o último consumidor, repita o comando do host proprietário para retirar o arquivo. Nenhum dos comandos altera configuração global do host.
+Para revisar o que seria preparado para um workspace sem modificar arquivos, execute `ases host plan codex ./meu-projeto` (ou `claude-code`, `kimi-code`, `gemini-cli`, `antigravity-cli`). `ases host apply <host> ./meu-projeto` também é somente um plano; somente a opção explícita `--apply` grava arquivos dentro do workspace. Destinos divergentes interrompem toda a operação antes da escrita. `ases host update <host> <workspace>` mostra o plano sem gravar; com `--apply`, atualiza apenas arquivos regulares ainda iguais ao hash anteriormente instalado e grava uma cópia de cada versão substituída em `.ases/backups/hosts/<host>/`. Alterações locais geram conflito e nenhum arquivo é atualizado; os backups permanecem após uninstall. `ases host uninstall <host> <workspace>` também é somente leitura por padrão; com `--apply`, remove arquivos regulares cujo SHA-256 ainda corresponde ao manifesto ASES e preserva os que foram alterados. Arquivos compartilhados entre adapters são protegidos enquanto houver referência ativa; após remover o último consumidor, repita o comando do host proprietário para retirar o arquivo. Nenhum dos comandos altera configuração global do host.
 
 O servidor MCP é iniciado por `ases mcp ./meu-projeto`. Ele fixa o processo ao workspace canonicalizado e oferece `requirements_list`, `requirements_show` e `requirements_trace`, todas somente leitura. Configure cada host para executar esse comando com o diretório do projeto; não passe credenciais por argumentos. O SDK oficial mantém compatibilidade com o protocolo MCP moderno e com o handshake legado; stdout é reservado aos frames JSON-RPC e logs de transporte vão para stderr.
 
@@ -532,8 +533,8 @@ Resultados reais e limitações ficam em [`evidence/`](evidence/). Uma funcional
 | M1 | CLI local, init, doctor, config e pacote | Vertical slice verificado localmente; publicação e suporte multi-host pendentes |
 | M2 | Catálogo ASES-300 e requirements engine | Engine local implementada; revisão estrutural e visual amostral concluídas, homologação integral pendente |
 | M3 | Entrevista ASES-500 e geração de spec | Fluxo inicial implementado; AFR-001..020 concluídos localmente |
-| M4–M5 | MCP e adapters de hosts | MCP stdio, plano e lifecycle local implementados; smoke Codex/Kimi passou; Claude/Gemini aguardam login e a auto-descoberta Codex segue pendente |
-| M6–M8 | Providers, agents, skills e workflows | Implementados localmente; provas de sessão real ainda faltam para Claude e Gemini |
+| M4–M5 | MCP e adapters de hosts | MCP stdio, plano e lifecycle local implementados; smoke Codex/Kimi/Antigravity passou; Claude e auto-descoberta Codex seguem pendentes |
+| M6–M8 | Providers, agents, skills e workflows | Implementados localmente; prova de sessão real ainda falta para Claude |
 | M9 | RAG | Implementado localmente: busca offline, citação, ACL, filtros e invalidação |
 | M10 | Memória e ContextBundle | Implementado localmente; import seguro exige preview e rejeita conflitos |
 | M11 | Evidências, segurança e evals | Implementado localmente, incluindo MCP HTTP com OAuth introspection |
@@ -552,7 +553,8 @@ No modo `host`, o CLI hospedeiro controla a escolha e a configuração do modelo
 | OpenAI Codex | `STARTUP_SMOKE_PASS`; auto-descoberta da Skill pendente |
 | Claude Code | `NOT_TESTED`; autenticação ausente |
 | Kimi Code CLI | `SKILL_SMOKE_PASS`; instalação per-user do plugin nativo não executada |
-| Gemini CLI | `NOT_TESTED`; autenticação ausente |
+| Antigravity CLI | `SMOKE_PASS`; plugin strict e smoke conversacional em workspace temporário passaram |
+| Gemini CLI (legado) | `NOT_TESTED`; adapter legado validado estruturalmente |
 | MCP genérico | `NOT_IMPLEMENTED` |
 
 Artefatos de integração não serão instalados em configurações globais sem plano, diff, backup e autorização. Uma integração somente será promovida a `SUPPORTED` após smoke test reproduzível em versão e sistema operacional documentados.

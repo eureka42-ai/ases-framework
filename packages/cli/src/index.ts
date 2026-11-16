@@ -601,7 +601,8 @@ export async function run(argv: string[]): Promise<CommandResult> {
       { id: "codex", command: "codex", integration: "integrations/codex" },
       { id: "claude-code", command: "claude", integration: "integrations/claude-code" },
       { id: "kimi-code", command: "kimi", integration: "integrations/kimi-code" },
-      { id: "gemini-cli", command: "gemini", integration: "integrations/gemini-cli" }
+      { id: "gemini-cli", command: "gemini", integration: "integrations/gemini-cli" },
+      { id: "antigravity-cli", command: "agy", integration: "integrations/antigravity-cli" }
     ];
     const hosts = await Promise.all(definitions.map(async (host) => {
       const detected = await detectCommand(host.command, ["--version"]);

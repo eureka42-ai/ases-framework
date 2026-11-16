@@ -408,7 +408,7 @@ export async function uninstallHostIntegration(host: HostId, workspacePath: stri
   const inspected: Array<{ path: string; absolute: string; action: "remove" | "preserve" | "missing"; reason?: string }> = [];
   const borrowed: string[] = [];
   const shared = new Map<string, HostId>();
-  for (const otherHost of ["codex", "claude-code", "kimi-code", "gemini-cli"] as const) {
+  for (const otherHost of ["codex", "claude-code", "kimi-code", "gemini-cli", "antigravity-cli"] as const) {
     if (otherHost === host) continue;
     try {
       const other = await readManifest(canonicalRoot, otherHost);

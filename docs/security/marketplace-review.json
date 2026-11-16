@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
   "reviewStatus": "APPROVED",
-  "reviewedAt": "2026-11-15",
+  "reviewedAt": "2026-11-16",
   "reviewedBy": "Eureka42 ASES maintainers",
-  "reviewScope": "First-party marketplace metadata and host plugin manifests in this repository; this is not a third-party code audit or guarantee about future releases.",
+  "reviewScope": "First-party marketplace metadata and host plugin manifests in this repository; this is not a third-party code audit or guarantee about future releases. The Claude plugin also includes a static, dependency-free welcome script that prints the approved brand banner and does not access the workspace. This update covers the local Antigravity CLI plugin and its static welcome helper; no startup hook runs automatically.",
   "decision": "Publish the first-party listing with the controls and limitations recorded below.",
   "findings": [
     {
       "id": "MR-001",
       "severity": "INFO",
       "status": "DOCUMENTED",
-      "detail": "The first-party plugins distribute onboarding instructions and metadata. They do not bundle a background service, installer script, model provider, or credential collector. Host actions remain subject to user/host approval."
+      "detail": "The first-party plugins distribute onboarding instructions and metadata. They do not bundle a background service, installer script, model provider, or credential collector. Host actions remain subject to user/host approval. The Claude plugin bundles only a dependency-free static welcome script for the same banner; it does not read or write workspace files. The Claude and Antigravity plugins bundle only dependency-free static welcome scripts; they do not read or write workspace files."
     },
     {
       "id": "MR-002",
@@ -26,20 +26,89 @@
     }
   ],
   "artifacts": [
-    { "path": ".claude-plugin/marketplace.json", "sha256": "fbabc7b50f8b5a78ad0092309c9809fae61e76958b3dbfdd179c3191ac163f14" },
-    { "path": ".agents/plugins/marketplace.json", "sha256": "5f3c088418bf6f4c7888bf40700495dddb26b79b7f396f02ba9bb569e890efb1" },
-    { "path": "integrations/claude-code/.claude-plugin/plugin.json", "sha256": "dfaf5cda9d585029d68a0292a1173cba9c922744910684c293f0f8bfefab1e2b" },
-    { "path": "integrations/kimi-code/kimi.plugin.json", "sha256": "c352eb0694d6f04ca453e8c615d90fc398ae8191f8068c65d1b59f2121032a79" },
-    { "path": "integrations/gemini-cli/gemini-extension.json", "sha256": "5a1fb5f54682546e1e4d862f3c11e7894f3c0f08679482171f34d3541e994054" },
-    { "path": "integrations/codex/plugin.json", "sha256": "94f34d23cc24df290c62495fde61b1d6255677418734e92b7596fd27a773605c" },
-    { "path": ".agents/skills/ases-project-start/SKILL.md", "sha256": "93da9b7c164646fb5218c77f80cdbde89324e6cc0fb65c80bf0f18714c29942b" },
-    { "path": "integrations/claude-code/commands/ases-start.md", "sha256": "4227f37ee0721622be427bdb66e7c24758eeb3c465b1bbdf69fea796455217d5" },
-    { "path": "integrations/claude-code/skills/ases-project-start/SKILL.md", "sha256": "93da9b7c164646fb5218c77f80cdbde89324e6cc0fb65c80bf0f18714c29942b" },
-    { "path": "integrations/codex/AGENTS.md", "sha256": "4030a4eecad02cae019714eed0a8e39bce1b5bdcccad2eefa19eb3ee969e6740" },
-    { "path": "integrations/codex/skills/ases-project-start/SKILL.md", "sha256": "93da9b7c164646fb5218c77f80cdbde89324e6cc0fb65c80bf0f18714c29942b" },
-    { "path": "integrations/gemini-cli/GEMINI.md", "sha256": "d9e100db7f0563eb68b288e688ebcdb459a8526277598a862aa431970bd32a23" },
-    { "path": "integrations/gemini-cli/commands/ases/start.toml", "sha256": "0e171a3625c376d640afa018029bec2702466024887403228e23d6f75f0c11cc" },
-    { "path": "integrations/gemini-cli/skills/ases-project-start/SKILL.md", "sha256": "93da9b7c164646fb5218c77f80cdbde89324e6cc0fb65c80bf0f18714c29942b" },
-    { "path": "integrations/kimi-code/skills/ases-project-start/SKILL.md", "sha256": "93da9b7c164646fb5218c77f80cdbde89324e6cc0fb65c80bf0f18714c29942b" }
+    {
+      "path": ".claude-plugin/marketplace.json",
+      "sha256": "fbabc7b50f8b5a78ad0092309c9809fae61e76958b3dbfdd179c3191ac163f14"
+    },
+    {
+      "path": ".agents/plugins/marketplace.json",
+      "sha256": "5f3c088418bf6f4c7888bf40700495dddb26b79b7f396f02ba9bb569e890efb1"
+    },
+    {
+      "path": "integrations/claude-code/.claude-plugin/plugin.json",
+      "sha256": "dfaf5cda9d585029d68a0292a1173cba9c922744910684c293f0f8bfefab1e2b"
+    },
+    {
+      "path": "integrations/kimi-code/kimi.plugin.json",
+      "sha256": "c352eb0694d6f04ca453e8c615d90fc398ae8191f8068c65d1b59f2121032a79"
+    },
+    {
+      "path": "integrations/gemini-cli/gemini-extension.json",
+      "sha256": "5a1fb5f54682546e1e4d862f3c11e7894f3c0f08679482171f34d3541e994054"
+    },
+    {
+      "path": "integrations/codex/plugin.json",
+      "sha256": "94f34d23cc24df290c62495fde61b1d6255677418734e92b7596fd27a773605c"
+    },
+    {
+      "path": ".agents/skills/ases-project-start/SKILL.md",
+      "sha256": "6f78f6ed067acf6a2ce53f3fd222e0405b50181f7ecc7dc42ff2fed9ffc1ec4a"
+    },
+    {
+      "path": "integrations/claude-code/commands/ases-start.md",
+      "sha256": "1bd820d1f64325d5ad2063622eecdefc120602d55b6e6098b7e8f3e3026b9b5a"
+    },
+    {
+      "path": "integrations/claude-code/skills/ases-project-start/SKILL.md",
+      "sha256": "6f78f6ed067acf6a2ce53f3fd222e0405b50181f7ecc7dc42ff2fed9ffc1ec4a"
+    },
+    {
+      "path": "integrations/codex/AGENTS.md",
+      "sha256": "4030a4eecad02cae019714eed0a8e39bce1b5bdcccad2eefa19eb3ee969e6740"
+    },
+    {
+      "path": "integrations/codex/skills/ases-project-start/SKILL.md",
+      "sha256": "6f78f6ed067acf6a2ce53f3fd222e0405b50181f7ecc7dc42ff2fed9ffc1ec4a"
+    },
+    {
+      "path": "integrations/gemini-cli/GEMINI.md",
+      "sha256": "d9e100db7f0563eb68b288e688ebcdb459a8526277598a862aa431970bd32a23"
+    },
+    {
+      "path": "integrations/gemini-cli/commands/ases/start.toml",
+      "sha256": "0e171a3625c376d640afa018029bec2702466024887403228e23d6f75f0c11cc"
+    },
+    {
+      "path": "integrations/gemini-cli/skills/ases-project-start/SKILL.md",
+      "sha256": "6f78f6ed067acf6a2ce53f3fd222e0405b50181f7ecc7dc42ff2fed9ffc1ec4a"
+    },
+    {
+      "path": "integrations/kimi-code/skills/ases-project-start/SKILL.md",
+      "sha256": "6f78f6ed067acf6a2ce53f3fd222e0405b50181f7ecc7dc42ff2fed9ffc1ec4a"
+    },
+    {
+      "path": "integrations/claude-code/scripts/welcome.mjs",
+      "sha256": "5d5920b7b714ffadbdb620fc3da89904fae2b7a8c117d5fc7e150d42bdbd88a4"
+    },
+    {
+      "path": "integrations/antigravity-cli/plugin.json",
+      "sha256": "baf18473cbefd67f16f6d8e0a44c33cbf48a94c406ed02b737c053fa7c1df102"
+    },
+    {
+      "path": "integrations/antigravity-cli/README.md",
+      "sha256": "5cec3ed8f3022b64de9c84eb9a5eb1547391aabb472b42ba2e7c31650ebc4369"
+    },
+    {
+      "path": "integrations/antigravity-cli/assets/eureka42-logo.png",
+      "sha256": "4f8cf867b8506bdba2f079c6efe4bab3eab3085c57b44ef9367f1ff10fa3bf72"
+    },
+    {
+      "path": "integrations/antigravity-cli/skills/ases-project-start/SKILL.md",
+      "sha256": "a163f314b503fdb892bd2d7999b67d7c851588e944566f3c2772cea99759e9a0"
+    },
+    {
+      "path": "integrations/antigravity-cli/skills/ases-project-start/scripts/welcome.mjs",
+      "sha256": "5d5920b7b714ffadbdb620fc3da89904fae2b7a8c117d5fc7e150d42bdbd88a4"
+    }
   ]
 }

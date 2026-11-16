@@ -61,7 +61,7 @@ Use `--dry-run` for a read-only plan and `--json` for machine-readable output. I
 
 ## Host integrations
 
-Codex, Claude Code, Kimi Code CLI, and Gemini CLI have experimental project-level integrations. They require a local host installation for live discovery; the framework does not install into global host configuration automatically.
+Codex, Claude Code, Kimi Code CLI, and Google Antigravity CLI have experimental project-level integrations. A legacy Gemini CLI adapter remains for existing users. They require a local host installation for live discovery; the framework does not install into global host configuration automatically.
 
 ```bash
 ases host list

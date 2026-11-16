@@ -456,7 +456,7 @@ test("host list reports adapters without claiming support", async () => {
   const result = await run(["host", "list", "--json"]);
   const payload = JSON.parse(result.output);
   assert.equal(result.exitCode, 0);
-  assert.deepEqual(payload.hosts.map((host: { id: string }) => host.id), ["codex", "claude-code", "kimi-code", "gemini-cli"]);
+  assert.deepEqual(payload.hosts.map((host: { id: string }) => host.id), ["codex", "claude-code", "kimi-code", "gemini-cli", "antigravity-cli"]);
   assert.ok(payload.hosts.every((host: { detected: boolean; support: string; version?: string }) => typeof host.detected === "boolean" && host.support === "NOT_TESTED" && (host.detected ? typeof host.version === "string" : host.version === undefined)));
 });
 
@@ -514,7 +514,7 @@ test("host apply is read-only by default and uninstalls only files it owns", asy
 });
 
 test("host apply and uninstall complete an isolated lifecycle for each supported adapter", async () => {
-  for (const host of ["codex", "claude-code", "kimi-code", "gemini-cli"] as const) {
+  for (const host of ["codex", "claude-code", "kimi-code", "gemini-cli", "antigravity-cli"] as const) {
     const root = await mkdtemp(join(tmpdir(), `ases-host-${host}-`));
     const installed = JSON.parse((await run(["host", "apply", host, root, "--apply", "--json"])).output);
     assert.equal(installed.status, "installed", host);
