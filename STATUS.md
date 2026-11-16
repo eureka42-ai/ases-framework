@@ -12,7 +12,7 @@ Atualizado em: 2026-11-15
 - M10: IMPLEMENTED_LOCALLY (memória local com consentimento/escopo/TTL/origem/inspect/delete, ContextBundle com integridade/redaction e import ZIP seguro com preview e contenção de caminhos)
 - M11: IMPLEMENTED_LOCALLY (AFR-084..100; MCP HTTP OAuth Resource Server e testes de rota local; Authorization Server real ainda não exercitado)
 - M12: IMPLEMENTED_LOCALLY (SDK, contrato, integridade, compatibilidade, aprovação de permissões e remoção segura AFR-091..095)
-- M13: IN_PROGRESS (CI Node 22/24, testes, supply-chain, SLSA e SPDX passaram no run 43792353763; resta aprovação AFR-104 e homologação externa de ativos/fontes)
+- M13: IN_PROGRESS (CI Node 22/24, testes, supply-chain, SLSA e SPDX passaram no run 43794780465; resta AFR-104, autenticação de publicação e homologação de conteúdo)
 - M6: IMPLEMENTED (AFR-041..050 concluídos localmente; probe real é opt-in e ainda não executado contra serviço externo)
 - Repositório Git: branch `main`; plugins Codex/Claude disponíveis no repositório público; AFR-030 implementado nesta rodada
 - Fonte diretora: presente e lida
