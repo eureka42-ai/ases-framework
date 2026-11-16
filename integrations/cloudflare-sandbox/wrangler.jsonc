@@ -1,0 +1,23 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "eureka42-ases-remote-sandbox",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-11-15",
+  "compatibility_flags": ["enable_request_signal"],
+  "containers": [
+    {
+      "class_name": "AsesRemoteJob",
+      "image": "./Dockerfile",
+      "max_instances": 10,
+      "scheduling_policy": "durable_object"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      { "name": "ASES_JOBS", "class_name": "AsesRemoteJob" }
+    ]
+  },
+  "exports": {
+    "AsesRemoteJob": { "type": "durable-object", "storage": "sqlite" }
+  }
+}

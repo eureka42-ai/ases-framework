@@ -86,6 +86,8 @@ export { runMutationCampaign } from "./mutation-testing.js";
 export type { MutationCampaignOptions, MutationCampaignReport, MutationRunnerInput, MutationRunnerResult, MutationTestRunner } from "./mutation-testing.js";
 export { createOidcGroupMapper, createOidcSso, createOidcSsoRouter } from "./oidc-sso.js";
 export type { OidcClaims, OidcGroupMapperOptions, OidcGroupPolicy, OidcIdentity, OidcLoginStart, OidcRouterOptions, OidcSessionAuth, OidcSsoOptions } from "./oidc-sso.js";
+export { createRemoteExecutionClient } from "./remote-execution.js";
+export type { RemoteExecutionFile, RemoteExecutionOptions, RemoteExecutionRequest, RemoteExecutionResult } from "./remote-execution.js";
 export { createCloudflareVectorizeStore, createLocalVectorStore, createPgVectorStore, createQdrantVectorStore };
 export type { PgVectorQuery, QdrantOptions, VectorDocument, VectorDocumentMetadata, VectorMatch, VectorQuery, VectorStoreAdapter, VectorizeBinding } from "./vector-store.js";
 export { createR2BackupObjectStore, decryptBackup, deleteEncryptedBackup, downloadEncryptedBackup, encryptBackup, uploadEncryptedBackup };

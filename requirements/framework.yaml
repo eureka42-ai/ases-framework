@@ -1664,14 +1664,14 @@ requirements:
     priority: P3
     milestone: "M15+"
     owner: "UNASSIGNED"
-    status: "PENDING"
+    status: "IMPLEMENTED"
     summary: "Remote execution opt-in com isolamento forte."
     acceptanceCriteria:
       - id: AC-AFR-137-01
-        description: "O comportamento deve ser demonstrado por teste ou evidência objetiva: Remote execution opt-in com isolamento forte."
+        description: "Cliente e Worker de referência executam somente com enabled:true, autenticam HTTPS por bearer secret, recebem argv/arquivos validados sem env, criam um Durable Object e microVM por job, desabilitam egress, limitam argumentos/arquivos/tempo/saída, propagam cancelamento e destroem o container após execução."
         verification: "automated-or-reviewed"
-    artifacts: []
-    tests: []
+    artifacts: ["packages/cli/src/remote-execution.ts", "integrations/cloudflare-sandbox/src/index.mjs", "integrations/cloudflare-sandbox/wrangler.jsonc", "integrations/cloudflare-sandbox/Dockerfile", "docs/security/remote-execution.md", "evidence/M15-2026-11-15-progress-32.md"]
+    tests: ["packages/cli/src/remote-execution.test.ts", "scripts/remote-sandbox-contract.test.mjs"]
   - id: AFR-138
     priority: P3
     milestone: "M15+"

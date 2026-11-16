@@ -16,4 +16,6 @@ for (const entry of await readdir(new URL("../scripts/", import.meta.url), { wit
   }
 }
 
+execFileSync(process.execPath, ["--check", fileURLToPath(new URL("../integrations/cloudflare-sandbox/src/index.mjs", import.meta.url))], { stdio: "pipe" });
+
 if (!process.exitCode) process.stdout.write("PASS lint (whitespace + script syntax)\n");

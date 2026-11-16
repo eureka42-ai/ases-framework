@@ -64,6 +64,8 @@
     "dist/mutation-testing.d.ts",
     "dist/oidc-sso.js",
     "dist/oidc-sso.d.ts",
+    "dist/remote-execution.js",
+    "dist/remote-execution.d.ts",
     "dist/vector-store.js",
     "dist/vector-store.d.ts",
     "dist/encrypted-backup.js",
