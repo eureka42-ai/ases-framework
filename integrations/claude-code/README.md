@@ -11,7 +11,9 @@ claude plugin validate ./integrations/claude-code --strict
 claude --plugin-dir ./integrations/claude-code
 ```
 
-Dentro do Claude Code, execute `/eureka42-ases:ases-project-start` ou `/eureka42-ases:ases-start`.
+Para o smoke conversacional, o Claude Code precisa estar autenticado. Confira com `claude auth status`; se `loggedIn` for `false`, abra o Claude Code e execute `/login`. Depois inicie o checkout com `claude --plugin-dir ./integrations/claude-code`.
+
+Dentro do Claude Code, execute `/eureka42-ases:ases-project-start` ou `/eureka42-ases:ases-start`. O primeiro comando do plugin deve mostrar o logo verde Eureka42 no terminal antes da entrevista.
 
 ## Instalar pelo marketplace deste repositório
 
