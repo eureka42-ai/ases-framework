@@ -68,7 +68,7 @@ Atualizado em: 2026-11-16
 - Claude plugin validator: `claude plugin validate --strict` PASS; publicação oficial ainda aguarda confirmação de direitos sobre assets de marca.
 - Gemini extension validator: PASS.
 - `npm pack` inclui módulos runtime e os quatro adapters; tarball RC1 instalado em workspace temporário; `ases --version` e `ases welcome --color`: PASS. A primeira instalação revelou módulos ausentes e foi corrigida antes do segundo empacotamento.
-- Backlog AFR-001..140: 139 requisitos IMPLEMENTED e ligados a código/testes/evidência; AFR-031 segue PENDING até smoke Claude autenticado. A publicação ainda depende de login na registry npm. A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
+- Backlog AFR-001..140: 139 requisitos IMPLEMENTED e ligados a código/testes/evidência; AFR-031 segue PENDING até smoke Claude autenticado. Publicação npm autorizada, mas depende de login na registry e acesso ao escopo. CI do commit `1058d9c` passou integralmente em [43833216019](https://github.com/eureka42-ai/ases-framework/actions/runs/43833216019). A quantidade de rodadas não pode ser inferida da contagem porque critérios, dependências e aprovações variam.
 - Fontes recebidas em `FONTES_ASES_PARA_DESKTOP_FRAMEWORK/`; SHA-256 dos seis arquivos listados validado.
 - Matriz Eureka42 segregada; REQ-301..500 mantidos como referência específica de domínio.
 - Importador de produto validado com a matriz Eureka42 local: 200 itens REQ-301..500, SHA-256 `12ce223cc7a3fbe54051d027ec4785fe79bd4b1febf5f91d01051cf0b66a1dd1`; arquivo permanece em workspace temporário.
@@ -221,6 +221,7 @@ Atualizado em: 2026-11-16
 - `evidence/M9-2026-11-14-progress-1.md`
 - `evidence/M9-2026-11-14-progress-2.md`
 - `evidence/LAUNCH-2026-11-16-owner-authorization.md`
+- `evidence/LAUNCH-2026-11-16-preflight.md`
 - `evidence/M5-2026-11-16-claude-plugin-fallback.md`
 - `evidence/M5-2026-11-16-antigravity.md`
 - `evidence/M5-2026-11-16-kimi-smoke.md`

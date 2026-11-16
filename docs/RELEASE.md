@@ -16,6 +16,8 @@ Current candidate: `0.1.0-rc.1` (`next` dist-tag). No npm package or official ho
 
 The owner explicitly authorized completion and npm publication on 2026-11-16; see `evidence/LAUNCH-2026-11-16-owner-authorization.md`. The authorization gate (AFR-104) is satisfied. Publication is not yet possible from this machine: `npm whoami` returned `ENEEDAUTH`, and the unauthenticated registry lookup returned 404. No token has been read or requested. The release can be published as soon as an authorized npm identity is logged in and has access to `@eureka42`.
 
+The exact candidate tarball, checksums, local preflight, registry response, and successful CI run are recorded in `evidence/LAUNCH-2026-11-16-preflight.md`.
+
 Remaining validation is recorded without treating it as a registry credential:
 
 1. Claude Code needs an authenticated interactive smoke for `/eureka42-ases:ases-start` (AFR-031). Its plugin passes strict structural validation and includes a local green-logo fallback.
