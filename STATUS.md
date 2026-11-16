@@ -106,6 +106,7 @@ Atualizado em: 2026-11-15
 - AFR-133 implementado localmente: console web multiusuário com login scrypt, sessões em memória HttpOnly, RBAC por organização/repo, rate limit e bind obrigatório em loopback. SSO e hospedagem pública não estão incluídos. Ver `docs/security/multi-user-console.md`.
 - AFR-136 implementado localmente: editor visual de workflows React/Vite com grafo de dependências, painel de edição, save local, intercâmbio JSON e preview determinístico sem execução. Build React e verificação Chrome desktop/mobile passaram. Ver `packages/workflow-editor/README.md` e `evidence/M15-2026-11-15-progress-20.md`.
 - AFR-114 implementado localmente: agente determinístico sem permissões que analisa evidências Core Web Vitals de campo e sumários axe, sem executar scans ou acessar URLs. Lacunas de evidência impedem aprovação automática. Ver `docs/agents/frontend-quality.md` e `evidence/M15-2026-11-15-progress-23.md`.
+- CI do agente AFR-114: PASS no run `43782605105` para o commit `b926905`.
 - AFR-044 implementado: catálogo de provider/modelo valida capacidades e guarda a fonte e a data de observação sem alegar verificação live.
 - AFR-045 implementado: roteador escolhe provider que declara todas as capabilities exigidas e rejeita seleção impossível.
 - AFR-049 implementado: API reporta seleção `host-managed` no modo host e deixa claro que o ASES não escolhe o modelo do CLI hospedeiro.
