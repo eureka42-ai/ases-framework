@@ -1,11 +1,11 @@
 # Roadmap
 
-- M0 — IN_PROGRESS: fontes, governança, ADRs, backlog estruturado, build e CI existem; homologação editorial e execução remota do CI ainda precisam de evidência.
+- M0 — IMPLEMENTED / SOURCE_HOMOLOGATION_PENDING: fontes, governança, ADRs, backlog estruturado, build e CI existem; a homologação editorial ainda depende dos responsáveis pelas fontes.
 - M1 — IN_PROGRESS: CLI offline com `help`, `version`, `init`, desinstalação conservadora, `doctor`, entrevista e configuração; publicação de pacotes aguarda licença/aprovação.
 - M2 — IN_PROGRESS: importador e engine ASES-300 implementados. Revisão estrutural e amostra visual concluídas; homologação integral da conversão segue pendente.
 - M3 — IN_PROGRESS: entrevista inicial de perfil e stack implementada, com recomendações propostas e revisão de riscos; refinamento restante do backlog continua.
-- M4 — IMPLEMENTED_LOCALLY / HOST_VALIDATION_PENDING: MCP read-only, planos e adapters de hosts têm evidência local; sessões reais ainda não comprovam todos os hosts.
-- M5 — IN_PROGRESS: plugins/Skills e ciclo local `host apply/update/uninstall` implementados; Codex 0.169.0 validado em sessão real efêmera com Skill e logo verde; Claude/Kimi/Gemini ainda aguardam sessões reais e decisões de distribuição.
+- M4 — IMPLEMENTED_LOCALLY / HOST_VALIDATION_PENDING: MCP read-only e lifecycle local têm evidência; Codex e Kimi passaram smoke em sessão real, enquanto Claude e Gemini seguem sem autenticação.
+- M5 — IN_PROGRESS: 8/10 AFRs implementados; Codex 0.169.0 e Kimi 2.5.3 passaram smoke com logo verde; faltam invocações Claude/Gemini e a auto-descoberta Codex. O plugin nativo Kimi está documentado, mas não foi instalado per-user.
 - M6 — IMPLEMENTED: provider probe opt-in, SPI tipada, mock determinístico, catálogo com proveniência, roteamento por capacidade, fallback restrito, classificação de custo, budget concorrente, controle de modelo declarado e bloqueio remoto em `offline` concluídos localmente (AFR-041..050); o probe não foi executado contra serviço real.
 - M7 — IMPLEMENTED_LOCALLY: declarações, limites, seleção de contexto, execução serial, prevenção de conflitos de escrita, revisão independente, Skills e tools com policy/path guard; integração real com hosts segue pendente.
 - M8 — IMPLEMENTED_LOCALLY: DSL valida grafo; checkpoints retomam com hash correspondente; etapas têm timeout/cancelamento/retry, dry-run puro, gate de aprovação independente e chave de idempotência para side effects (AFR-061..068); workflow de feature executa análise, plano, implementação, teste, evidência hashada e falha fechado sem revisão independente.
@@ -13,17 +13,17 @@
 - M10 — IMPLEMENTED_LOCALLY: memória local consentida com escopo/TTL/origem/inspeção/exclusão, ContextBundle seletivo com hash/redaction e import ZIP com preview, conflitos, limites e contenção de caminhos (AFR-077..083).
 - M11 — IMPLEMENTED_LOCALLY: evidência verificável, policy engine default-deny, comando/path guard, separação de dados contra prompt injection, logging seguro, observabilidade local, consentimento remoto revogável, métricas/evals versionados e MCP HTTP autenticado (AFR-084..100) implementados e testados localmente.
 - M12 — IMPLEMENTED_LOCALLY: template de SDK, contratos, validação de manifesto/compatibilidade/integridade, fonte confiável, aprovação de expansão de permissões e remoção segura por manifesto de propriedade (AFR-091..095).
-- M13 — IN_PROGRESS: E2E do CLI (AFR-101), CI (AFR-102), audit/license/SBOM/provenance (AFR-103), docs pt-BR/EN (AFR-105/106), saída/TTY (AFR-107), erros (AFR-108), restore hashado (AFR-109) e limites de migração (AFR-110) implementados; CI Node 22/24 e as duas atestações passaram no run 43728310089; autorização do release segue pendente.
+- M13 — IN_PROGRESS: E2E do CLI (AFR-101), CI (AFR-102), audit/license/SBOM/provenance (AFR-103), docs pt-BR/EN (AFR-105/106), saída/TTY (AFR-107), erros (AFR-108), restore hashado (AFR-109) e limites de migração (AFR-110) implementados; CI Node 22/24 e as duas atestações passaram no run [43792353763](https://github.com/eureka42-ai/ases-framework/actions/runs/43792353763); aprovação e gates externos de release seguem pendentes.
 - M14 — BLOCKED_ON_APPROVAL: release candidate e gate v1 dependem das decisões de licença, homologação e critérios de lançamento.
 
 Backlog estruturado atual: 137/140 requisitos `IMPLEMENTED`, 3/140 `PENDING`. Esta contagem cobre AFR-001..140; não representa rodadas de trabalho, validação externa ou decisões de aprovação.
 
-Distribuição dos 4 pendentes no registro atual:
+Distribuição dos 3 pendentes no registro atual:
 
 | Marco | Pendentes | Observação |
 |---|---:|---|
 | M1 | 0 | AFR-028 passou no CI remoto Node.js 22/24 |
-| M5 | 3 | Claude, Kimi e Gemini aguardam sessões reais; Codex passou smoke efêmero |
+| M5 | 2 | Claude e Gemini aguardam sessão autenticada; Codex e Kimi passaram smoke |
 | M6 | 0 | M6 concluído localmente; provider live opcional não foi testado |
 | M7 | 0 | M7 concluído localmente; integração com hosts reais ainda não foi homologada |
 | M8 | 0 | Workflow de feature testado localmente; chave de idempotência implementada em AFR-065 |
@@ -78,5 +78,5 @@ AFR-114 acrescenta `reviewFrontendQuality` e um agente sem permissões para aval
 
 AFR-133 adiciona console web local multiusuário, autenticação scrypt, sessões revogáveis e memberships RBAC exatos por repo, fixo em loopback. Não inclui SSO, armazenamento de sessão persistente nem hospedagem pública. Ver `docs/security/multi-user-console.md`.
 
-O gate M14 não está representado por um requisito AFR separado; a autorização do release continua uma decisão humana conforme AFR-104. Os 13 itens pendentes são a contagem do backlog AFR, não uma previsão exata de rodadas até DONE. Aprovação de licença, homologação de fontes, validação de hosts e autenticação OAuth em provedor real são gates separados.
+O gate M14 não está representado por um requisito AFR separado; a autorização do release continua uma decisão humana conforme AFR-104. Os 3 requisitos pendentes do backlog AFR não representam uma previsão exata de rodadas até DONE. Homologação editorial e de direitos, além da autorização de publicação, também são gates externos.
 

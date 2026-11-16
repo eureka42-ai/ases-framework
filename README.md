@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <code>STATUS: desenvolvimento inicial</code> ·
+  <code>STATUS: release candidate em preparação</code> ·
   <code>VERSÃO: 0.1.0-rc.1 (candidata)</code> ·
   <code>PUBLICAÇÃO: não publicada</code> ·
   <code>CÓDIGO: Apache-2.0</code> ·
@@ -59,10 +59,10 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases config validate` | Implementado | Valida config pela mesma definição Zod que gera o JSON Schema |
 | `ases config schema [--check path]` | Implementado | Gera o JSON Schema no stdout ou verifica o artefato sem escrever |
 | `ases config explain` | Implementado | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Em andamento | 136 implementados; 4 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
+| Backlog AFR-001..140 | Em andamento | 137 implementados; 3 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
 | Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
-| MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |
+| MCP e integrações de hosts | Implementação local | Codex e Kimi passaram smoke real; Claude e Gemini aguardam autenticação; veja [`integrations/README.md`](integrations/README.md) |
 | Providers | SPI e mock local implementados | Sem provider remoto, credenciais ou inferência conectada |
 | Agents, RAG offline e ContextBundle | Implementados localmente | Workflows com gate independente; RAG com citações/ACL/refresh; memória local consentida; bundle com redaction/hash e import ZIP seguro. [Guia RAG](docs/rag/offline-index.md) · [Guia de memória](docs/context/memory-and-bundles.md) · [Guia de import](docs/context/bundle-import.md) |
 
@@ -528,18 +528,18 @@ Resultados reais e limitações ficam em [`evidence/`](evidence/). Uma funcional
 
 | Marco | Objetivo | Estado |
 |---|---|---|
-| M0 | Bootstrap, fontes, ADRs, riscos e build | Vertical slice implementado; homologação das fontes pendente |
+| M0 | Bootstrap, fontes, ADRs, riscos e build | Implementado; homologação editorial das fontes pendente |
 | M1 | CLI local, init, doctor, config e pacote | Vertical slice verificado localmente; publicação e suporte multi-host pendentes |
 | M2 | Catálogo ASES-300 e requirements engine | Engine local implementada; revisão estrutural e visual amostral concluídas, homologação integral pendente |
 | M3 | Entrevista ASES-500 e geração de spec | Fluxo inicial implementado; AFR-001..020 concluídos localmente |
-| M4–M5 | MCP e adapters de hosts | MCP stdio, plano e lifecycle local seguro implementados; conexão em sessões reais dos hosts pendente |
-| M6–M8 | Providers, agents, skills e workflows | Implementados localmente; homologação em sessões reais dos hosts segue pendente |
+| M4–M5 | MCP e adapters de hosts | MCP stdio, plano e lifecycle local implementados; smoke Codex/Kimi passou; Claude/Gemini aguardam login e a auto-descoberta Codex segue pendente |
+| M6–M8 | Providers, agents, skills e workflows | Implementados localmente; provas de sessão real ainda faltam para Claude e Gemini |
 | M9 | RAG | Implementado localmente: busca offline, citação, ACL, filtros e invalidação |
 | M10 | Memória e ContextBundle | Implementado localmente; import seguro exige preview e rejeita conflitos |
 | M11 | Evidências, segurança e evals | Implementado localmente, incluindo MCP HTTP com OAuth introspection |
 | M12 | SDK e lifecycle seguro de plugins | Implementado localmente |
-| M13 | E2E, CI e documentação bilingue | Em andamento; release, TUI e decisão de publicação seguem |
-| M14 | Release candidate e gate de v1 | Não autorizado |
+| M13 | E2E, CI e documentação bilingue | CI Node 22/24 e supply-chain passam; publicação aguarda titularidade, acesso ao registry e autorização |
+| M14 | Release candidate e gate de v1 | Bloqueado pela aprovação humana e homologação de fontes/ativos |
 
 Consulte [`docs/ROADMAP.md`](docs/ROADMAP.md) e [`STATUS.md`](STATUS.md) para o próximo incremento seguro.
 
@@ -549,10 +549,10 @@ No modo `host`, o CLI hospedeiro controla a escolha e a configuração do modelo
 
 | Host | Estado atual |
 |---|---|
-| OpenAI Codex | `NOT_TESTED` |
-| Claude Code | `NOT_TESTED` |
-| Kimi Code CLI | `NOT_TESTED` |
-| Gemini CLI | `NOT_TESTED` |
+| OpenAI Codex | `STARTUP_SMOKE_PASS`; auto-descoberta da Skill pendente |
+| Claude Code | `NOT_TESTED`; autenticação ausente |
+| Kimi Code CLI | `SKILL_SMOKE_PASS`; instalação per-user do plugin nativo não executada |
+| Gemini CLI | `NOT_TESTED`; autenticação ausente |
 | MCP genérico | `NOT_IMPLEMENTED` |
 
 Artefatos de integração não serão instalados em configurações globais sem plano, diff, backup e autorização. Uma integração somente será promovida a `SUPPORTED` após smoke test reproduzível em versão e sistema operacional documentados.

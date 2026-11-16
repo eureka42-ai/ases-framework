@@ -6,13 +6,13 @@ Atualizado em: 2026-11-15
 
 - M0: IMPLEMENTED / PARTIALLY_VERIFIED
 - M1 vertical slice: IMPLEMENTED / VERIFIED_LOCALLY
-- M5: IN_PROGRESS (7/10 AFRs formalmente implementados; smoke Codex e smoke da Skill Kimi passaram; faltam as sessões Claude/Gemini e confirmação de auto-descoberta Codex; lifecycle local possui apply/update/uninstall explícitos)
+- M5: IN_PROGRESS (8/10 AFRs formalmente implementados; smoke Codex e smoke da Skill Kimi passaram; faltam as sessões Claude/Gemini e confirmação de auto-descoberta Codex; lifecycle local possui apply/update/uninstall explícitos)
 - M8: IMPLEMENTED_LOCALLY (AFR-061..068; workflow de feature testado com evidência hashada e aprovação independente)
 - M9: IMPLEMENTED_LOCALLY (RAG lexical offline com citações, proveniência, filtros de licença/versão/ACL, refresh/invalidação e permissão cross-project explícita)
 - M10: IMPLEMENTED_LOCALLY (memória local com consentimento/escopo/TTL/origem/inspect/delete, ContextBundle com integridade/redaction e import ZIP seguro com preview e contenção de caminhos)
 - M11: IMPLEMENTED_LOCALLY (AFR-084..100; MCP HTTP OAuth Resource Server e testes de rota local; Authorization Server real ainda não exercitado)
 - M12: IMPLEMENTED_LOCALLY (SDK, contrato, integridade, compatibilidade, aprovação de permissões e remoção segura AFR-091..095)
-- M13: IN_PROGRESS (CI Node 22/24 e supply-chain passaram no run 43729149666; SLSA e SPDX verificadas diretamente no pacote do run 43728310089; resta autorização da release AFR-104)
+- M13: IN_PROGRESS (CI Node 22/24, testes, supply-chain, SLSA e SPDX passaram no run 43792353763; resta aprovação AFR-104 e homologação externa de ativos/fontes)
 - M6: IMPLEMENTED (AFR-041..050 concluídos localmente; probe real é opt-in e ainda não executado contra serviço externo)
 - Repositório Git: branch `main`; plugins Codex/Claude disponíveis no repositório público; AFR-030 implementado nesta rodada
 - Fonte diretora: presente e lida
@@ -157,9 +157,9 @@ Atualizado em: 2026-11-15
 - O original independente ASES-500 não foi localizado; a consolidação permanece reconstrução para validação.
 - Evidências são comparadas ao SHA-256 ao consultar o catálogo; a validade semântica do conteúdo e a relação automática com mudanças no código ainda não são avaliadas.
 - O escopo Apache-2.0 foi preparado para software; titularidade do código, ativos de marca e fontes metodológicas ainda requer confirmação antes da distribuição externa.
-- Os quatro executáveis de host foram detectados, mas detecção não prova descoberta e execução do plugin em sessão real.
-- O roadmap completo M0–M14 é maior que o vertical slice atual; componentes não construídos continuam `PLANNED` ou `NOT_IMPLEMENTED`.
-- Pacote npm preparado como `@eureka42/ases-cli@0.1.0-rc.1`, sem `private: true`, com metadados Apache-2.0 e arquivos de licença no tarball; publicação ainda bloqueada por validação de titularidade de marca/assets e autorização do registry.
+- Claude e Gemini seguem sem autenticação para smoke real. Codex/Kimi passaram smoke, mas auto-descoberta Codex e instalação per-user do plugin nativo Kimi ainda não foram verificadas.
+- M0/M2 e M14 mantêm gates editoriais e de publicação: homologação de ASES-300/500, titularidade de marca/ativos e decisão de release pelo owner.
+- Pacote npm `@eureka42/ases-cli@0.1.0-rc.1` revalidado com `npm pack --dry-run --json`: 128 arquivos, 8.2 MB e metadados/licenças no tarball; `pnpm supply-chain` PASS (152 dependências). Publicação ainda bloqueada por homologação de titularidade de marca/fontes, acesso ao escopo npm e aprovação do owner. Ver `evidence/LAUNCH-2026-11-15-progress-2.md`.
 
 ## Evidências
 
