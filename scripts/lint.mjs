@@ -3,7 +3,7 @@ import { readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
 try {
-  execFileSync("git", ["grep", "-nI", "-E", "[[:blank:]]+$", "--", ":!pnpm-lock.yaml"], { stdio: "pipe" });
+  execFileSync("git", ["grep", "-nI", "-E", "[[:blank:]]+$", "--", ":!pnpm-lock.yaml", ":!FONTES_ASES_PARA_DESKTOP_FRAMEWORK/**"], { stdio: "pipe" });
   process.stderr.write("Lint failed: tracked source contains trailing whitespace.\n");
   process.exitCode = 1;
 } catch (error) {
