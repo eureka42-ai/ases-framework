@@ -95,6 +95,7 @@ Atualizado em: 2026-11-15
 - Gemini: usuário autorizou confiança no workspace; recusou o aviso subsequente de instalação/injeção de instruções. `gemini extensions list` confirmou que nada foi instalado.
 - Claude Code oferece `--plugin-dir` para carga local temporária; smoke não interativo de AFR-031 foi tentado sem persistência/ferramentas, mas o CLI respondeu `Not logged in · Please run /login`; execução funcional continua pendente.
 - Claude `plugin test` não executou porque o adapter não está instalado; não houve instalação automática.
+- Validação Claude desta rodada: `claude plugin validate integrations/claude-code --strict` PASS; `claude auth status` reportou `loggedIn: false`, então não foi possível executar o comando `/eureka42-ases:ases-start` numa conversa autenticada. AFR-031 permanece pendente até smoke de sessão. Ver `evidence/M5-2026-11-15-progress-21.md`.
 - Guia geral Claude atualizado para recomendar `--scope local`; validação estrita do plugin e marketplace repetida com PASS e `pnpm integrations:validate` PASS. Ver `evidence/M5-2026-11-14-progress-6.md`.
 - Ciclo `host apply/uninstall` implementado para Claude, Codex, Kimi e Gemini; `--apply` explícito, conflitos interrompem antes de escrita, rollback após falha e remoção conservadora por hashes. Ver testes `host apply ...` em `packages/cli/src/index.test.ts`.
 - `ases host update <host> [workspace]` implementado: plano read-only por padrão, `--apply` explícito, backup de cada arquivo antes da substituição, detecção de alterações locais pelo hash, manifesto atualizado atomicamente, tentativa de rollback e backups preservados mesmo após uninstall. Ver testes `host update ...` em `packages/cli/src/index.test.ts` e `evidence/M5-2026-11-14-progress-9.md`.
@@ -221,6 +222,7 @@ Atualizado em: 2026-11-15
 - `evidence/M15-2026-11-15-progress-13.md`
 - `evidence/M15-2026-11-15-progress-14.md`
 - `evidence/M15-2026-11-15-progress-20.md`
+- `evidence/M5-2026-11-15-progress-21.md`
 - `evidence/M12-2026-11-15-progress-1.md`
 - `evidence/M12-2026-11-15-progress-2.md`
 - `evidence/M13-2026-11-15-progress-1.md`
