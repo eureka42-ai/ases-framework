@@ -62,6 +62,8 @@
     "dist/code-impact.d.ts",
     "dist/vector-store.js",
     "dist/vector-store.d.ts",
+    "dist/encrypted-backup.js",
+    "dist/encrypted-backup.d.ts",
     "dist/team-policy.js",
     "dist/team-policy.d.ts",
     "dist/i18n.js",

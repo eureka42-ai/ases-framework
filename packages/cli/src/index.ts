@@ -24,6 +24,7 @@ import { installKnowledgeLibrary, knowledgeLibraryManifest, listKnowledgeLibrari
 import { renderHelp, resolveLocale, welcomeTagline } from "./i18n.js";
 import { analyzeCodeImpact } from "./code-impact.js";
 import { createCloudflareVectorizeStore, createLocalVectorStore, createPgVectorStore, createQdrantVectorStore } from "./vector-store.js";
+import { createR2BackupObjectStore, decryptBackup, deleteEncryptedBackup, downloadEncryptedBackup, encryptBackup, uploadEncryptedBackup } from "./encrypted-backup.js";
 
 export { VERSION } from "./version.js";
 export { indexRagSources, RagAccessError, refreshRagIndex, retrieveRequirement, searchRag } from "./rag.js";
@@ -82,6 +83,8 @@ export { analyzeCodeImpact } from "./code-impact.js";
 export type { CodeImpactOptions, CodeImpactReport } from "./code-impact.js";
 export { createCloudflareVectorizeStore, createLocalVectorStore, createPgVectorStore, createQdrantVectorStore };
 export type { PgVectorQuery, QdrantOptions, VectorDocument, VectorDocumentMetadata, VectorMatch, VectorQuery, VectorStoreAdapter, VectorizeBinding } from "./vector-store.js";
+export { createR2BackupObjectStore, decryptBackup, deleteEncryptedBackup, downloadEncryptedBackup, encryptBackup, uploadEncryptedBackup };
+export type { BackupSyncOptions, EncryptedBackupEnvelope, EncryptedBackupObjectStore, R2BucketBinding } from "./encrypted-backup.js";
 export type { Locale } from "./i18n.js";
 export { applyProjectTemplate, getProjectTemplate, listProjectTemplates } from "./templates.js";
 export type { ProjectTemplate } from "./templates.js";
