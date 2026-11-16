@@ -68,6 +68,8 @@
     "dist/knowledge.d.ts",
     "dist/tracker-exchange.js",
     "dist/tracker-exchange.d.ts",
+    "dist/tracker-providers.js",
+    "dist/tracker-providers.d.ts",
     "dist/rag.js",
     "dist/rag.d.ts",
     "dist/memory.js",

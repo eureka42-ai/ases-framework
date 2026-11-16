@@ -59,7 +59,7 @@ O primeiro vertical slice de M0/M1 está implementado e verificado localmente:
 | `ases config validate` | Implementado | Valida config pela mesma definição Zod que gera o JSON Schema |
 | `ases config schema [--check path]` | Implementado | Gera o JSON Schema no stdout ou verifica o artefato sem escrever |
 | `ases config explain` | Implementado | Informa valor e arquivo de origem |
-| Backlog AFR-001..140 | Em andamento | 127 implementados; 13 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
+| Backlog AFR-001..140 | Em andamento | 128 implementados; 12 pendentes. Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para distribuição por marco |
 | Catálogo ASES-300 | Engine local implementada; homologação pendente | 300 itens importados com hash; conversão ainda requer revisão integral |
 | ASES-500 separado | Validação necessária | Documento-mestre permanece proposta |
 | MCP e integrações de hosts | Implementação local parcial | MCP read-only e quatro adapters experimentais; descoberta em sessão real ainda não comprovada para todos os hosts |
@@ -248,7 +248,7 @@ ases config schema --check schemas/ases.config.schema.json
 
 Os demais comandos do documento-mestre são contratos planejados, não funcionalidades existentes. Eles somente serão documentados como disponíveis depois de implementados e testados.
 
-Para intercâmbio local de tarefas com trackers, consulte [exportação e importação](docs/trackers.md). A exportação gera bundle JSON; importação é prévia por padrão e `--apply` grava apenas uma cópia local.
+Para intercâmbio local e importação remota somente de leitura com trackers, consulte [exportação e importação](docs/trackers.md). GitHub Issues/PRs e GitLab Issues/MRs estão disponíveis como API TypeScript opt-in (`enabled: true`); não fazem chamadas implícitas nem escrita remota.
 
 A ajuda e a identidade do CLI estão disponíveis em pt-BR, en-US, es-ES e it-IT com `ases help --locale es-ES`, `ASES_LOCALE=it-IT ases help` ou equivalente. Guias de instalação traduzidos: [español](docs/i18n/es-ES.md) e [italiano](docs/i18n/it-IT.md).
 

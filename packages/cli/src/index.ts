@@ -73,6 +73,8 @@ export { createTeamPolicyEngine, isSecurityAction, readTeamPolicyFile, teamPolic
 export type { TeamPolicyDocument, TeamPolicyRule, TeamPolicyValidation } from "./team-policy.js";
 export { exportTrackerTasks, importTrackerTasks } from "./tracker-exchange.js";
 export type { TrackerBundle, TrackerTask } from "./tracker-exchange.js";
+export { importGitHubWorkItems, importGitLabWorkItems } from "./tracker-providers.js";
+export type { GitHubTrackerOptions, GitLabTrackerOptions, RemoteTrackerImport, RemoteTrackerOptions } from "./tracker-providers.js";
 export { renderHelp, resolveLocale } from "./i18n.js";
 export type { Locale } from "./i18n.js";
 export { applyProjectTemplate, getProjectTemplate, listProjectTemplates } from "./templates.js";
